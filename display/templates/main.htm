@@ -12,9 +12,13 @@
 <body>
 {/if}
 <script language="javascript" SRC="display/javascript/fonctions.js"></script>
+<div id="superglobal">
+<div id="global">
 {include file="dataTables.tpl"}
 {include file=$entete}
 {include file=$corps}
+</div>
 {include file=$enpied}
+</div>
 </body>
 </html>
