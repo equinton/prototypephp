@@ -1,5 +1,21 @@
 Nouveautes
 ===========
+Version 2.0
+--------------
+- intégration de la version 2.4.2 d'ObjetBDD (rajout d'un paramètre dans getListe($order), pour indiquer le numéro de colonne à trier)
+- intégration de la classe tcpdf_0_6_062
+- ajout de la classe jquery.cookie.js, qui permet de stocker un cookie directement depuis le navigateur
+- ajout de la classe jquery.magnific-popup.min.js, pour afficher des miniatures ou des images à l'écran
+- modifications importantes dans la gestion des connexions :
+	* il est maintenant possible de gérer une connexion LDAP, puis BDD si la première échoue
+	* génération automatique d'un mot de passe aléatoire depuis l'écran de modification d'un compte en base de données
+	* rajout d'une fonction permettant à l'utilisateur de changer son mot de passe
+	* rajout d'une icone, à droite dans le menu, qui passe au vert quand la connexion a été réalisée
+- modification de la feuille de style blue.css, qui permet maintenant :
+	* de définir un champ date avec la classe date
+	* de créer des formulaires de saisie par liste (<dl><dd>), avec largeur par défaut à 800 px (class="formSaisie"), ou à 400 px (class="formSaisie400"). Pour plus d'informations, consultez le fichier display/templates/example/exampleChange.tpl
+- corrections de bogues diverses
+
 Version 1.9
 --------------
 - intégration de la version 2.4 d'ObjetBDD, qui corrige un bogue concernant la gestion des champs géographiques Postgis
@@ -23,7 +39,6 @@ Version 1.8
 - creation d'un script de generation des tables utilisées par PHPGACL pour postgresql dans install(deux scripts : un pour le schéma public, l'autre pour le schéma gacl). Correction des noms utilisés dans phpgacl (ACO notamment).
 	* il est également possible de télécharger phpgacl et d'exécuter le script install.php pour créer la base de données phpgacl
 - rajout de la variable $APPLI_cookie_ttl = 2592000; dans param.default.inc.php, pour indiquer une valeur de conservation des cookies différente de celle de la durée de la session
-
 
 Version 1.7
 --------------
