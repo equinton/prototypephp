@@ -12,7 +12,7 @@ include_once ("framework/common.inc.php");
  * Recuperation du module
  */
 unset ( $module );
-if (isset ( $_REQUEST ["module"] )) {
+if (isset ( $_REQUEST ["module"] )&& strlen($_REQUEST["module"]) > 0 ) {
 	$module = $_REQUEST ["module"];
 } else {
 	/*
@@ -30,13 +30,9 @@ while ( isset ( $module ) ) {
 	$t_module = array ();
 	$t_module = $navigation->getModule ( $module );
 	/*
-	 * Verification si le module est bien appele apres son parent
-	 */
-
-	/*
 	 * Verification si le login est requis
 	*/
-	if (strlen ( $t_module ["droits"] ) > 1 || $t_module ["loginrequis"] == 1) {
+	if (strlen ( $t_module ["droits"] ) > 1 || $t_module ["loginrequis"] == 1 || isset($_REQUEST["login"])) {
 		/*
 		 * Verification du login
 		 */
@@ -67,7 +63,7 @@ while ( isset ( $module ) ) {
 							}
 							/*
 							 * Verification de l'identification uniquement en base de donnees
-							*/
+							 */
 						} elseif ($ident_type == "BDD") {
 							$res = $loginGestion->VerifLogin ( $_REQUEST ['login'], $_REQUEST ['password'] );
 							if ($res == TRUE) {
@@ -78,13 +74,16 @@ while ( isset ( $module ) ) {
 					/*
 					 * Reinitialisation du menu
 					 */
-					if (isset ($_SESSION["login"])) unset ($_SESSION["menu"]);
+					if (isset ( $_SESSION ["login"] )){
+						unset ( $_SESSION ["menu"] );
+					}						
 				} else {
 					/*
 					 * Gestion de la saisie du login
 					 */
 					$smarty->assign ( "corps", "ident/login.tpl" );
-					$smarty->assign ( "module", $_REQUEST ["module"] );
+					if ($t_module ["retourlogin"] == 1)
+						$smarty->assign ( "module", $_REQUEST ["module"] );
 					$message = $LANG ["login"] [2];
 				}
 			}
@@ -104,6 +103,10 @@ while ( isset ( $module ) ) {
 				 * Calcul des droits
 				 */
 				include "framework/identification/setDroits.php";
+				/*
+				 * Integration des commandes post login
+				*/
+				include "modules/postLogin.php";
 			}
 		}
 	}
@@ -118,7 +121,10 @@ while ( isset ( $module ) ) {
 			$resident = 0;
 			$motifErreur = "nologin";
 		} else {
-			$resident = $gestionDroit->getgacl ( $t_module ["droits"] );
+			$droits_array = explode(",", $t_module["droits"]);
+			foreach ($droits_array as $key=> $value ) {
+				if ($gestionDroit->getgacl($value) == 1) $resident = 1;
+			}
 			if ($resident == 0)
 				$motifErreur = "droitko";
 		}
@@ -211,6 +217,7 @@ if ($t_module ["ajax"] != 1) {
 		$menu = $_SESSION ["menu"];
 	}
 	$smarty->assign ( "menu", $menu );
+	if (isset($_SESSION["login"])) $smarty->assign("isConnected", 1);
 	/*
 	 * Affichage de la page
 	 */

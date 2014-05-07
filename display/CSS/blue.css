@@ -29,6 +29,114 @@ p {
 	background-position: center center;
 }
 
+.erreur {
+	display:none; 
+	color:red;
+}
+/*
+ * Masque de saisie par liste
+ */
+.formSaisie {
+	border-style: solid;
+	border-width: 1px;
+	/*background:  #98c1e9;*/
+	background-color: rgba(152, 193, 233, 0.5);
+	width: 800px;
+}
+.formSaisie .formBouton {
+	text-align: center;
+	width: 750px;
+}
+input {
+	/*border-radius: 1em;*/
+}
+dl input:hover, input:focus {
+	border-color: #a66d1a;
+	
+}
+dl {
+	clear: both;
+}
+
+.formSaisie dt {
+	float: left;
+	text-align: right;
+	width: 250px;
+	margin: 0 10px 10px 0;
+}
+
+.formSaisie dd {
+	float: left;
+	text_align: left;
+	width: 450px;
+	margin: 0 0 10px 0;
+	/*background: #ffffff;*/
+}
+.formSaisie400 {
+	border-style: solid;
+	border-width: 1px;
+	/*background:  #98c1e9;*/
+	background-color: rgba(152, 193, 233, 0.5);
+	width: 400px;
+}
+.formSaisie400 dt {
+	float: left;
+	text-align: right;
+	width: 140px;
+	margin: 0 10px 10px 0;
+}
+
+.formSaisie400 dd {
+	float: left;
+	text_align: left;
+	width: 250px;
+	margin: 0 0 10px 0;
+	/*background: #ffffff;*/
+}
+.formSaisie400 .formBouton {
+	text-align: center;
+	width: 400px;
+}
+
+input.date {
+	background-image: url("images/calendar-small.gif");
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
+	width: 10em;
+}
+input.num5 {
+	width: 5em;
+}
+input.num10 {
+	width: 10em;
+}
+dl select {
+	max-width: 480px;
+}
+.fsMasquable legend {
+	background-image: url("images/up_down.png");
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left: 25px;
+	height: 20px;
+	cursor: pointer;
+	fontStyle: italic;
+	text-decoration: underline;
+}
+.masquageText {
+	background-image: url("images/up_down.png");
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left: 25px;
+	height: 20px;
+	cursor: pointer;
+	fontStyle: italic;
+	text-decoration: underline;
+}
+/*
+* Fin de la saisie par liste
+*/
+
 a {
 /*	text-decoration: none;*/
     font-family: Arial, Helvetica, sans-serif;
@@ -256,13 +364,17 @@ div.row span.affichage {
 	margin-left: 0px;
 	margin-right: auto;
 	width: auto;
-	/*  background: #218359;*/
+	/*background-color: rgba(152, 193, 233, 0.5);*/
 	background: #98c1e9;
 	color: #000000;
 	text-align: left;
 	border: 1px solid #999999;
 }
 .libelleSaisie {
+	text-align: right;
+}
+label {
+	font-style: italic;
 	text-align: right;
 }
 .dataDisplay {
@@ -283,6 +395,7 @@ div.row span.affichage {
 	color: #000000;
 	text-align: left;
 	border: 1px solid #999999;
+	z-index: 0;
 }
 .tableaffichage tr:hover {
 	background:	 #ffffff;
@@ -408,6 +521,7 @@ div.menu>ul li ul li {
 	background: #ffffff;
 	border-left: solid 1em #98c1e9;
 	color: #a66d1a;
+	z-index:99;
 
 }
 
