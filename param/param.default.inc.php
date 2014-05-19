@@ -89,6 +89,7 @@ $APPLI_code = 'proto';
 $APPLI_fds = "display/CSS/blue.css";
 $APPLI_address = "http://localhost/proto";
 $APPLI_modeDeveloppement = false;
+$APPLI_modeDeveloppementDroit = false;
 $APPLI_utf8 = true;
 
 /*

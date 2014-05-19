@@ -39,7 +39,8 @@ $LANG["menu"][40] = "Nouveautés";
 $LANG["menu"][41] = "Quoi de neuf dans l'application ?";
 $LANG["menu"][42] = "Module de recherche";
 $LANG["menu"][43] = "Intégrer un module de recherche";
-$LANG["menu"][44] = "PHP info";
+$LANG["menu"]["phpinfo"] = "PHP info";
+$LANG["menu"]["phpinfotitle"] = "configuration générale du serveur PHP";
 
 $LANG["menu"]["example1"] = "Example";
 $LANG["menu"]["example2"] = "It's an example !";

@@ -516,6 +516,14 @@ class GestionDroit {
 	function getDroits() {
 		return $this->droits;
 	}
+	/**
+	 * Fonction permettant de positionner manuellement un droit
+	 * @param string $droit
+	 * @param number $value
+	 */
+	function setDroitManual($droit, $value = 1) {
+		if (strlen($droit)>0) $this->droits[$droit] = $value;
+	}
 }
 /**
  * Classe permettant d'enregistrer toutes les operations effectuees dans la base

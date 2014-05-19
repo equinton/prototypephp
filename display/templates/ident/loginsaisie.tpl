@@ -50,7 +50,7 @@
 <input type="submit" name="valid" value="{$LANG.message.19}"/>
 </form>
 {if $data.id>0}
-<form action="index.php" method="post" onSubmit='return confirmSuppression()'>
+<form action="index.php" method="post" onSubmit='return confirmSuppression("{$LANG["message"].31}")'>
 <input type="hidden" name="id" value="{$data.id}">
 <input type="hidden" name="module" value="logindelete">
 <input type="submit" value="Supprimer">

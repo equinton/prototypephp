@@ -1,5 +1,8 @@
 News
 ====
+Version 2.4.2.1 - 19/05/2014
+	* Correction of a bug within declaration key : if a new attribut is added into the table declaration, all of the fields with this new attribute were considered as a key
+
 Version 2.4.2 - 17/03/2014
 	* New parameter to getListe function : getListe($order = 0). If $order > 0, the list is sorted by $order.
 

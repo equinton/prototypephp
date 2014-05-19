@@ -137,7 +137,7 @@ class Ldap {
 	 * @param string $basedn : base de recherche
 	 * @param string $filtre : filtre de recherche - ex : cn=*
 	 * @param array $attribut : tableau contenant en cle les attributs que l'on souhaite retourner
-	 * @return array : tableau multiple (avec tableaux imbriques pour chaque attribut : [count] et [0] � [n]
+	 * @return array : tableau multiple (avec tableaux imbriques pour chaque attribut : [count] et [0] à [n]
 	 */
 	function getAttributs($basedn,$filtre,$attribut) {
 		// Test si $attribut est un tableau
@@ -147,6 +147,7 @@ class Ldap {
 		}else{
 			$a_attribut = $attribut;
 		}
+		if (strlen($basedn) == 0 ) $basedn = $this->LDAP_basedn;
 		$sr = ldap_search($this->idldap,$basedn,$filtre,$a_attribut);
 		$this->listegroupe = ldap_get_entries($this->idldap, $sr);
 		return $this->listegroupe;

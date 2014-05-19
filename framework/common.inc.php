@@ -18,8 +18,8 @@ include_once ("param/param.inc.php");
  * Gestion de la session
  */
 // ini_set('session.cookie_secure', 1);
-ini_set('session.gc_probability', 1);
-ini_set('session.cookie_lifetime', $APPLI_session_ttl);
+ini_set ( 'session.gc_probability', 1 );
+ini_set ( 'session.cookie_lifetime', $APPLI_session_ttl );
 ini_set ( 'session.gc_maxlifetime', $APPLI_session_ttl );
 // $session_path = ini_get('session.save_path').'/'.$APPLI_path_stockage_session;
 // if (!is_dir($session_path)) mkdir($session_path);
@@ -73,40 +73,40 @@ include_once "modules/beforesession.inc.php";
 /*
  * Regeneration du cookie de session
  */
-setcookie(session_name(),session_id(),time()+$APPLI_session_ttl, '/');
+setcookie ( session_name (), session_id (), time () + $APPLI_session_ttl, '/' );
 $identification = new Identification ();
 $identification->setidenttype ( $ident_type );
 if ($ident_type == "CAS") {
 	$identification->init_CAS ( $CAS_address, $CAS_port, $CAS_uri );
-} elseif ($ident_type == "LDAP"||$ident_type == "LDAP-BDD") {
+} elseif ($ident_type == "LDAP" || $ident_type == "LDAP-BDD") {
 	$identification->init_LDAP ( $LDAP_address, $LDAP_port, $LDAP_basedn, $LDAP_user_attrib, $LDAP_v3, $LDAP_tls );
 }
 /*
  * Chargement des fonction generiques
-*/
+ */
 include_once 'framework/fonctions.php';
 /*
  * Gestion de la langue a afficher
-*/
+ */
 if (isset ( $_SESSION ["LANG"] ) && $APPLI_modeDeveloppement == false) {
 	$LANG = $_SESSION ["LANG"];
 } else {
 	/*
 	 * Recuperation le cas echeant du cookie
-	*/
+	 */
 	if (isset ( $_COOKIE ["langue"] )) {
 		$langue = $_COOKIE ["langue"];
 	} else {
 		/*
 		 * Recuperation de la langue du navigateur
-		*/
+		 */
 		$langue = explode ( ';', $_SERVER ['HTTP_ACCEPT_LANGUAGE'] );
 		$langue = substr ( $langue [0], 0, 2 );
 	}
 	/*
 	 * Mise a niveau du langage
-	*/
-	setlanguage($langue);
+	 */
+	setlanguage ( $langue );
 }
 /**
  * Verification du couple session/adresse IP
@@ -170,7 +170,7 @@ $smarty->assign ( "entete", $SMARTY_entete );
 $smarty->assign ( "enpied", $SMARTY_enpied );
 $smarty->assign ( "corps", $SMARTY_corps );
 $smarty->assign ( "LANG", $LANG );
-$smarty->assign ("ident_type", $ident_type);
+$smarty->assign ( "ident_type", $ident_type );
 
 /*
  * Prepositionnement de idFocus, qui permet de positionner le focus automatiquement a l'ouverture d'une page web
@@ -189,24 +189,18 @@ if (isset ( $_SESSION ["navigation"] ) && $APPLI_modeDeveloppement == false) {
 /*
  * Activation de la classe d'enregistrement des traces
  */
-$log = new Log($bdd_gacl,$ObjetBDDParam);
+$log = new Log ( $bdd_gacl, $ObjetBDDParam );
 /*
  * Preparation de la gestion des droits
  */
-if (isset ( $_SESSION ["gestionDroit"] ) && $APPLI_modeDeveloppement == false) {
+if (isset ( $_SESSION ["gestionDroit"] )) {
 	$gestionDroit = $_SESSION ["gestionDroit"];
-	$smarty->assign ( "droits", $gestionDroit->getDroits () );
 } else {
 	$gestionDroit = new GestionDroit ();
-	if ($APPLI_modeDeveloppement == false) {
-		$_SESSION ["gestionDroit"] = $gestionDroit;
-	} else {
-		/*
-		 * Traitement du mode developpement ; calcul a chaque appel
-		 */
-		include "framework/identification/setDroits.php";
-	}
+	$_SESSION["gestionDroit"] = $gestionDroit;
 }
+if ($APPLI_modeDeveloppementDroit == true)
+	include "framework/identification/setDroits.php";	
 /*
  * Chargement des fonctions specifiques
  */

@@ -27,8 +27,8 @@
 	<identdisconnect action="framework/identification/disconnect.php" menutitle="7" menuvalue="6" menuorder="4" menulevel="0" menuloginrequis="1"></identdisconnect>
 	<apropos action="framework/apropos.php" menulevel="1" menuorder="99" menuvalue="8" menutitle="9" menuparent="99"></apropos>
 	<testcalendrier action="test/testcalendrier.php"></testcalendrier>
-	<gestiondroits action="framework/identification/gestiondroits.php" droits="admin" loginrequis="0" menulevel="1" retourlogin="1" menuorder="99" menudroits="admin" menuloginrequis="" menuparent="7" menutitle="13" menuvalue="12" droitko="droitko"/>
-	<phpinfo action="framework/phpinfo.php" droits="admin" menudroits="admin"  retourlogin="1" menulevel="1" menuorder="8" menuparent="3" menuvalue="phpinfo" menutitle="phpinfotitle" />
+	<gestiondroits action="framework/identification/gestiondroits.php" droits="admin" loginrequis="0" menulevel="1" retourlogin="1" menuorder="99" menudroits="admin" menuloginrequis="admin" menuparent="3" menutitle="13" menuvalue="12" droitko="droitko"/>
+	<phpinfo action="framework/phpinfo.php" droits="admin" menudroits="admin"  retourlogin="1" menulevel="1" menuorder="999" menuparent="3" menuvalue="phpinfo" menutitle="phpinfotitle" />
 	<quoideneuf action="doc/quoideneuf.php" menulevel="1" menuparent="99"  retourlogin="1" menutitle="41" menuvalue="40"></quoideneuf>
 	<setlanguage action='framework/setlanguage.php'  retourlogin="1" />
 	
@@ -47,8 +47,8 @@
 	<exampleList action="modules/example/example.php" param="list" droits="consult" menulevel="1" menuparent="1" menudroits="" menuvalue="example1" menutitle="example2"  />
 	<exampleDisplay action="modules/example/example.php" param="display" droits="consult" />
 	<exampleChange action="modules/example/example.php" param="change" droits="gestion" />
-	<exampleWrite action="modules/example/example.php" param="write" droits="gestion" retourok="exampleList" retourko="exampleModif" modulebefore="exampleModif" />
-	<exampleDelete action="modules/example/example.php" param="delete" droits="admin" retoursuppr="exampleList" retourko="exampleModif" />
+	<exampleWrite action="modules/example/example.php" param="write" droits="gestion" retourok="exampleList" retourko="exampleChange" modulebefore="exampleChange" />
+	<exampleDelete action="modules/example/example.php" param="delete" droits="admin" retoursuppr="exampleList" retourko="exampleChange" />
 
 </navigation>
 	
