@@ -6,6 +6,8 @@
 	<default action="framework/default.php"></default>
 	<droitko action="framework/droitko.php"></droitko>
 	<droits menudroits="admin" droits="admin" menulevel="0" menuorder="7" menuvalue="14" menutitle="15" />
+	<gestiondroits action="framework/identification/gestiondroits.php" droits="admin" loginrequis="0" menulevel="1" retourlogin="1" menuorder="99" menudroits="admin" menuloginrequis="admin" menuparent="7" menutitle="13" menuvalue="12" droitko="droitko"/>
+	
 	<loginliste action="framework/identification/login.php" param="list" droits="admin" menulevel="1" retourlogin="1" menuorder="9" menudroits="admin" menuparent="7" menutitle="3" menuvalue="2"></loginliste>
 	<loginmodif action="framework/identification/login.php" param="change" droits="admin" />
 	<loginwrite action="framework/identification/login.php" param="write" droits="admin" retourko="loginmodif" retourok="loginliste" modulebefore="loginmodif" />
@@ -23,11 +25,10 @@
 	<test action="test/test.php" retourko=""
 		retournull="">
 	</test>
-	<connexion loginrequis="1" menutitle="connexiontitle" menuvalue="connexionvalue" menulevel="0" menuorder="5" onlynoconnect="1" />
-	<identdisconnect action="framework/identification/disconnect.php" menutitle="7" menuvalue="6" menuorder="4" menulevel="0" menuloginrequis="1"></identdisconnect>
+	<connexion loginrequis="1" menutitle="connexiontitle" menuvalue="connexionvalue" menulevel="0" menuorder="8" onlynoconnect="1" />
+	<identdisconnect action="framework/identification/disconnect.php" menutitle="7" menuvalue="6" menuorder="9" menulevel="0" menuloginrequis="1"></identdisconnect>
 	<apropos action="framework/apropos.php" menulevel="1" menuorder="99" menuvalue="8" menutitle="9" menuparent="99"></apropos>
 	<testcalendrier action="test/testcalendrier.php"></testcalendrier>
-	<gestiondroits action="framework/identification/gestiondroits.php" droits="admin" loginrequis="0" menulevel="1" retourlogin="1" menuorder="99" menudroits="admin" menuloginrequis="admin" menuparent="3" menutitle="13" menuvalue="12" droitko="droitko"/>
 	<phpinfo action="framework/phpinfo.php" droits="admin" menudroits="admin"  retourlogin="1" menulevel="1" menuorder="999" menuparent="3" menuvalue="phpinfo" menutitle="phpinfotitle" />
 	<quoideneuf action="doc/quoideneuf.php" menulevel="1" menuparent="99"  retourlogin="1" menutitle="41" menuvalue="40"></quoideneuf>
 	<setlanguage action='framework/setlanguage.php'  retourlogin="1" />

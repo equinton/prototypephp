@@ -23,6 +23,15 @@ $BDD_login = "proto";
 $BDD_passwd = "proto";
 $BDD_database = "proto";
 
+/*
+ * Base de donnees de developpement
+*/
+$BDDDEV_type = "mysql";
+$BDDDEV_server = "localhost";
+$BDDDEV_login = "proto";
+$BDDDEV_passwd = "proto";
+$BDDDEV_database = "proto";
+
 $GACL_dbtype = "mysql|postgres7";
 $GACL_dbserver = "localhost";
 $GACL_dblogin = "proto_gacl";
