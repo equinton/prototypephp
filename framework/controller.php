@@ -121,6 +121,7 @@ while ( isset ( $module ) ) {
 			$resident = 0;
 			$motifErreur = "nologin";
 		} else {
+			$resident = 0;
 			$droits_array = explode ( ",", $t_module ["droits"] );
 			foreach ( $droits_array as $key => $value ) {
 				if ($gestionDroit->getgacl ( $value ) == 1)
