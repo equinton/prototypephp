@@ -23,8 +23,8 @@
  *
  *
  * @author Eric Quinton, Franck Huby
- * @copyright (C) Eric Quinton 2006-2013
- * @version 2.4.2.1 du 19/05/2014
+ * @copyright (C) Eric Quinton 2006-2015
+ * @version 2.4.2.2 du 30/03/2015
  * @package ObjetBDD
  *
  * Utilisation :
@@ -259,6 +259,11 @@ class ObjetBDD {
 	 */
 	public $quoteIdentifier;
 	/**
+	 * Transforme les virgules en points, pour les champs numeriques
+	 * @var integer
+	 */
+	public $transformComma;
+	/**
 	 * methodes
 	 */
 	/**
@@ -300,6 +305,7 @@ class ObjetBDD {
 		$this->connection->SetFetchMode ( ADODB_FETCH_ASSOC );
 		$this->UTF8 = false;
 		$this->srid = - 1;
+		$this->transformComma = 1;
 		/*
 		 * Preparation des tableaux intermediaires a partir du tableau $colonnes
 		 */
@@ -764,6 +770,18 @@ class ObjetBDD {
 				$mode = "modif";
 			}
 		}
+		
+		/*
+		 * Transformation des virgules en points, si demande
+		 */
+		if ($this->transformComma) {
+			foreach ( $data as $key => $value ) {
+				if (@$this->types [$key] == 1) {
+					$data[$key] = str_replace(",", ".", $value);
+				}
+			}
+		}
+		
 		if ($this->verifData) {
 			if ($this->verifDonnees ( $data, $mode ) == false)
 				return false;
