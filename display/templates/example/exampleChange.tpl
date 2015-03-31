@@ -15,18 +15,17 @@ $(document).ready(function() {
 <legend>Masque de saisie</legend>
 <div>
 
-<form method="post" action="index.php?module=exampleWrite" onSubmit='return validerForm("dateExample:la date est obligatoire,comment:le commentaire est obligatoire")'>
-<input type="hidden" name="action" value="M">
+<form method="post" action="index.php?module=exampleWrite" >
 <input type="hidden" name="idExample" value="{$data.idExample}">
 <input type="hidden" name="idParent" value="{$data.idParent}">
 
 <dl>
 <dt>Date <span class="red">*</span> :</dt>
-<dd><input class="date" id="dateExample" name="dateExample" value="{$data.dateExample}"> </dd>
+<dd><input class="date" id="dateExample" name="dateExample" required value="{$data.dateExample}"> </dd>
 </dl>
 <dl>
 <dt>Commentaire <span class="red">*</span> :</dt>
-<dd><input id="comment" name="comment" value="{$data.comment}" maxlengh="255" size="45"></dd>
+<dd><input id="comment" name="comment" value="{$data.comment}" required maxlengh="255" size="45"></dd>
 </dl>
 <div class="formBouton">
 <input class="submit" type="submit" value="Enregistrer">

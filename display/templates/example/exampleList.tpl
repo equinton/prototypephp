@@ -16,7 +16,7 @@ setDataTables("exampleListe");
 <th>Comments</th>
 <th>Origine</th>
 </tr>
-</thead><tdata>
+</thead><tbody>
 {section name=lst loop=$data}
 <tr>
 <td>
@@ -31,6 +31,6 @@ setDataTables("exampleListe");
 <td>{$data[lst].comment}</td>
 </tr>
 {/section}
-</tdata>
+</tbody>
 </table>
 {/if}
