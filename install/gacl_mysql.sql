@@ -3,14 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Ven 26 Septembre 2008 à 15:25
+-- Genere le : Ven 26 Septembre 2008 e 15:25
 -- Version du serveur: 5.0.24
 -- Version de PHP: 5.1.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Base de données: `proto`
+-- Base de donnees: `proto`
 --
 
 -- --------------------------------------------------------
