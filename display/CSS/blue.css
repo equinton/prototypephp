@@ -72,27 +72,6 @@ dl {
 	margin: 0 0 10px 0;
 	/*background: #ffffff;*/
 }
-.formSaisie .texte {
-	width: 450px;
-	margin: 0 0 10px 0;
-}
-/*
- * valeurs pour zone de select editable (deux definitions)
- */
-.formSaisie .selectEdit {
-	position: absolute;
-	width: 470px;
-	height: 30px;
-	border: 0;
-	margin: 0 0 10px 0;
-}
-.formSaisie .inputEdit {
-	position: absolute;
-	width: 450px ;
-	height: 23px;
-	margin: 0 0 10px 0;
-}
-
 .formSaisie400 {
 	border-style: solid;
 	border-width: 1px;
@@ -118,44 +97,6 @@ dl {
 	text-align: center;
 	width: 400px;
 }
-/*
- * Affichage basé sur <dl>
- */
-.formDisplay {
-	border-style: solid;
-	border-width: 1px;
-	/*background:  #98c1e9;*/
-	background-color: rgba(152, 193, 233, 0.5);
-	width: 800px;
-}
-.formDisplay dt {
-	float: left;
-	text-align: right;
-	width: 250px;
-	margin: 0 10px 10px 0;
-}
-.formDisplay dd {
-	float: left;
-	text_align: left;
-	width: 450px;
-	margin: 0 0 10px 0;
-	background-color: white;
-	word-wrap: break-word;
-	border-style: solid;
-	border-width: 1px;
-	min-height: 20px;
-	border-radius: 0.4em;
-	border-color: grey;
-}
-dd.image {
-	float: center;
-	text_align: center;
-	border-style: none;
-	/*background-color: rgba(152, 193, 233, 0.5);*/
-	width: auto;
-	margin: 0 10px 10px 0;
-	height: 30px;
-}
 
 input.date {
 	background-image: url("images/calendar-small.gif");
@@ -163,11 +104,18 @@ input.date {
 	background-position: 100% 50%;
 	width: 10em;
 }
+
+input.timepicker {
+	width: 5em;
+}
 input.num5 {
 	width: 5em;
 }
 input.num10 {
 	width: 10em;
+}
+input.num3 {
+	width: 2em;
 }
 dl select {
 	max-width: 480px;
@@ -272,6 +220,9 @@ a:hover {
 	text-align: right;
 }
 
+.commentaire {
+	width: 25em;
+}
 
 h1 {
 	font-size: large;
@@ -757,5 +708,9 @@ div.bloc {
 
 .center {
 	text-align: center;
+}
+
+.right {
+	text-align: right;
 }
 
