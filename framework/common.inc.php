@@ -205,9 +205,7 @@ if ($APPLI_modeDeveloppementDroit == true)
  * Chargement des fonctions specifiques
  */
 include_once 'modules/fonctions.php';
-if ($APPLI_modeDeveloppement == true) {
-	include_once 'framework/functionsDebug.php';
-}
+include_once 'framework/functionsDebug.php';
 /*
  * Chargement des traitements communs specifiques a l'application
  */
