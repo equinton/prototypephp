@@ -67,7 +67,7 @@ dl {
 
 .formSaisie dd {
 	float: left;
-	text_align: left;
+	text-align: left;
 	width: 450px;
 	margin: 0 0 10px 0;
 	/*background: #ffffff;*/
@@ -88,7 +88,7 @@ dl {
 
 .formSaisie400 dd {
 	float: left;
-	text_align: left;
+	text-align: left;
 	width: 250px;
 	margin: 0 0 10px 0;
 	/*background: #ffffff;*/
@@ -100,14 +100,31 @@ dl {
 
 input.date {
 	background-image: url("images/calendar-small.gif");
+	background-size: 1em;
 	background-repeat: no-repeat;
 	background-position: 100% 50%;
 	width: 10em;
 }
 
 input.timepicker {
+	background-image: url("images/clock.png");
+	background-size: 1em;
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
 	width: 5em;
 }
+input.commentaire {
+	size: 20em;
+}
+
+input.taux {
+		width: 5em;
+}
+
+input.nombre {
+		width: 5em;
+}
+
 input.num5 {
 	width: 5em;
 }

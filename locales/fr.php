@@ -84,6 +84,7 @@ $LANG["message"][30] = "Champ obligatoire";
 $LANG["message"][31] = "Confirmez-vous la suppression ?";
 $LANG["message"][32] = "Mode développement - base de données";
 $LANG["message"][33] = "Vous êtes connecté";
+$LANG["message"][34] = "Valeur numérique...";
 $LANG["message"]["yes"] = "oui";
 $LANG["message"]["no"] = "non";
 
