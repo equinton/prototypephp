@@ -118,4 +118,26 @@ function setlanguage($langue) {
 
 	setcookie ( 'langue', $langue, time() +  $APPLI_cookie_ttl);
 }
+
+/**
+ * Fonction testant si la donnee fournie est de type UTF-8 ou non
+ *
+ * @param array|string $data
+ * @return boolean
+ */
+function check_encoding($data) {
+	$result = true;
+	if (is_array ( $data ) == true) {
+		foreach ( $data as $key => $value ) {
+			if (check_encoding ( $value ) == false)
+				$result = false;
+		}
+	} else {
+		if (strlen ( $data ) > 0) {
+			if (mb_check_encoding ( $data, "UTF-8" ) == false)
+				$result = false;
+		}
+	}
+	return $result;
+}
 ?>
