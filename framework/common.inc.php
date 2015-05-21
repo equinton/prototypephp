@@ -165,7 +165,7 @@ if (! isset ( $message ))
  * Assignation des variables "standard"
  */
 $smarty->assign ( "melappli", $APPLI_mail );
-$smarty->assign ( "fds", $path_inc . $APPLI_fds );
+$smarty->assign ( "fds", $APPLI_fds );
 $smarty->assign ( "entete", $SMARTY_entete );
 $smarty->assign ( "enpied", $SMARTY_enpied );
 $smarty->assign ( "corps", $SMARTY_corps );
