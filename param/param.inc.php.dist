@@ -5,7 +5,8 @@
 */
 
 $APPLI_modeDeveloppement = true;
-$ERROR_display=1;
+//$APPLI_notSSL = true;
+$APPLI_modeDeveloppement == true ? $ERROR_display=1 : $_ERROR_display = 0;
 $ERROR_level = E_ERROR ;
 $ADODB_debugmode = 0;
 $OBJETBDD_debugmode = 1;
