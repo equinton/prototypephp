@@ -112,6 +112,15 @@ class Ldap {
 	 * @return int
 	 */
 	function login($login, $password) {
+		$login = str_replace(array('\\', '*', '(', ')'), array('\5c', '\2a', '\28', '\29'), $login);
+		for ($i = 0; $i<strlen($login); $i++) {
+			$char = substr($login, $i, 1);
+			if (ord($char)<32) {
+				$hex = dechex(ord($char));
+				if (strlen($hex) == 1) $hex = '0' . $hex;
+				$login = str_replace($char, '\\' . $hex, $login);
+			}
+		}
 		$this->dn = $this->LDAP_user_attrib."=".$login.",".$this->LDAP_basedn;
 		$rep=ldap_bind($this->idldap,$this->dn, $password);
 		if ($rep <> 1)
