@@ -1,3 +1,6 @@
+<LimitExcept GET POST>
+Deny from all
+</LimitExcept>
 RewriteEngine off
 Options -Indexes
 <IfModule php5_module>
