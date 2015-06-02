@@ -1,5 +1,11 @@
 News
 ===========
+Version 2.1
+--------------
+- Update to version 2.5 of ObjetBdd (secure features)
+- update to version 3.1.24 of Smarty
+- improvement of security : new .htaccess, cookies of session are secure better, etc.
+
 Version 2.0
 --------------
 - Integration of version 2.4.2 of ObjetBDD : function getList($order int) contains a new parameter, to sort the list by the number of the column
