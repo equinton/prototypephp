@@ -1,5 +1,8 @@
 News
 ====
+Version 2.5.1 - 03/06/2015
+	* new function : getListFromParent($parentId, $order = 0) : similar to getList($order = 0), but with a where clause to found only rows from parent_id.
+
 Version 2.5 - 02/06/2015
 	* New security controls
 	* utf8 encode now separate from htmlentities
