@@ -731,3 +731,6 @@ div.bloc {
 	text-align: right;
 }
 
+.tablenoborder {
+	border: 0px;
+}

@@ -7,6 +7,7 @@
 ;
 ; Anyone can view your database password if you do!
 ;
+; obsolete with GACL_new = true;
 debug 			= FALSE
 
 ;

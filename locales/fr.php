@@ -44,6 +44,16 @@ $LANG["menu"][43] = "Intégrer un module de recherche";
 $LANG["menu"]["phpinfo"] = "PHP info";
 $LANG["menu"]["phpinfotitle"] = "configuration générale du serveur PHP";
 
+/*
+ * Gestion des droits nouvelle formule
+ */
+$LANG["menu"]["appliliste"] = "ACL - droits";
+$LANG["menu"]["applilistetitle"] = "applications et droits gérés";
+$LANG["menu"]["aclloginliste"] = "ACL - logins";
+$LANG["menu"]["aclloginlistetitle"] = "Logins déclarés dans le module de gestion des droits";
+$LANG["menu"]["groupliste"] = "ACL - groupes de logins";
+$LANG["menu"]["grouplistetitle"] = "Groupes de logins et logins rattachés aux groupes";
+
 $LANG["menu"]["example1"] = "Example";
 $LANG["menu"]["example2"] = "It's an example !";
 $LANG["menu"]["connexionvalue"] = "Connexion";

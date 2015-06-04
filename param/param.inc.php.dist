@@ -12,13 +12,13 @@ $ADODB_debugmode = 0;
 $OBJETBDD_debugmode = 1;
 $APPLI_utf8 = true;
 
-$GACL_aco = $APPLI_code;
-$GACL_aro = "login";
 $GACL_aco = "appli";
 
 $ident_type = "BDD";
-
-$BDD_type = "mysql|postgres7";
+/*
+ * BDD_type : mysql or postgres7
+ */
+$BDD_type = "postgres7";
 $BDD_server = "localhost";
 $BDD_login = "proto";
 $BDD_passwd = "proto";
@@ -27,13 +27,16 @@ $BDD_database = "proto";
 /*
  * Base de donnees de developpement
 */
-$BDDDEV_type = "mysql";
+$BDDDEV_type = "postgres7";
 $BDDDEV_server = "localhost";
 $BDDDEV_login = "proto";
 $BDDDEV_passwd = "proto";
 $BDDDEV_database = "proto";
 
-$GACL_dbtype = "mysql|postgres7";
+/*
+ * Rights management, logins and logs records database
+ */
+$GACL_dbtype = "postgres7";
 $GACL_dbserver = "localhost";
 $GACL_dblogin = "proto_gacl";
 $GACL_dbpasswd = "proto";
