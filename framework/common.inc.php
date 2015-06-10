@@ -19,16 +19,9 @@ include_once ("param/param.inc.php");
  */
 header ( "X-Frame-Options: SAMEORIGIN" );
 
-/**
- * Gestion de la session
+/*
+ * protection de la session
  */
-$cookieParam = session_get_cookie_params ();
-$cookieParam ["lifetime"] = $APPLI_session_ttl;
-if ($APPLI_modeDeveloppement == false)
-	$cookieParam ["secure"] = true;
-$cookieParam ["httponly"] = true;
-// session_set_cookie_params ( $cookieParam ["lifetime"], $cookieParam ["path"], $cookieParam ["domain"], $cookieParam ["secure"], $cookieParam ["httponly"] );
-// ini_set('session.cookie_secure', 1);
 ini_set ( "session.use_strict_mode", true );
 ini_set ( 'session.gc_probability', 1 );
 ini_set ( 'session.gc_maxlifetime', $APPLI_session_ttl );
@@ -47,8 +40,8 @@ include_once ('plugins/smarty-3.1.24/libs/Smarty.class.php');
 /**
  * integration de la classe ObjetBDD et des scripts associes
  */
-include_once ('plugins/objetBDD-2.5.1/ObjetBDD.php');
-include_once ('plugins/objetBDD-2.5.1/ObjetBDD_functions.php');
+include_once ('plugins/objetBDD-3.0/ObjetBDD.php');
+include_once ('plugins/objetBDD-3.0/ObjetBDD_functions.php');
 if ($APPLI_utf8 == true)
 	$ObjetBDDParam ["UTF8"] = true;
 $ObjetBDDParam ["codageHtml"] = false;
@@ -71,16 +64,48 @@ ini_set ( "register_globals", false );
 ini_set ( "magic_quotes_gpc", true );
 error_reporting ( $ERROR_level );
 ini_set ( "display_errors", $ERROR_display );
+/*
+ * Appel des initialisations specifiques de l'application
+ */
 include_once "modules/beforesession.inc.php";
 /**
  * Demarrage de la session
  */
 @session_start ();
 /*
+ * Verification du cookie de session, et destruction le cas echeant
+ */
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $APPLI_session_ttl)) {
+	// last request was more than 30 minutes ago
+	session_unset();     // unset $_SESSION variable for the run-time
+	session_destroy();   // destroy session data in storage
+}
+$_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
+if (!isset($_SESSION['CREATED'])) {
+	$_SESSION['CREATED'] = time();
+} else if (time() - $_SESSION['CREATED'] > $APPLI_session_ttl) {
+	/*
+	 * La session a demarre depuis plus du temps de la session : cookie regenere
+	 */
+	session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID
+	$_SESSION['CREATED'] = time();  // update creation time
+}
+/*
  * Regeneration du cookie de session
  */
+$cookieParam = session_get_cookie_params ();
+$cookieParam ["lifetime"] = $APPLI_session_ttl;
+if ($APPLI_modeDeveloppement == false)
+	$cookieParam ["secure"] = true;
+$cookieParam ["httponly"] = true;
 setcookie ( session_name (), session_id (), time () + $APPLI_session_ttl, $cookieParam ["path"], $cookieParam ["domain"], $cookieParam ["secure"], $cookieParam ["httponly"] );
+
+/*
+ * Lancement de l'identification
+ */
+
 $identification = new Identification ();
+
 $identification->setidenttype ( $ident_type );
 if ($ident_type == "CAS") {
 	$identification->init_CAS ( $CAS_address, $CAS_port, $CAS_uri );
@@ -133,14 +158,20 @@ if (isset ( $_SESSION ["remoteIP"] )) {
  * Connexion a la base de donnees
  */
 if (! isset ( $bdd )) {
+	$etaconn = true;
 	if ($APPLI_modeDeveloppement == true) {
-		$bdd = ADONewConnection ( $BDDDEV_type );
-		$bdd->debug = $ADODB_debugmode;
-		$etaconn = $bdd->Connect ( $BDDDEV_server, $BDDDEV_login, $BDDDEV_passwd, $BDDDEV_database );
+		try {
+		$bdd = new PDO($BDDDEV_dsn, $BDDDEV_login, $BDDDEV_passwd);
+		} catch (PDOException $e) {
+			print $e->getMessage()."<br>";
+		$etaconn = false;
+		}
 	} else {
-		$bdd = ADONewConnection ( $BDD_type );
-		$bdd->debug = $ADODB_debugmode;
-		$etaconn = $bdd->Connect ( $BDD_server, $BDD_login, $BDD_passwd, $BDD_database );
+		try {
+		$bdd = new PDO($BDD_dsn, $BDD_login, $BDD_passwd);
+		} catch (PDOException $e) {
+			$etaconn = false;
+		}		
 	}
 	if ($etaconn == false) {
 		echo $LANG ["message"] [22];
@@ -148,9 +179,12 @@ if (! isset ( $bdd )) {
 		/*
 		 * Connexion a la base de gestion des droits
 		 */
-		$bdd_gacl = ADONewConnection ( $GACL_dbtype );
-		$bdd_gacl->debug = $ADODB_debugmode;
-		$etaconn = $bdd_gacl->Connect ( $GACL_dbserver, $GACL_dblogin, $GACL_dbpasswd, $GACL_database );
+		try {
+			$bdd_gacl = new PDO($GACL_dsn, $GACL_dblogin, $GACL_dbpasswd);
+		} catch (PDOException $e) {
+			print $e->getMessage()."<br>";
+			$etaconn = false;
+		}
 		if ($etaconn == false) {
 			echo ($LANG ["message"] [29]);
 		}

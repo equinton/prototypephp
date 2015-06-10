@@ -16,31 +16,26 @@ $GACL_aco = "appli";
 
 $ident_type = "BDD";
 /*
- * BDD_type : mysql or postgres7
+ * Parametres concernant la base de donnees
  */
-$BDD_type = "postgres7";
-$BDD_server = "localhost";
 $BDD_login = "proto";
 $BDD_passwd = "proto";
-$BDD_database = "proto";
+$BDD_dsn = "pgsq:host=localhost;dbname=proto";
 
 /*
  * Base de donnees de developpement
 */
-$BDDDEV_type = "postgres7";
-$BDDDEV_server = "localhost";
 $BDDDEV_login = "proto";
 $BDDDEV_passwd = "proto";
-$BDDDEV_database = "proto";
+$BDDDEV_dsn = "pgsq:host=localhost;dbname=proto";
 
 /*
  * Rights management, logins and logs records database
  */
-$GACL_dbtype = "postgres7";
-$GACL_dbserver = "localhost";
-$GACL_dblogin = "proto_gacl";
+$GACL_dblogin = "proto";
 $GACL_dbpasswd = "proto";
-$GACL_database = "proto";
+$GACL_aco = "appli";
+$GACL_dsn = "pgsql:host=localhost;dbname=proto";
 
 $APPLI_address = "http://localhost/proto";
 $APPLI_mail = "proto@domain.fr";
