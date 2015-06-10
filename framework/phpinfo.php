@@ -1,4 +1,4 @@
 <?php
-if ($gestionDroit->getDroits()["admin"] == 1)
+if ($_SESSION["droits"]["admin"] == 1)
 	phpinfo();
 ?>
