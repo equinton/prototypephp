@@ -1582,5 +1582,33 @@ class ObjetBDD {
 		}
 		return $data;
 	}
+
+	/**
+	 * Fonction permettant de recuperer la reference d'un champ binaire, pour traitement
+	 * par exemple, pour manipuler une image :
+	 * $image = new Imagick ();
+	 * $image->readimagefile($BlobRef);
+	 * ou bien, pour envoyer directement au navigateur :
+	 * header("Content-Type: image/png");
+	 * fpassthru ($BlobRef);
+	 * @param int $id
+	 * @param string $fieldName : nom du champ contenant la donnee binaire
+	 * @return reference|NULL
+	 */
+	function getBlobReference($id, $fieldName) {
+		if ($id > 0) {
+			$sql = "select ".$fieldName.
+			" from ".$this->table." 
+			where ".$this->cle. " = ?";
+			$query = $this->connection->prepare($sql);
+			$query->execute(array($id));
+			if ($query->rowCount() == 1) {
+				$query->bindColumn(1, $BlobRef, PDO::PARAM_LOB);
+				$query->fetch(PDO::FETCH_BOUND);
+				return $BlobRef;
+			}
+		}
+		return null;
+	}
 }
 ?>
