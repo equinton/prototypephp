@@ -771,7 +771,7 @@ class ObjetBDD {
 			}
 			$sql = "select * from " . $this->table . " where " . $where;
 			$rs = $this->execute ( $sql );
-			if (count($rs) == 0) {
+			if (count ( $rs ) == 0) {
 				/**
 				 * nouveau avec id passe
 				 */
@@ -1023,53 +1023,51 @@ class ObjetBDD {
 	 */
 	private function utilDatesDBVersLocale($types/*:collection*/, $dates/*:collection*/)/* :collection */
 {
-		foreach ( $types as $key => $value ) {
-			if (($value == 2 || $value == 3)) {
-				foreach ( $dates as $key1 => $value1 ) {
-					
-					if (isset ( $dates [$key1] [$key] )) {
+		foreach ( $dates as $key => $value ) {
+			if (is_array ( $value )) {
+				$dates [$key] = $this->utilDatesDBVersLocale ( $types, $value );
+			} else {
+				if (($types [$key] == 2 || $types [$key] == 3)) {
+					if (strlen ( $value ) > 0) {
 						
-						if ($dates [$key1] [$key] != "") {
-							// Suppression des espaces, tabulations et autres caracteres indesirables presents en debut et fin de chaine
-							$date = ltrim ( $dates [$key1] [$key] ); // supprime les caracteres indesirables en debut de chaine
-							$date = rtrim ( $date ); // Idem mais en fin de chaine
-							                         // suppression de la partie "time" du format "datetime"
-							$temp = @explode ( " ", $date );
-							$date = $temp [0]; // ne conserve que la partie "date"
-							$heure = $temp [1];
-							// conversion de format
-							// les "@" servent a bloquer d'eventuels messages d'erreurs
-							$temp = @explode ( $this->separateurDB, $date );
-							
-							/*
-							 * Reformatage de la date
-							 */
-							switch ($this->formatDate) {
-								case 0 :
-									$date = $temp [0] . $this->separateurLocal . $temp [1] . $this->separateurLocal . $temp [2];
-									break;
-								case 1 :
-									$date = $temp [2] . $this->separateurLocal . $temp [1] . $this->separateurLocal . $temp [0];
-									break;
-								case 2 :
-									$date = $temp [1] . $this->separateurLocal . $temp [2] . $this->separateurLocal . $temp [0];
-									break;
-							}
-							if ($value == 3) {
-								/*
-								 * Reincorporation de l'heure
-								 */
-								$date .= " " . $heure;
-							}
-							// Reintegration de la date dans la collection
-							$dates [$key1] [$key] = $date;
+						// Suppression des espaces, tabulations et autres caracteres indesirables presents en debut et fin de chaine
+						$date = ltrim ( $value ); // supprime les caracteres indesirables en debut de chaine
+						$date = rtrim ( $date ); // Idem mais en fin de chaine
+						                         // suppression de la partie "time" du format "datetime"
+						$temp = @explode ( " ", $date );
+						$date = $temp [0]; // ne conserve que la partie "date"
+						$heure = $temp [1];
+						// conversion de format
+						// les "@" servent a bloquer d'eventuels messages d'erreurs
+						$temp = @explode ( $this->separateurDB, $date );
+						
+						/*
+						 * Reformatage de la date
+						 */
+						switch ($this->formatDate) {
+							case 0 :
+								$date = $temp [0] . $this->separateurLocal . $temp [1] . $this->separateurLocal . $temp [2];
+								break;
+							case 1 :
+								$date = $temp [2] . $this->separateurLocal . $temp [1] . $this->separateurLocal . $temp [0];
+								break;
+							case 2 :
+								$date = $temp [1] . $this->separateurLocal . $temp [2] . $this->separateurLocal . $temp [0];
+								break;
 						}
+						if ($value == 3) {
+							/*
+							 * Reincorporation de l'heure
+							 */
+							$date .= " " . $heure;
+						}
+						// Reintegration de la date dans la collection
+						$dates [$key] = $date;
 					}
 				}
 			}
-			
-			next ( $types );
 		}
+		
 		return $dates;
 	}
 	/**
@@ -1225,7 +1223,7 @@ class ObjetBDD {
 	 * @return codeerreur
 	 */
 	function vidageTable() {
-		return $this->connection->exec( 'delete from ' . $this->table );
+		return $this->connection->exec ( 'delete from ' . $this->table );
 	}
 	/**
 	 * Synonyme de vidageTable()
@@ -1582,7 +1580,7 @@ class ObjetBDD {
 		}
 		return $data;
 	}
-
+	
 	/**
 	 * Fonction permettant de recuperer la reference d'un champ binaire, pour traitement
 	 * par exemple, pour manipuler une image :
@@ -1591,20 +1589,23 @@ class ObjetBDD {
 	 * ou bien, pour envoyer directement au navigateur :
 	 * header("Content-Type: image/png");
 	 * fpassthru ($BlobRef);
-	 * @param int $id
-	 * @param string $fieldName : nom du champ contenant la donnee binaire
+	 *
+	 * @param int $id        	
+	 * @param string $fieldName
+	 *        	: nom du champ contenant la donnee binaire
 	 * @return reference|NULL
 	 */
 	function getBlobReference($id, $fieldName) {
 		if ($id > 0) {
-			$sql = "select ".$fieldName.
-			" from ".$this->table." 
-			where ".$this->cle. " = ?";
-			$query = $this->connection->prepare($sql);
-			$query->execute(array($id));
-			if ($query->rowCount() == 1) {
-				$query->bindColumn(1, $BlobRef, PDO::PARAM_LOB);
-				$query->fetch(PDO::FETCH_BOUND);
+			$sql = "select " . $fieldName . " from " . $this->table . " 
+			where " . $this->cle . " = ?";
+			$query = $this->connection->prepare ( $sql );
+			$query->execute ( array (
+					$id 
+			) );
+			if ($query->rowCount () == 1) {
+				$query->bindColumn ( 1, $BlobRef, PDO::PARAM_LOB );
+				$query->fetch ( PDO::FETCH_BOUND );
 				return $BlobRef;
 			}
 		}
