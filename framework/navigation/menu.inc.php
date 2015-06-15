@@ -15,9 +15,13 @@ foreach ( $menuarray as $key => $value ) {
 	 */
 	if ($value ["menuloginrequis"] == 1 && ! isset ( $_SESSION ["login"] ))
 		$ok = false;
-	if (strlen ( $value ["menudroits"] ) > 1) {
-		if ($_SESSION ["droits"] [$value ["menudroits"]] != 1)
-			$ok = false;
+	if (strlen ( $value ["menudroits"] ) > 1 && $ok == true) {
+		$droits_array = explode ( ",", $value["menudroits"] );
+		$ok = false;
+		foreach ( $droits_array as $dk => $dv ) {
+			if ($_SESSION ["droits"] [$dv] == 1)
+				$ok = true;
+		}
 	}
 	if ($value ["onlynoconnect"] == 1 && strlen ( $_SESSION ["login"] ) > 0)
 		$ok = false;
@@ -39,9 +43,13 @@ foreach ( $menuarray as $key => $value ) {
 				 */
 				if ($value1 ["menuloginrequis"] == 1 && ! isset ( $_SESSION ["login"] ))
 					$ok1 = false;
-				if (strlen ( $value1 ["menudroits"] ) > 1) {
-					if ($_SESSION ["droits"] [$value1 ["menudroits"]] != 1)
-						$ok = false;
+				if (strlen ( $value1 ["menudroits"] ) > 1&& $ok1 == true) {
+					$droits_array = explode ( ",", $value1["menudroits"] );
+					$ok1 = false;
+					foreach ( $droits_array as $dk => $dv ) {
+						if ($_SESSION ["droits"] [$dv] == 1)
+							$ok1 = true;
+					}
 				}
 				if ($ok1) {
 					/*

@@ -1411,6 +1411,8 @@ class ObjetBDD {
 			return false;
 		if (is_numeric ( $id ) == false)
 			return false;
+		if(!is_array($lignes))
+			$lignes=array();
 			// Preparation de la requete de lecture des relations existantes
 		if (strlen ( preg_replace ( "#[^A-Z]+#", "", $nomCle1 ) > 0 ))
 			$cle1 = $this->quoteIdentifier . $nomCle1 . $this->quoteIdentifier;
