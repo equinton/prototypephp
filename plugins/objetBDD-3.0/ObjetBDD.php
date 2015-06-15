@@ -1025,44 +1025,17 @@ class ObjetBDD {
 {
 		foreach ( $dates as $key => $value ) {
 			if (is_array ( $value )) {
+				/*
+				 * Traitement recursif
+				 */
 				$dates [$key] = $this->utilDatesDBVersLocale ( $types, $value );
 			} else {
 				if (($types [$key] == 2 || $types [$key] == 3)) {
 					if (strlen ( $value ) > 0) {
-						
-						// Suppression des espaces, tabulations et autres caracteres indesirables presents en debut et fin de chaine
-						$date = ltrim ( $value ); // supprime les caracteres indesirables en debut de chaine
-						$date = rtrim ( $date ); // Idem mais en fin de chaine
-						                         // suppression de la partie "time" du format "datetime"
-						$temp = @explode ( " ", $date );
-						$date = $temp [0]; // ne conserve que la partie "date"
-						$heure = $temp [1];
-						// conversion de format
-						// les "@" servent a bloquer d'eventuels messages d'erreurs
-						$temp = @explode ( $this->separateurDB, $date );
-						
 						/*
-						 * Reformatage de la date
+						 * Formatage de la date
 						 */
-						switch ($this->formatDate) {
-							case 0 :
-								$date = $temp [0] . $this->separateurLocal . $temp [1] . $this->separateurLocal . $temp [2];
-								break;
-							case 1 :
-								$date = $temp [2] . $this->separateurLocal . $temp [1] . $this->separateurLocal . $temp [0];
-								break;
-							case 2 :
-								$date = $temp [1] . $this->separateurLocal . $temp [2] . $this->separateurLocal . $temp [0];
-								break;
-						}
-						if ($value == 3) {
-							/*
-							 * Reincorporation de l'heure
-							 */
-							$date .= " " . $heure;
-						}
-						// Reintegration de la date dans la collection
-						$dates [$key] = $date;
+						$dates [$key] = $this->formatDateDBversLocal($value, $types[$key]);
 					}
 				}
 			}
