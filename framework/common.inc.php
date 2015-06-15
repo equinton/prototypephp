@@ -25,12 +25,7 @@ header ( "X-Frame-Options: SAMEORIGIN" );
 ini_set ( "session.use_strict_mode", true );
 ini_set ( 'session.gc_probability', 1 );
 ini_set ( 'session.gc_maxlifetime', $APPLI_session_ttl );
-/**
- * Integration de la bibliotheque ADODB
- */
-// include_once('plugins/adodb5/adodb-errorhandler.inc.php');
-// include_once('plugins/adodb5/adodb-exceptions.inc.php');
-include_once ('plugins/adodb5.18a/adodb.inc.php');
+
 
 /**
  * Integration de SMARTY

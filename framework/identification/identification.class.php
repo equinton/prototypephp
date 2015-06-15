@@ -282,7 +282,7 @@ class LoginGestion extends ObjetBDD {
 		if (strlen ( $login ) > 0 && strlen ( $password ) > 0) {
 			$login = $this->encodeData ( $login );
 			// $password = md5($password);
-			$password = hash ( "sha256", $password );
+			$password = hash ( "sha256", $password.$login );
 			$sql = "select login from LoginGestion where login ='" . $login . "' and password = '" . $password . "' and actif = 1";
 			$res = ObjetBDD::lireParam ( $sql );
 			global $log, $LOG_duree, $message, $LANG;
@@ -319,7 +319,7 @@ class LoginGestion extends ObjetBDD {
 	 */
 	function ecrire($liste) {
 		if (isset ( $liste ["pass1"] ) && isset ( $liste ["pass2"] ) && $liste ["pass1"] == $liste ["pass2"] && strlen ( $liste ["pass1"] ) > 3) {
-			$liste ["password"] = hash ( "sha256", $liste ["pass1"] );
+			$liste ["password"] = hash ( "sha256", $liste ["pass1"].$liste["login"] );
 		}
 		$liste ["datemodif"] = date ( 'd-m-y' );
 		return parent::ecrire ( $liste );
@@ -338,7 +338,7 @@ class LoginGestion extends ObjetBDD {
 			global $LANG;
 			$oldData = $this->lireByLogin ( $_SESSION ["login"] );
 			if ($oldData ["id"] > 0) {
-				$oldpassword_hash = hash ( "sha256", $oldpassword );
+				$oldpassword_hash = hash ( "sha256", $oldpassword.$_SESSION["login"] );
 				if ($oldpassword_hash == $oldData ["password"]) {
 					
 					$data = $oldData;
@@ -357,7 +357,7 @@ class LoginGestion extends ObjetBDD {
 								/*
 								 * calcul du sha256 du mot de passe
 								 */
-								$password_hash = hash ( "sha256", $pass1 );
+								$password_hash = hash ( "sha256", $pass1.$_SESSION["login"] );
 								/*
 								 * Verification que le mot de passe n'a pas deja ete employe
 								 */
