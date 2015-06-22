@@ -237,7 +237,7 @@ if ($t_module ["ajax"] != 1) {
 	 * Alerte Mode developpement
 	 */
 	if ($APPLI_modeDeveloppement == true) {
-		$texteDeveloppement = $LANG ["message"] [32] . " : " . $BDDDEV_server . '/' . $BDDDEV_database;
+		$texteDeveloppement = $LANG ["message"] [32] . " : " . $BDDDEV_dsn;
 		$smarty->assign ( "developpementMode", $texteDeveloppement );
 	}
 	$smarty->assign ( "moduleListe", $_SESSION ["moduleListe"] );
