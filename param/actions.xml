@@ -51,19 +51,19 @@
 	<exampleWrite action="modules/example/example.php" param="write" droits="gestion" retourok="exampleList" retourko="exampleChange" modulebefore="exampleChange" />
 	<exampleDelete action="modules/example/example.php" param="delete" droits="admin" retoursuppr="exampleList" retourko="exampleChange" />
 
-<!-- Gestion des droits nouvelle formule -->
-	<appliList action="framework/droits/appli.php" param="list" droits="admin" retourlogin="1" menulevel="1" menuparent="7" menuorder="12" menudroits="admin" menuvalue="appliliste" menutitle="applilistetitle"  />
+<!-- gestion des droits nouvelle formule -->
+	<appliList action="framework/droits/appli.php" param="list" droits="admin" retourlogin="1"  />
 	<appliDisplay action="framework/droits/appli.php" param="display" droits="admin" />
 	<appliChange action="framework/droits/appli.php" param="change" droits="admin" />
 	<appliWrite action="framework/droits/appli.php" param="write" droits="admin" retourok="appliDisplay" retourko="appliChange" modulebefore="appliChange" />
 	<appliDelete action="framework/droits/appli.php" param="delete" droits="admin" retoursuppr="appliList" retourko="appliChange"  modulebefore="appliChange"/>
 
-	<aclloginList action="framework/droits/login.php" param="list" droits="admin" retourlogin="1" menulevel="1" menuparent="7" menuorder="10" menudroits="admin" menuvalue="aclloginliste" menutitle="aclloginlistetitle"  />
+	<aclloginList action="framework/droits/login.php" param="list" droits="admin" retourlogin="1" />
 	<aclloginChange action="framework/droits/login.php" param="change" droits="admin" />
 	<aclloginWrite action="framework/droits/login.php" param="write" droits="admin" retourok="aclloginList" retourko="aclloginChange" modulebefore="aclloginChange" />
 	<aclloginDelete action="framework/droits/login.php" param="delete" droits="admin" retoursuppr="aclloginList" retourko="aclloginChange"  modulebefore="aclloginChange"/>
 
-	<groupList action="framework/droits/group.php" param="list" droits="admin" retourlogin="1" menulevel="1" menuparent="7" menuorder="11" menudroits="admin" menuvalue="groupliste" menutitle="grouplistetitle"  />
+	<groupList action="framework/droits/group.php" param="list" droits="admin" retourlogin="1"  />
 	<groupChange action="framework/droits/group.php" param="change" droits="admin" />
 	<groupWrite action="framework/droits/group.php" param="write" droits="admin" retourok="groupList" retourko="groupChange" modulebefore="groupChange" />
 	<groupDelete action="framework/droits/group.php" param="delete" droits="admin" retoursuppr="groupList" retourko="groupChange"  modulebefore="groupChange"/>
