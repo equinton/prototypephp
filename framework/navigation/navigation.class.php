@@ -36,30 +36,7 @@ class Navigation {
 	 * @return array
 	 */
 	function getModule($module) {
-		// $this->lireModule($module);
 		return $this->g_module[$module];
-	}
-	/**
-	 * deprecared
-	 * Fonction lisant les attributs du module, et les restituant
-	 * dans le tableau t_module
-	 * Operation effectuee que si le module n'a pas encore ete charge
-	 *
-	 * @param string $nommodule
-	 */
-	function lireModule($nommodule) {
-		if ($this->nommodule<>$nommodule) {
-			$this->module = $this->dom->getElementsByTagName($nommodule);
-			$this->t_module = array();
-			foreach ($this->module as $noeud){
-				if ($noeud->hasAttributes()) {
-					foreach ($noeud->attributes as $attname=>$noeud_attribute) {
-						$this->t_module[$attname] = $noeud->getAttribute($attname);
-					}
-				}
-			}
-			$this->nommodule = $nommodule;
-		}
 	}
 	/**
 	 * Fonction retournant la valeur d'un attribut pour le module considere
@@ -96,46 +73,6 @@ class Navigation {
 			}
 		}
 		return $g_module;
-	}
-/**
- * Fonction preparant un tableau multi-niveaux, contenant tous les items 
- * necessaires pour generer un menu a partir du fichier xml.
- * Gere 2 niveaux de menu
- * Le tableau recupere doit ensuite etre trie (via ksort), et les droits
- * verifies (menuloginrequis et menudroits)
- *
- * @return array
- */
-	function genererMenu() {
-		$gmenu = array();
-		foreach ($this->g_module as $key => $value ) {
-			if (isset($value["menulevel"])) {
-				/* 
-				 * Recuperation des informations sur le menu
-				 */
-				$menu = array();
-				$menu["menuvalue"] = $value["menuvalue"];
-				$menu["module"] = $key;
-				if (isset($value["menudroits"]))
-				$menu["menudroits"] = $value["menudroits"];
-				if (isset($value["menuloginrequis"]))
-				$menu["menuloginrequis"] = $value["menuloginrequis"];
-				$menu["menutitle"] = $value["menutitle"];
-				if (isset ($value["onlynoconnect"]))
-				$menu["onlynoconnect"] =$value["onlynoconnect"];
-				/* 
-				 * Recherche si on est en menu principal ou secondaire
-				 */
-				if ($value["menulevel"]==0) {
-					foreach ($menu as $key1 => $value1) {
-						$gmenu[$value["menuorder"]][$key1]=$value1;
-					}
-				} else {
-					$gmenu[$value["menuparent"]][$value["menuorder"]]=$menu;
-				}
-			}
-		}
-		return $gmenu;
 	}
 }
 

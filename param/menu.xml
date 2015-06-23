@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+<item module="gestion" title="1" value="0">
+	<item module="gestion" title="1" value="0"/>
+	<item module="exampleList" value="example1" title="example2"  />	
+</item>
+<item module="administration" value="4" title="5">
+	<item module="groupeList" value="groupevalue" title="groupetitle" droits="admin"/>
+	<item module="loginliste" menulevel="1" menuorder="9" droits="admin" title="3" value="2"/>
+	<item module="appliList" droits="admin" value="appliliste" title="applilistetitle"/>
+	<item module="aclloginList" droits="admin" value="aclloginliste" title="aclloginlistetitle"/>
+	<item module="groupList" droits="admin" value="groupliste" title="grouplistetitle"/>
+	<item module="phpinfo" droits="admin" value="phpinfo" title="phpinfotitle"/>
+</item>
+<item module="connexion" title="connexiontitle" value="connexionvalue" onlynoconnect="1"/>
+<item module="disconnect" title="7" value="6" loginrequis="1"/>
+<item module="docindex" title="21" value="20">
+	<item module="apropos" title="9" value="8"/>
+	<item module="quoideneuf" title="41" value="40"/>
+</item>
+</menu>

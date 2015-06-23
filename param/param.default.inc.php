@@ -87,6 +87,7 @@ $APPLI_address = "http://localhost/proto";
 $APPLI_modeDeveloppement = false;
 $APPLI_modeDeveloppementDroit = false;
 $APPLI_utf8 = true;
+$APPLI_menufile = "param/menu.xml";
 
 /*
  * Variables liees a GACL et l'identification via base de donnees

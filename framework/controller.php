@@ -218,16 +218,15 @@ if ($t_module ["ajax"] != 1) {
 	if ($message == "")
 		$message = $LANG ["message"] [0];
 	$smarty->assign ( "message", $message );
-	// $smarty->assign ( "message", htmlspecialchars($message) );
 	/*
-	 * Gestion du menu Rajout du 17/8/09 : mise en cache du menu
+	 * Affichage du menu
 	 */
-	if (! isset ( $_SESSION ["menu"] )) {
-		include ("framework/navigation/menu.inc.php");
-	} else {
-		$menu = $_SESSION ["menu"];
+	if (!isset($_SESSION["menu"])) {
+		if (!isset ($menu))
+		$menu = new Menu($APPLI_menufile, $LANG);
+		$_SESSION["menu"] = $menu->generateMenu();
 	}
-	$smarty->assign ( "menu", $menu );
+	$smarty->assign ( "menu", $_SESSION["menu"] );
 	if (isset ( $_SESSION ["login"] ))
 		$smarty->assign ( "isConnected", 1 );
 		/*

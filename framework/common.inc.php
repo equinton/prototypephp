@@ -26,7 +26,6 @@ ini_set ( "session.use_strict_mode", true );
 ini_set ( 'session.gc_probability', 1 );
 ini_set ( 'session.gc_maxlifetime', $APPLI_session_ttl );
 
-
 /**
  * Integration de SMARTY
  */
@@ -70,20 +69,20 @@ include_once "modules/beforesession.inc.php";
 /*
  * Verification du cookie de session, et destruction le cas echeant
  */
-if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $APPLI_session_ttl)) {
+if (isset ( $_SESSION ['LAST_ACTIVITY'] ) && (time () - $_SESSION ['LAST_ACTIVITY'] > $APPLI_session_ttl)) {
 	// last request was more than 30 minutes ago
-	session_unset();     // unset $_SESSION variable for the run-time
-	session_destroy();   // destroy session data in storage
+	session_unset (); // unset $_SESSION variable for the run-time
+	session_destroy (); // destroy session data in storage
 }
-$_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
-if (!isset($_SESSION['CREATED'])) {
-	$_SESSION['CREATED'] = time();
-} else if (time() - $_SESSION['CREATED'] > $APPLI_session_ttl) {
+$_SESSION ['LAST_ACTIVITY'] = time (); // update last activity time stamp
+if (! isset ( $_SESSION ['CREATED'] )) {
+	$_SESSION ['CREATED'] = time ();
+} else if (time () - $_SESSION ['CREATED'] > $APPLI_session_ttl) {
 	/*
 	 * La session a demarre depuis plus du temps de la session : cookie regenere
 	 */
-	session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID
-	$_SESSION['CREATED'] = time();  // update creation time
+	session_regenerate_id ( true ); // change session ID for the current session and invalidate old session ID
+	$_SESSION ['CREATED'] = time (); // update creation time
 }
 /*
  * Regeneration du cookie de session
@@ -156,17 +155,17 @@ if (! isset ( $bdd )) {
 	$etaconn = true;
 	if ($APPLI_modeDeveloppement == true) {
 		try {
-		$bdd = new PDO($BDDDEV_dsn, $BDDDEV_login, $BDDDEV_passwd);
-		} catch (PDOException $e) {
-			print $e->getMessage()."<br>";
-		$etaconn = false;
+			$bdd = new PDO ( $BDDDEV_dsn, $BDDDEV_login, $BDDDEV_passwd );
+		} catch ( PDOException $e ) {
+			print $e->getMessage () . "<br>";
+			$etaconn = false;
 		}
 	} else {
 		try {
-		$bdd = new PDO($BDD_dsn, $BDD_login, $BDD_passwd);
-		} catch (PDOException $e) {
+			$bdd = new PDO ( $BDD_dsn, $BDD_login, $BDD_passwd );
+		} catch ( PDOException $e ) {
 			$etaconn = false;
-		}		
+		}
 	}
 	if ($etaconn == false) {
 		echo $LANG ["message"] [22];
@@ -175,9 +174,9 @@ if (! isset ( $bdd )) {
 		 * Connexion a la base de gestion des droits
 		 */
 		try {
-			$bdd_gacl = new PDO($GACL_dsn, $GACL_dblogin, $GACL_dbpasswd);
-		} catch (PDOException $e) {
-			print $e->getMessage()."<br>";
+			$bdd_gacl = new PDO ( $GACL_dsn, $GACL_dblogin, $GACL_dbpasswd );
+		} catch ( PDOException $e ) {
+			print $e->getMessage () . "<br>";
 			$etaconn = false;
 		}
 		if ($etaconn == false) {
@@ -218,7 +217,6 @@ if (isset ( $_SESSION ["navigation"] ) && $APPLI_modeDeveloppement == false) {
 	$navigation = $_SESSION ['navigation'];
 } else {
 	$navigation = new Navigation ( $navigationxml );
-	unset ( $_SESSION ["menu"] );
 	$_SESSION ['navigation'] = $navigation;
 }
 /*
@@ -228,7 +226,7 @@ $log = new Log ( $bdd_gacl, $ObjetBDDParam );
 /*
  * Preparation de la gestion des droits
  */
-if (isset ( $_SESSION ["droits"] ) && $APPLI_modeDeveloppement == false) {
+if (isset ( $_SESSION ["droits"] ) /*&& $APPLI_modeDeveloppement == false*/) {
 	$smarty->assign ( "droits", $_SESSION ["droits"] );
 } else {
 	include "framework/identification/setDroits.php";
@@ -240,6 +238,14 @@ if (isset ( $_SESSION ["droits"] ) && $APPLI_modeDeveloppement == false) {
 include_once 'modules/fonctions.php';
 
 include_once 'framework/functionsDebug.php';
+/*
+ * Preparation du menu
+ */
+if (! isset ( $_SESSION ["menu"] ) || $APPLI_modeDeveloppement == true) {
+	include_once 'framework/navigation/menu.class.php';
+	$menu = new Menu ( $APPLI_menufile, $LANG );
+	$_SESSION ["menu"] = $menu->generateMenu ();
+}
 /*
  * Chargement des traitements communs specifiques a l'application
  */
