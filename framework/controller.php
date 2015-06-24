@@ -222,6 +222,7 @@ if ($t_module ["ajax"] != 1) {
 	 * Affichage du menu
 	 */
 	if (!isset($_SESSION["menu"])) {
+		include_once 'framework/navigation/menu.class.php';
 		if (!isset ($menu))
 		$menu = new Menu($APPLI_menufile, $LANG);
 		$_SESSION["menu"] = $menu->generateMenu();

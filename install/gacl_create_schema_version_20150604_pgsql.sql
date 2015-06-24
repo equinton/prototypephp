@@ -71,10 +71,6 @@ CREATE TABLE acllogingroup (
 COMMENT ON TABLE acllogingroup IS 'Table des relations entre les logins et les groupes';
 
 
-ALTER TABLE ONLY gaclacl ALTER COLUMN note TYPE TEXT, ALTER COLUMN note DROP NOT NULL;
-
-ALTER TABLE ONLY gaclacl ALTER COLUMN return_value TYPE TEXT, ALTER COLUMN return_value DROP NOT NULL;
-
 ALTER TABLE aclacl ADD CONSTRAINT aclaco_aclacl_fk
 FOREIGN KEY (aclaco_id)
 REFERENCES aclaco (aclaco_id)
