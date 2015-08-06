@@ -98,6 +98,45 @@ dl {
 	width: 400px;
 }
 
+/*
+ * Affichage basé sur <dl>
+ */
+.formDisplay {
+	border-style: solid;
+	border-width: 1px;
+	/*background:  #98c1e9;*/
+	background-color: rgba(152, 193, 233, 0.5);
+	width: 800px;
+}
+.formDisplay dt {
+	float: left;
+	text-align: right;
+	width: 250px;
+	margin: 0 10px 10px 0;
+}
+.formDisplay dd {
+	float: left;
+	text_align: left;
+	width: 450px;
+	margin: 0 0 10px 0;
+	background-color: white;
+	word-wrap: break-word;
+	border-style: solid;
+	border-width: 1px;
+	min-height: 20px;
+	border-radius: 0.4em;
+	border-color: grey;
+}
+dd.image {
+	float: center;
+	text_align: center;
+	border-style: none;
+	/*background-color: rgba(152, 193, 233, 0.5);*/
+	width: auto;
+	margin: 0 10px 10px 0;
+	height: 30px;
+}
+
 input.date {
 	background-image: url("images/calendar-small.gif");
 	background-size: 1em;
@@ -431,6 +470,13 @@ label {
 .tableaffichage td {
 	vertical-align: top;
 }
+.noborder{
+	border: 0px;
+	background: #ffffff;
+}
+.noborder tr:hover{
+	background: #ffffff;
+}
 .tableliste{
 	margin-left: 0px;
 	margin-right: auto;
@@ -472,6 +518,10 @@ label {
 	font-style: italic;
 }
 
+div.corps {
+	z-index: 1;
+}
+
 /* Menu block */
 div.menu {
 	border: #999999 1px solid;
@@ -480,6 +530,7 @@ div.menu {
 	padding: 0.5em;
 	margin-left: 0px;
 	margin-right: auto;
+	z-index: 999;
 }
 
 div.menu h2 {

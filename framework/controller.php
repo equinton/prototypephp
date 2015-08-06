@@ -237,10 +237,14 @@ if ($t_module ["ajax"] != 1) {
 	 * Alerte Mode developpement
 	 */
 	if ($APPLI_modeDeveloppement == true) {
-		$texteDeveloppement = $LANG ["message"] [32] . " : " . $BDDDEV_dsn;
+		$texteDeveloppement = $LANG ["message"] [32] . " : " . $BDDDEV_dsn.' - schema : '.$BDDDEV_schema;
 		$smarty->assign ( "developpementMode", $texteDeveloppement );
 	}
 	$smarty->assign ( "moduleListe", $_SESSION ["moduleListe"] );
+	/*
+	 * execution du code generique avant affichage
+	 */
+	include 'modules/beforeDisplay.php';
 	/*
 	 * Encodage ultime des donnees avant envoi vers le navigateur
 	 */

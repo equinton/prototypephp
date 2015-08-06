@@ -310,9 +310,9 @@ class ObjetBDD {
 		$this->fullDescription = 0;
 		// $this->typeDatabase = substr ( strtolower ( $this->connection->databaseType ), 0, 7 );
 		// $this->connection->SetFetchMode ( ADODB_FETCH_ASSOC );
-		$this->typeDatabase = $this->connection->getAttribute ( PDO::ATTR_DRIVER_NAME );
+		$this->typeDatabase = $this->connection->getAttribute ( $p_connection::ATTR_DRIVER_NAME );
 		
-		$this->connection->setAttribute ( PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC );
+		$this->connection->setAttribute ( $p_connection::ATTR_DEFAULT_FETCH_MODE, $p_connection::FETCH_ASSOC );
 		$this->UTF8 = false;
 		$this->srid = - 1;
 		$this->transformComma = 1;
@@ -563,7 +563,7 @@ class ObjetBDD {
 		$collection = $this->execute ( $sql );
 		$collection = $collection [0];
 		if ($this->auto_date == 1) {
-			$dates = $this->utilDatesDBVersLocale ( $this->types, $collection );
+			$collection = $this->utilDatesDBVersLocale ( $this->types, $collection );
 		}
 		if ($this->codageHtml == true)
 			$collection = $this->htmlEncode ( $collection );
