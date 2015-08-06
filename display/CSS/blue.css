@@ -127,6 +127,33 @@ dl {
 	border-radius: 0.4em;
 	border-color: grey;
 }
+.formDisplayNarrow {
+	border-style: solid;
+	border-width: 1px;
+	/*background:  #98c1e9;*/
+	background-color: rgba(152, 193, 233, 0.5);
+	width: 430px;
+}
+.formDisplayNarrow dt {
+	float: left;
+	text-align: right;
+	width: 150px;
+	margin: 0 10px 10px 0;
+}
+.formDisplayNarrow dd {
+	float: left;
+	text_align: left;
+	width: 250px;
+	margin: 0 0 10px 0;
+	background-color: white;
+	word-wrap: break-word;
+	border-style: solid;
+	border-width: 1px;
+	min-height: 20px;
+	border-radius: 0.4em;
+	border-color: grey;
+}
+
 dd.image {
 	float: center;
 	text_align: center;
