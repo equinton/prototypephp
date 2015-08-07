@@ -73,11 +73,11 @@ class ObjetBDD {
 	 * @public $keys : tableau des cles, si cles multiples
 	 */
 	public $keys;
-	public $cleMultiple;
+	public $cleMultiple = 0;
 	/**
 	 * @public $id_auto : booleen definissant le type d'id de la table (0=non auto, 1=auto, auto gere par valeur max())
 	 */
-	public $id_auto;
+	public $id_auto = 1;
 	/**
 	 * @public $types
 	 * Collection "Types" Stocke la structure des champs de la table (0 pour
@@ -99,15 +99,12 @@ class ObjetBDD {
 	 * 1 : gestion de la date "classique"
 	 * (0|1)
 	 */
-	public $auto_date;
-	/**
-	 * publiciables de conversion des dates
-	 */
+	public $auto_date = 1;
 	/**
 	 * @public $separateurDB
 	 * char separateur du SGBD
 	 */
-	public $separateurDB; // char separateur du serveur de donnees
+	public $separateurDB = "-"; // char separateur du serveur de donnees
 	/**
 	 * @public $sepValide
 	 * array of char
@@ -119,7 +116,7 @@ class ObjetBDD {
 	 * char
 	 * Separateur local par defaut
 	 */
-	public $separateurLocal;
+	public $separateurLocal = "/";
 	/**
 	 * @public $formatDate
 	 * int Format de date en affichage
@@ -127,7 +124,7 @@ class ObjetBDD {
 	 * 1 : jma
 	 * 2 : mja
 	 */
-	public $formatDate;
+	public $formatDate = 1;
 	/**
 	 * @public $dateMini
 	 * int annee minimale sur 2 chiffres
@@ -136,20 +133,20 @@ class ObjetBDD {
 	 * les annees sur 2 chiffres seront traduites entre
 	 * 1929 et 2030.
 	 */
-	public $dateMini;
+	public $dateMini = 49;
 	/**
 	 * @public $debug_mode;
 	 * 0 : pas de mode debug
 	 * 1 : mode debug sur les erreurs
 	 * 2 : mode debug permanent
 	 */
-	public $debug_mode;
+	public $debug_mode = 1;
 	/**
 	 * @public $verifData
 	 * 0 : pas de vérification des donnees avant les operations d'ecriture
 	 * 1 : activation de la verification des donnees (par defaut)
 	 */
-	public $verifData;
+	public $verifData = 1;
 	/**
 	 * @public $errorData ;
 	 * Contient la liste des erreurs lors de la verification des donnees
@@ -169,7 +166,7 @@ class ObjetBDD {
 	 * passees par les instructions htmlspecialchars et htmlspecialchars_decode
 	 * Par defaut, a true
 	 */
-	public $codageHtml;
+	public $codageHtml = true;
 	/**
 	 * @public $pattern ;
 	 * Tableau contenant le pattern a verifier pour chaque champ
@@ -205,7 +202,7 @@ class ObjetBDD {
 	 *
 	 * @var int
 	 */
-	public $fullDescription;
+	public $fullDescription = 1;
 	/**
 	 *
 	 * @var array Tableau contenant les parametres passes lors de la construction de la classe
@@ -231,7 +228,7 @@ class ObjetBDD {
 	 *
 	 * @var boolean
 	 */
-	public $UTF8;
+	public $UTF8 = false;
 	/**
 	 * Indique s'il faut ou non transformer les valeurs en UTF8
 	 * (application codée en UTF8, base de données en autre codage)
@@ -259,19 +256,19 @@ class ObjetBDD {
 	 *
 	 * @var integer
 	 */
-	public $srid;
+	public $srid = -1;
 	/**
 	 * Caractere utilise pour entourer les noms des colonnes
 	 *
 	 * @var string
 	 */
-	public $quoteIdentifier;
+	public $quoteIdentifier = '"';
 	/**
 	 * Transforme les virgules en points, pour les champs numeriques
 	 *
 	 * @var integer
 	 */
-	public $transformComma;
+	public $transformComma = 1;
 	
 	/**
 	 * ObjetBDD
@@ -291,31 +288,31 @@ class ObjetBDD {
 		/**
 		 * valeurs par defaut / Defaults values *
 		 */
-		$this->auto_date = 1; // verification automatique des dates par defaut
-		$this->separateurDB = "-";
-		$this->formatDate = 1;
+		//$this->auto_date = 1; // verification automatique des dates par defaut
+		//$this->separateurDB = "-";
+		//$this->formatDate = 1;
 		$this->sepValide = array (
 				"/",
 				"-",
 				".",
 				" " 
 		);
-		$this->separateurLocal = "/";
-		$this->dateMini = 49;
-		$this->id_auto = 1;
-		$this->verifData = 1;
-		$this->debug_mode = 1;
-		$this->codageHtml = true;
-		$this->cleMultiple = 0;
-		$this->fullDescription = 0;
+		//$this->separateurLocal = "/";
+		//$this->dateMini = 49;
+		//$this->id_auto = 1;
+		//$this->verifData = 1;
+		//$this->debug_mode = 1;
+		//$this->codageHtml = true;
+		//$this->cleMultiple = 0;
+		//$this->fullDescription = 0;
 		// $this->typeDatabase = substr ( strtolower ( $this->connection->databaseType ), 0, 7 );
 		// $this->connection->SetFetchMode ( ADODB_FETCH_ASSOC );
 		$this->typeDatabase = $this->connection->getAttribute ( $p_connection::ATTR_DRIVER_NAME );
 		
 		$this->connection->setAttribute ( $p_connection::ATTR_DEFAULT_FETCH_MODE, $p_connection::FETCH_ASSOC );
-		$this->UTF8 = false;
-		$this->srid = - 1;
-		$this->transformComma = 1;
+		//$this->UTF8 = false;
+		//$this->srid = - 1;
+		//$this->transformComma = 1;
 		/*
 		 * Preparation des tableaux intermediaires a partir du tableau $colonnes
 		 */
@@ -807,7 +804,10 @@ class ObjetBDD {
 			$sql = "insert into " . $this->table . "(";
 			$i = 0;
 			$valeur = ") values (";
+			//echo $this->id_auto."<br>";
 			foreach ( $data as $key => $value ) {
+				//echo $key." ".$value."<br>";
+				
 				// Traitement de la cle automatique. Uniquement sur cle unique !
 				if ($this->id_auto == 1 && $key == $this->cle) {
 					// on utilise la cle automatique, et le champ courant est la cle... On ne fait rien !

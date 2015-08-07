@@ -810,6 +810,10 @@ div.bloc {
 	text-align: right;
 }
 
+.textareaDisplay {
+	white-space:pre-wrap;
+}
+
 .tableCell {
 	display: table-cell;
 }
