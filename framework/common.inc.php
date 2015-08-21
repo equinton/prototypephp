@@ -167,9 +167,14 @@ if (! isset ( $bdd )) {
 			$etaconn = false;
 		}
 	}
-	if ($etaconn == false) {
-		echo $LANG ["message"] [22];
-	} else {
+	if ($etaconn == true) {
+		/*
+		 * Mise en place du schema par defaut
+		 */
+		$APPLI_modeDeveloppement == true ? $schema = $BDDDEV_schema : $schema = $BDD_schema;
+		if (strlen ( $schema ) > 0) {
+			$bdd->exec ( "set search_path = " . $schema );
+		}
 		/*
 		 * Connexion a la base de gestion des droits
 		 */
@@ -179,10 +184,17 @@ if (! isset ( $bdd )) {
 			print $e->getMessage () . "<br>";
 			$etaconn = false;
 		}
-		if ($etaconn == false) {
+		if ($etaconn == true) {
+			/*
+			 * Mise en place du schema par defaut
+			 */
+			if (strlen ( $GACL_schema ) > 0)
+				$bdd_gacl->exec ( "set search_path = " . $GACL_schema );
+		} else {
 			echo ($LANG ["message"] [29]);
 		}
-	}
+	} else
+		echo $LANG ["message"] [22];
 }
 /*
  * Activation de SMARTY

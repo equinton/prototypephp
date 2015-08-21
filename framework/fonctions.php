@@ -68,7 +68,18 @@ function dataWrite($dataClass, $data) {
  */
 function dataDelete($dataClass, $id) {
 	global $message, $LANG, $module_coderetour, $log;
-	if (is_numeric ( $id ) && $id > 0) {
+	$module_coderetour = - 1;
+	$ok = true;
+	if (is_array($id)) {
+		foreach ($id as $key=>$value) {
+			if (! (is_numeric($value)&&$value > 0))
+				$ok = true;
+		}
+	} else {
+		if (is_numeric ( $id ) && $id > 0)
+			$ok = true;
+	}
+	if ($ok == true) {
 		if (strlen ( $message ) > 0)
 			$message .= '<br>';
 		$ret = $dataClass->supprimer ( $id );
@@ -81,8 +92,7 @@ function dataDelete($dataClass, $id) {
 			 * Mise en forme du message d'erreur
 			 */
 			$message = formatErrorData ( $dataClass->getErrorData () );
-			$message .= $LANG ["message"] [13];
-			$module_coderetour = - 1;
+			$message .= $LANG ["message"] [13];			
 		}
 	}
 	return ($ret);

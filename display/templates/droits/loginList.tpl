@@ -2,7 +2,11 @@
 <a href="index.php?module=aclloginChange&acllogin_id=0">
 Nouveau login...
 </a>
-<script>setDataTables("loginListe", true, true, true);</script>
+<script>
+$(document).ready(function() { 
+setDataTables("loginListe", true, true, true);
+} );
+</script>
 <table id="loginListe" class="tableliste">
 <thead>
 <tr>

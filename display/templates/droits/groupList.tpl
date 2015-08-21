@@ -3,7 +3,9 @@
 Nouveau groupe racine...
 </a>
 <script>
+$(document).ready(function() { 
 setDataTables("groupListe");
+} );
 </script>
 <table id="groupListe" class="tableliste">
 <thead>

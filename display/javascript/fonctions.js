@@ -19,13 +19,15 @@ function setAction(nomForm, nomChamp, typeAction) {
 }
 
 function setDataTables(nomTable, bPaginate, bSort, bFilter, iDisplayLength, bLengthChange) {
+	var table;
 	if (bPaginate == null) bPaginate = true;
 	if (bSort == null) bSort = false;
 	if (bFilter == null) bFilter = false;
 	if (iDisplayLength == null) iDisplayLength = 25;
 	if (bLengthChange == null) bLengthChange = true;
-	$(document).ready( function () {
-		$('#'+nomTable).dataTable( {
+
+	
+		table = $('#'+nomTable).dataTable( {
 			 "bPaginate": bPaginate,
 			"bFilter": bFilter,
 	        "bSort": bSort,
@@ -45,19 +47,20 @@ function setDataTables(nomTable, bPaginate, bSort, bFilter, iDisplayLength, bLen
 		                "sLast":       "Dernier"
 		            }
 			 }
-		} );
+
 	});
+	return table;
 };
 		
 
 function setDataTablesFull(nomTable, bPaginate, bSort, bFilter, iDisplayLength, bLengthChange) {
+	var table;
 	if (bPaginate == null) bPaginate = true;
 	if (bSort == null) bSort = false;
 	if (bFilter == null) bFilter = false;
 	if (iDisplayLength == null) iDisplayLength = 25;
 	if (bLengthChange == null) bLengthChange = true;
-	$(document).ready( function () {
-		$('#'+nomTable).dataTable( {
+		table = $('#'+nomTable).dataTable( {
 			 "bPaginate": bPaginate,
 			"bFilter": bFilter,
 	        "bSort": bSort,
@@ -103,7 +106,7 @@ function setDataTablesFull(nomTable, bPaginate, bSort, bFilter, iDisplayLength, 
 									} ]
 				}		
 		} );
-	} );
+	return table;
 }
 
 /**
