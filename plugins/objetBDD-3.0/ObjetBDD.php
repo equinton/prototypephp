@@ -256,7 +256,7 @@ class ObjetBDD {
 	 *
 	 * @var integer
 	 */
-	public $srid = -1;
+	public $srid = - 1;
 	/**
 	 * Caractere utilise pour entourer les noms des colonnes
 	 *
@@ -288,31 +288,31 @@ class ObjetBDD {
 		/**
 		 * valeurs par defaut / Defaults values *
 		 */
-		//$this->auto_date = 1; // verification automatique des dates par defaut
-		//$this->separateurDB = "-";
-		//$this->formatDate = 1;
+		// $this->auto_date = 1; // verification automatique des dates par defaut
+		// $this->separateurDB = "-";
+		// $this->formatDate = 1;
 		$this->sepValide = array (
 				"/",
 				"-",
 				".",
 				" " 
 		);
-		//$this->separateurLocal = "/";
-		//$this->dateMini = 49;
-		//$this->id_auto = 1;
-		//$this->verifData = 1;
-		//$this->debug_mode = 1;
-		//$this->codageHtml = true;
-		//$this->cleMultiple = 0;
-		//$this->fullDescription = 0;
+		// $this->separateurLocal = "/";
+		// $this->dateMini = 49;
+		// $this->id_auto = 1;
+		// $this->verifData = 1;
+		// $this->debug_mode = 1;
+		// $this->codageHtml = true;
+		// $this->cleMultiple = 0;
+		// $this->fullDescription = 0;
 		// $this->typeDatabase = substr ( strtolower ( $this->connection->databaseType ), 0, 7 );
 		// $this->connection->SetFetchMode ( ADODB_FETCH_ASSOC );
 		$this->typeDatabase = $this->connection->getAttribute ( $p_connection::ATTR_DRIVER_NAME );
 		
 		$this->connection->setAttribute ( $p_connection::ATTR_DEFAULT_FETCH_MODE, $p_connection::FETCH_ASSOC );
-		//$this->UTF8 = false;
-		//$this->srid = - 1;
-		//$this->transformComma = 1;
+		// $this->UTF8 = false;
+		// $this->srid = - 1;
+		// $this->transformComma = 1;
 		/*
 		 * Preparation des tableaux intermediaires a partir du tableau $colonnes
 		 */
@@ -804,9 +804,9 @@ class ObjetBDD {
 			$sql = "insert into " . $this->table . "(";
 			$i = 0;
 			$valeur = ") values (";
-			//echo $this->id_auto."<br>";
+			// echo $this->id_auto."<br>";
 			foreach ( $data as $key => $value ) {
-				//echo $key." ".$value."<br>";
+				// echo $key." ".$value."<br>";
 				
 				// Traitement de la cle automatique. Uniquement sur cle unique !
 				if ($this->id_auto == 1 && $key == $this->cle) {
@@ -1035,7 +1035,7 @@ class ObjetBDD {
 						/*
 						 * Formatage de la date
 						 */
-						$dates [$key] = $this->formatDateDBversLocal($value, $types[$key]);
+						$dates [$key] = $this->formatDateDBversLocal ( $value, $types [$key] );
 					}
 				}
 			}
@@ -1178,6 +1178,28 @@ class ObjetBDD {
 		}
 		return ($date);
 	}
+	/**
+	 * Fonction permettant de formater l'ensemble des dates d'un tableau
+	 * en fournissant les attributs de date concernes
+	 * Fonction recursive, traitant les tableaux multilignes
+	 * 
+	 * @param array $data        	
+	 * @param array $fields        	
+	 * @param number $type        	
+	 * @return array
+	 */
+	function formatDatesVersLocal(array $data, array $fields, $type = 2) {
+		foreach ( $data as $key => $value ) {
+			if (is_array ( $value )) {
+				$data [$key] = $this->formatDatesVersLocal ( $value, $fields );
+			} else {
+				if (in_array ( $key, $fields ))
+					$data [$key] = $this->formatDateDBversLocal ( $value, $type );
+			}
+		}
+		return $data;
+	}
+	
 	/**
 	 * function executeSQL
 	 *
@@ -1411,8 +1433,8 @@ class ObjetBDD {
 			return false;
 		if (is_numeric ( $id ) == false)
 			return false;
-		if(!is_array($lignes))
-			$lignes=array();
+		if (! is_array ( $lignes ))
+			$lignes = array ();
 			// Preparation de la requete de lecture des relations existantes
 		if (strlen ( preg_replace ( "#[^A-Z]+#", "", $nomCle1 ) > 0 ))
 			$cle1 = $this->quoteIdentifier . $nomCle1 . $this->quoteIdentifier;
@@ -1482,6 +1504,15 @@ class ObjetBDD {
 	function getDateHeure() {
 		$data = date ( 'Y-m-d H:i:s' );
 		return $this->formatDateDBversLocal ( $data, 3 );
+	}
+	/**
+	 * Retourne le login, pour creer la valeur par defaut
+	 *
+	 * @return string
+	 */
+	function getLogin() {
+		if (isset ( $_SESSION ["login"] ))
+			return $_SESSION ["login"];
 	}
 	/**
 	 * Fonction permettant de recuperer les valeurs par defaut

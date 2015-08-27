@@ -95,6 +95,16 @@ $cookieParam ["httponly"] = true;
 setcookie ( session_name (), session_id (), time () + $APPLI_session_ttl, $cookieParam ["path"], $cookieParam ["domain"], $cookieParam ["secure"], $cookieParam ["httponly"] );
 
 /*
+ * Recuperation des parametres de l'application definis dans un fichier ini
+ */
+if (is_file ( $paramIniFile )) {
+	$paramAppli = parse_ini_file ( $paramIniFile );
+	foreach ( $paramAppli as $key => $value ) {
+		$$key = $value;
+	}
+}
+
+/*
  * Lancement de l'identification
  */
 
@@ -110,6 +120,7 @@ if ($ident_type == "CAS") {
  * Chargement des fonction generiques
  */
 include_once 'framework/fonctions.php';
+
 /*
  * Gestion de la langue a afficher
  */
