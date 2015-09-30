@@ -86,6 +86,34 @@ class Aclaco extends ObjetBDD {
 		} else
 			return false;
 	}
+
+	/**
+	 * Retourne la liste des logins associes a un ACO
+	 * @param string $aco : aco a tester
+	 * @return tableau : liste des logins trouves
+	 */
+	function getLogins($aco) {
+		if (strlen($this->encodeData($aco))> 0 ){
+			$sql = "with recursive first_level (login, aco, aclgroup_id, aclgroup_id_parent) as (
+					(select login, 	aco, aclgroup_id, aclgroup_id_parent
+						from acllogin
+						natural join acllogingroup
+						natural join aclgroup
+						natural join aclacl 
+						natural join aclaco
+					)
+					union all (select login, aco.aco, g.aclgroup_id, g.aclgroup_id_parent
+						from first_level fl, aclgroup g, aclacl acl, aclaco aco
+						where acl.aclgroup_id = g.aclgroup_id
+						and acl.aclaco_id = aco.aclaco_id
+						and g.aclgroup_id = fl.aclgroup_id_parent)
+					)
+					select distinct login from first_level
+					where aco = '".$aco."'
+					order by login";
+			return $this->getListeParam($sql);
+		}
+	}
 }
 /**
  * ORM de gestion de la table acllogin
@@ -284,6 +312,31 @@ class Aclgroup extends ObjetBDD {
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * Fonction retournant tous les logins appartenant a un groupe
+	 * @param unknown $groupe
+	 */
+	function getLogins($groupe) {
+		if (strlen($groupe)>0) {
+			$groupe = $this->encodeData($groupe);
+			$sql = "with recursive first_level (login, groupe, aclgroup_id) as (
+					(select login, 	groupe, aclgroup_id, aclgroup_id_parent
+						from acllogin
+						natural join acllogingroup
+						natural join aclgroup
+					)
+					union all 
+					(select login, g.groupe, g.aclgroup_id, g.aclgroup_id_parent
+						from first_level fl, aclgroup g
+						where g.aclgroup_id = fl.aclgroup_id_parent)
+					)
+					select login from first_level
+					where groupe = '".$groupe.'"
+					order by login';
+			return $this->getListeParam($sql);
+		}
 	}
 	
 	/**
