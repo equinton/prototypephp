@@ -194,4 +194,4 @@ select setval('aclappli_aclappli_id_seq', (select max(aclappli_id) from aclappli
 select setval('aclaco_aclaco_id_seq', (select max(aclaco_id) from aclaco));
 select setval('acllogin_acllogin_id_seq', (select max(acllogin_id) from acllogin));
 select setval('aclgroup_aclgroup_id_seq', (select max(aclgroup_id) from aclgroup));
-select setval('acllogingroup_acllogingroup_id_seq', (select max(acllogingroup_id) from acllogingroup));
+
