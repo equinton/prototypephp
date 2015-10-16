@@ -47,6 +47,28 @@ p {
 	text-align: center;
 	width: 750px;
 }
+
+/*
+ * valeurs pour zone de select editable (deux definitions)
+ */
+.formSaisie .selectEdit {
+	position: absolute;
+	width: 470px;
+	height: 30px;
+	border: 0;
+	margin: 0 0 10px 0;
+}
+.formSaisie .inputEdit {
+	position: absolute;
+	width: 450px ;
+	height: 23px;
+	margin: 0 0 10px 0;
+}
+.formSaisie textarea {
+	height:5em;
+	width:40em;
+}
+
 input {
 	/*border-radius: 1em;*/
 }
