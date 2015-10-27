@@ -7,4 +7,30 @@
  *  Programme execute si necessaire apres identification
  */
 
+/*
+ * Suppression des documents de plus de 24 heures dans le dossier temporaire
+ */
+if (strlen ( $APPLI_nomDossierStockagePhotoTemp ) > 0) {
+	$dureeVie = 3600 * 24; // Suppression de tous les fichiers de plus de 24 heures
+	//$dureeVie = 30;
+	/*
+	* Ouverture du dossier
+	*/
+	$dossier = opendir ( $APPLI_nomDossierStockagePhotoTemp );
+	while ( false !== ($entry = readdir ( $dossier )) ) {
+		$path = $APPLI_nomDossierStockagePhotoTemp . "/" . $entry;
+		$file = fopen($path, 'r');
+		$stat = fstat($file);
+		$atime = $stat["atime"];
+		fclose($file);
+		$infos = pathinfo ( $path );
+		if ( ! is_dir($path) && ($infos["basename"] != ".htaccess")) {
+			$age = time () - $atime;
+			if ($age > $dureeVie) {
+				unlink ( $path );
+			}
+		}
+	}
+	closedir ( $dossier );
+}
 ?>

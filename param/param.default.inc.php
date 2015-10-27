@@ -88,6 +88,7 @@ $APPLI_modeDeveloppement = false;
 $APPLI_modeDeveloppementDroit = false;
 $APPLI_utf8 = true;
 $APPLI_menufile = "param/menu.xml";
+$APPLI_nomDossierStockagePhotoTemp = "temp";
 
 /*
  * Variables liees a GACL et l'identification via base de donnees
