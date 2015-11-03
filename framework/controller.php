@@ -253,6 +253,10 @@ if ($t_module ["ajax"] != 1) {
 			$smarty->assign ( $key, encodehtml ( $value ) );
 		}
 	}
+	/*
+	 * Envoi des droits
+	 */
+	$smarty->assign ( "droits", $_SESSION ["droits"] );
 	$smarty->display ( $SMARTY_principal );
 }
 ?>
