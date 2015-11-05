@@ -108,32 +108,7 @@
  COMMENT ON TABLE document IS 'Documents numériques rattachés à un poisson ou à un événement';
  COMMENT ON COLUMN document.document_nom IS 'Nom d''origine du document';
  COMMENT ON COLUMN document.document_description IS 'Description libre du document';
- 
- Exemple de generation d'une table liee :
- 
-CREATE TABLE article_document
-(
-   article_id   integer    NOT NULL,
-   document_id  integer    NOT NULL
-);
-
-ALTER TABLE article_document
-   ADD CONSTRAINT article_document_pk
-   PRIMARY KEY (article_id, document_id);
-
-ALTER TABLE article_document
-  ADD CONSTRAINT article_article_document_fk FOREIGN KEY (article_id)
-  REFERENCES article (article_id)
-  ON UPDATE NO ACTION
-  ON DELETE NO ACTION;
-
-ALTER TABLE article_document
-  ADD CONSTRAINT document_article_document_fk FOREIGN KEY (document_id)
-  REFERENCES document (document_id)
-  ON UPDATE NO ACTION
-  ON DELETE NO ACTION;
-
-COMMENT ON TABLE article_document IS 'Table de rattachement d''un document a un article';
+ */
 /**
  * ORM de gestion de la table mime_type
  *
@@ -269,7 +244,7 @@ class Document extends ObjetBDD {
 	 * sql passee en parametre.
 	 * Elle stocke les documents ou les photos et vignettes dans le dossier temporaire,
 	 * et retourne les chemins d'acces a ces documents
-	 * 
+	 *
 	 * @param string $sql        	
 	 * @return array
 	 */
@@ -313,6 +288,7 @@ class Document extends ObjetBDD {
 	 */
 	function ecrire($file, $description = NULL) {
 		if ($file ["error"] == 0 && $file ["size"] > 0) {
+			global $message, $log;
 			/*
 			 * Recuperation de l'extension
 			 */
@@ -320,46 +296,62 @@ class Document extends ObjetBDD {
 			$mimeType = new MimeType ( $this->connection, $this->paramori );
 			$mime_type_id = $mimeType->getTypeMime ( $extension );
 			if ($mime_type_id > 0) {
-				$data = array ();
-				$data ["document_nom"] = $file ["name"];
-				$data ["size"] = $file ["size"];
-				$data ["mime_type_id"] = $mime_type_id;
-				$data ["document_description"] = $description;
-				$data ["document_date_import"] = date ( "d/m/Y" );
-				$data ["document_id"] = $file ["document_id"];
-				$dataDoc = array ();
-				
 				/*
-				 * Recherche pour savoir s'il s'agit d'une image ou d'un pdf pour créer une vignette
+				 * Recherche antivirale
 				 */
-				$extension = strtolower ( $extension );
-				/*
-				 * Ecriture du document
-				 */
-				$dataBinaire = fread ( fopen ( $file ["tmp_name"], "r" ), $file ["size"] );
-				
-				$dataDoc ["data"] = pg_escape_bytea ( $dataBinaire );
-				if ($extension == "pdf" || $extension == "png" || $extension == "jpg") {
-					$image = new Imagick ();
-					$image->readImageBlob ( $dataBinaire );
-					$image->setiteratorindex ( 0 );
-					$image->resizeimage ( 200, 200, imagick::FILTER_LANCZOS, 1, true );
-					$image->setformat ( "png" );
-					$dataDoc ["thumbnail"] = pg_escape_bytea ( $image->getimageblob () );
+				$virus = false;
+				if (extension_loaded ( 'clamav' )) {
+					$retcode = cl_scanfile ( $file ["tmp_name"], $virusname );
+					if ($retcode == CL_VIRUS) {
+						$virus = true;
+						$texte_erreur = $file ["name"] . " : " . cl_pretcode ( $retcode ) . ". Virus found name : " . $virusname;
+						$message .= "<br>" . $texte_erreur;
+						$log->setLog ( $_SESSION ["login"], "Document-ecrire", $texte_erreur );
+					}
 				}
-				/*
-				 * suppression du stockage temporaire
-				 */
-				unset ( $file ["tmp_name"] );
-				/*
-				 * Ecriture dans la base de données
-				 */
-				$id = parent::ecrire ( $data );
-				if ($id > 0) {
-					$sql = "update " . $this->table . " set data = '" . $dataDoc ["data"] . "', thumbnail = '" . $dataDoc ["thumbnail"] . "' where document_id = " . $id;
-					$this->executeSQL ( $sql );
+				if ($virus == false) {
+					$data = array ();
+					$data ["document_nom"] = $file ["name"];
+					$data ["size"] = $file ["size"];
+					$data ["mime_type_id"] = $mime_type_id;
+					$data ["document_description"] = $description;
+					$data ["document_date_import"] = date ( "d/m/Y" );
+					$data ["document_id"] = $file ["document_id"];
+					$dataDoc = array ();
+					
+					/*
+					 * Recherche pour savoir s'il s'agit d'une image ou d'un pdf pour créer une vignette
+					 */
+					$extension = strtolower ( $extension );
+					/*
+					 * Ecriture du document
+					 */
+					$dataBinaire = fread ( fopen ( $file ["tmp_name"], "r" ), $file ["size"] );
+					
+					$dataDoc ["data"] = pg_escape_bytea ( $dataBinaire );
+					if ($extension == "pdf" || $extension == "png" || $extension == "jpg") {
+						$image = new Imagick ();
+						$image->readImageBlob ( $dataBinaire );
+						$image->setiteratorindex ( 0 );
+						$image->resizeimage ( 200, 200, imagick::FILTER_LANCZOS, 1, true );
+						$image->setformat ( "png" );
+						$dataDoc ["thumbnail"] = pg_escape_bytea ( $image->getimageblob () );
+					}
+					/*
+					 * suppression du stockage temporaire
+					 */
+					unset ( $file ["tmp_name"] );
+					/*
+					 * Ecriture dans la base de données
+					 */
+					$id = parent::ecrire ( $data );
+					if ($id > 0) {
+						$sql = "update " . $this->table . " set data = '" . $dataDoc ["data"] . "', thumbnail = '" . $dataDoc ["thumbnail"] . "' where document_id = " . $id;
+						$this->executeSQL ( $sql );
+					}
+					$log->setLog ( $_SESSION ["login"], "Document-ecrire", $id );
+					return $id;
 				}
-				return $id;
 			}
 		}
 	}
@@ -387,18 +379,28 @@ class Document extends ObjetBDD {
 			switch ($type) {
 				case 1 :
 					$colonne = "data";
-					$a = array ('4', '5', '6', '7');
-					if ( ! in_array ( $data ["mime_type_id"], $a )) {
+					$a = array (
+							'4',
+							'5',
+							'6',
+							'7' 
+					);
+					if (! in_array ( $data ["mime_type_id"], $a )) {
 						$ok = false;
 					} else {
 						$filename = $APPLI_code . "-" . $id . "x" . $resolution . "." . $data ["extension"];
-						
 					}
 					break;
 				case 2 :
 					$colonne = "thumbnail";
-					$a = array ('1', '4', '5', '6', '7');
-					if ( ! in_array ( $data ["mime_type_id"], $a ) ) {
+					$a = array (
+							'1',
+							'4',
+							'5',
+							'6',
+							'7' 
+					);
+					if (! in_array ( $data ["mime_type_id"], $a )) {
 						$ok = false;
 					} else {
 						$filename = $APPLI_code . "-" . $id . '_vignette.png';
@@ -463,7 +465,7 @@ class Document extends ObjetBDD {
 	
 	/**
 	 * Envoie un fichier au navigateur, pour affichage
-	 * 
+	 *
 	 * @param string $nomfile
 	 *        	: nom du fichier stocke dans le dossier temporaire
 	 * @param int $id
@@ -482,9 +484,9 @@ class Document extends ObjetBDD {
 				if (strlen ( $data ["content_type"] ) > 0) {
 					header ( "content-type: " . $data ["content_type"] );
 					header ( 'Content-Transfer-Encoding: binary' );
-					if ($attached == true) 
-						header('Content-Disposition: attachment; filename="'.$data["document_nom"].'"');
-						 
+					if ($attached == true)
+						header ( 'Content-Disposition: attachment; filename="' . $data ["document_nom"] . '"' );
+					
 					ob_clean ();
 					flush ();
 					readfile ( $filename );
@@ -493,11 +495,8 @@ class Document extends ObjetBDD {
 		}
 	}
 }
-class DocumentAppli extends Document {
+class DocumentUsact extends Document {
 	public $resolution = 800;
-	/*
-	 * Liste des tables (ou modules) qui peuvent stocker des documents
-	 */
 	public $modules = array (
 			"entretien",
 			"juridique",
@@ -506,7 +505,7 @@ class DocumentAppli extends Document {
 	
 	/**
 	 * Retourne la liste des documents associes au type (evenement, poisson, bassin) et à la clé correspondante
-	 * 
+	 *
 	 * @param string $type        	
 	 * @param int $id        	
 	 * @return array
@@ -535,7 +534,7 @@ class DocumentAppli extends Document {
 }
 /**
  * ORM permettant de gérer toutes les tables de liaison avec la table Document
- * 
+ *
  * @author quinton
  *        
  */
@@ -573,7 +572,7 @@ class DocumentLie extends ObjetBDD {
 	/**
 	 * Reecriture de la fonction ecrire($data)
 	 * (non-PHPdoc)
-	 * 
+	 *
 	 * @see ObjetBDD::ecrire()
 	 */
 	function ecrire($data) {
@@ -596,7 +595,7 @@ class DocumentLie extends ObjetBDD {
 	/**
 	 * Supprime la reference au document dans la table liee
 	 * (non-PHPdoc)
-	 * 
+	 *
 	 * @see ObjetBDD::supprimer()
 	 */
 	function supprimer($id) {
@@ -607,7 +606,7 @@ class DocumentLie extends ObjetBDD {
 	
 	/**
 	 * Retourne la liste des documents associes
-	 * 
+	 *
 	 * @param int $id        	
 	 * @return array
 	 */
