@@ -463,7 +463,7 @@ class ObjetBDD {
 			foreach ( $id as $key => $value ) {
 				if ($where != "")
 					$where .= " and ";
-				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) > 0 ))
+				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key )) > 0 )
 					$cle = $this->quoteIdentifier . $key . $this->quoteIdentifier;
 				else
 					$cle = $key;
@@ -477,7 +477,7 @@ class ObjetBDD {
 				if ($this->verifDonnees ( $this->cle ) == false)
 					return false;
 			}
-			if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle ) > 0 ))
+			if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle )) > 0 )
 				$cle = $this->quoteIdentifier . $this->cle . $this->quoteIdentifier;
 			else
 				$cle = $this->cle;
@@ -493,7 +493,7 @@ class ObjetBDD {
 				/*
 				 * Rajout des doubles quotes sur le nom des colonnes en cas de présence de majuscules
 				 */
-				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) > 0 ))
+				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key )) > 0 ) 
 					$cle = $this->quoteIdentifier . $key . $this->quoteIdentifier;
 				else
 					$cle = $key;
@@ -742,7 +742,7 @@ class ObjetBDD {
 					
 					if ($where != "")
 						$where .= " and ";
-					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $value ) > 0 ))
+					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $value )) > 0 )
 						$cle = $this->quoteIdentifier . $value . $this->quoteIdentifier;
 					else
 						$cle = $value;
@@ -760,7 +760,7 @@ class ObjetBDD {
 					);
 					return - 1;
 				}
-				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle ) > 0 ))
+				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle )) > 0 )
 					$cle = $this->quoteIdentifier . $this->cle . $this->quoteIdentifier;
 				else
 					$cle = $this->cle;
@@ -817,7 +817,7 @@ class ObjetBDD {
 						$valeur .= ", ";
 					}
 					// On traite la clé automatique gérée par le max()
-					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle ) > 0 ))
+					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle )) > 0 )
 						$cle = $this->quoteIdentifier . $this->cle . $this->quoteIdentifier;
 					else
 						$cle = $this->cle;
@@ -830,7 +830,7 @@ class ObjetBDD {
 						$valeur .= ", ";
 					}
 					$i ++;
-					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) > 0 ))
+					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key )) > 0 )
 						$key = $this->quoteIdentifier . $key . $this->quoteIdentifier;
 					$sql .= $key;
 					$valeur .= $cle;
@@ -840,7 +840,7 @@ class ObjetBDD {
 						$valeur .= ", ";
 					}
 					$i ++;
-					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) > 0 ))
+					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key )) > 0 )
 						$key = $this->quoteIdentifier . $key . $this->quoteIdentifier;
 					$sql .= $key;
 					if ($value == '' || is_null ( $value )) {
@@ -876,7 +876,7 @@ class ObjetBDD {
 					$sql .= ",";
 				$i ++;
 				$sql .= " ";
-				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) > 0 ))
+				if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key )) > 0 )
 					$cle = $this->quoteIdentifier . $key . $this->quoteIdentifier;
 				else
 					$cle = $key;
@@ -1000,7 +1000,7 @@ class ObjetBDD {
 			/*
 			 * Preparation du where
 			 */
-			if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->parentAttrib ) > 0 ))
+			if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->parentAttrib )) > 0 )
 				$cle = $this->quoteIdentifier . $this->parentAttrib . $this->quoteIdentifier;
 			else
 				$cle = $this->parentAttrib;
@@ -1310,6 +1310,15 @@ class ObjetBDD {
 		
 		return $testok;
 	}
+
+	/**
+	 * Ajoute un message d'erreur
+	 * @param string $texte
+	 */
+	function addMessage($texte) {
+		$this->errorData[]["message"] = $texte;
+	}
+	
 	/**
 	 * Fonction retournant la liste des erreurs relevees lors de l'operation verifData.
 	 *
@@ -1436,11 +1445,11 @@ class ObjetBDD {
 		if (! is_array ( $lignes ))
 			$lignes = array ();
 			// Preparation de la requete de lecture des relations existantes
-		if (strlen ( preg_replace ( "#[^A-Z]+#", "", $nomCle1 ) > 0 ))
+		if (strlen ( preg_replace ( "#[^A-Z]+#", "", $nomCle1 )) > 0 )
 			$cle1 = $this->quoteIdentifier . $nomCle1 . $this->quoteIdentifier;
 		else
 			$cle1 = $nomCle1;
-		if (strlen ( preg_replace ( "#[^A-Z]+#", "", $nomCle2 ) > 0 ))
+		if (strlen ( preg_replace ( "#[^A-Z]+#", "", $nomCle2 )) > 0 )
 			$cle2 = $this->quoteIdentifier . $nomCle2 . $this->quoteIdentifier;
 		else
 			$cle2 = $nomCle2;

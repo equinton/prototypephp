@@ -47,26 +47,11 @@ p {
 	text-align: center;
 	width: 750px;
 }
-
-/*
- * valeurs pour zone de select editable (deux definitions)
- */
-.formSaisie .selectEdit {
-	position: absolute;
-	width: 470px;
-	height: 30px;
-	border: 0;
-	margin: 0 0 10px 0;
+.formSaisie dd table {
+	border: 0px;
 }
-.formSaisie .inputEdit {
-	position: absolute;
-	width: 450px ;
-	height: 23px;
-	margin: 0 0 10px 0;
-}
-.formSaisie textarea {
-	height:5em;
-	width:40em;
+.formSaisie dd table tr:hover {
+	background-color: rgba(152, 193, 233, 0);
 }
 
 input {
@@ -121,6 +106,26 @@ dl {
 }
 
 /*
+ * valeurs pour zone de select editable (deux definitions)
+ */
+.formSaisie .selectEdit {
+	position: absolute;
+	width: 470px;
+	height: 30px;
+	border: 0;
+	margin: 0 0 10px 0;
+}
+.formSaisie .inputEdit {
+	position: absolute;
+	width: 450px ;
+	height: 23px;
+	margin: 0 0 10px 0;
+}
+.formSaisie textarea {
+	height:5em;
+	width:40em;
+}
+/*
  * Affichage basé sur <dl>
  */
 .formDisplay {
@@ -149,6 +154,7 @@ dl {
 	border-radius: 0.4em;
 	border-color: grey;
 }
+
 .formDisplayNarrow {
 	border-style: solid;
 	border-width: 1px;
@@ -209,6 +215,24 @@ input.timepicker {
 	background-position: 100% 50%;
 	width: 5em;
 }
+
+/* Ajouts pour le composant datetimepicker */
+.datepicker {
+	background-image: url("images/calendar-small.gif");
+	background-size: 1em;
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
+	width: 7em;	
+}
+
+.datetimepicker {
+	background-image: url("images/clock.png");
+	background-size: 1em;
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
+	width: 10em;
+}
+
 input.commentaire {
 	size: 20em;
 }
@@ -306,6 +330,9 @@ a:hover {
 }
 .green {
 	color: green;
+}
+.backgroundGreen {
+	background-color: green;
 }
 .etat0 {
 	color: red;
@@ -535,6 +562,10 @@ label {
 	color: #000000;
 	text-align: left;
 	border: 1px solid #999999 ;
+}
+
+tfoot {
+	font-style: italic;
 }
 .tableliste tr{
 	text-align: center;
