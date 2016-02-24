@@ -11,8 +11,8 @@ Header unset ETag
 Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate, private"
 Header set Pragma "no-cache"
 Header set X-Frame-Options SAMEORIGIN
-Header set X-XSS-Protection: "1; mode=block"
-Header set X-Content-Type-Options: "nosniff"
+Header set X-XSS-Protection "1; mode=block"
+Header set X-Content-Type-Options "nosniff"
 <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
     Header set Cache-Control "max-age=604800, private"
 </FilesMatch>
