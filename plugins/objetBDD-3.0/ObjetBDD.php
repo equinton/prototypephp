@@ -455,7 +455,7 @@ class ObjetBDD {
 		// Integration cles multiples
 		if ($this->cleMultiple == 1) {
 			// Verification de la structure de la cle
-			if ($this->verifData) {
+			if ($this->verifData == 1) {
 				if ($this->verifDonnees ( $id ) == false)
 					return false;
 			}
@@ -473,8 +473,8 @@ class ObjetBDD {
 			/*
 			 * Verification de la cle unique
 			 */
-			if ($this->verifData) {
-				if ($this->verifDonnees ( $this->cle ) == false)
+			if ($this->verifData == 1) {
+				if (is_numeric ( $id ) == false)
 					return false;
 			}
 			if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle )) > 0 )
@@ -591,7 +591,7 @@ class ObjetBDD {
 		// Integration cles multiples
 		if ($this->cleMultiple == 1) {
 			// Verification de la structure de la cle
-			if ($this->verifData) {
+			if ($this->verifData == 1) {
 				if ($this->verifDonnees ( $id ) == false)
 					return false;
 			}
@@ -609,8 +609,8 @@ class ObjetBDD {
 			/*
 			 * Verification de la cle unique
 			 */
-			if ($this->verifData) {
-				if ($this->verifDonnees ( $this->cle ) == false)
+			if ($this->verifData == 1) {
+				if (is_numeric ( $this->cle ) == false)
 					return false;
 			}
 			if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle ) > 0 ))
@@ -792,7 +792,7 @@ class ObjetBDD {
 			}
 		}
 		
-		if ($this->verifData) {
+		if ($this->verifData == 1) {
 			if ($this->verifDonnees ( $data, $mode ) == false)
 				return false;
 		}
@@ -1241,7 +1241,7 @@ class ObjetBDD {
 			/*
 			 * Verification des cles
 			 */
-			if (@$this->types [$key] == 1) {
+			if ($this->types [$key] == 1) {
 				if (strlen ( $value ) > 0 && is_numeric ( $value ) == false) {
 					$testok = false;
 					$this->errorData [] = array (
@@ -1442,8 +1442,17 @@ class ObjetBDD {
 			return false;
 		if (is_numeric ( $id ) == false)
 			return false;
+		/*
+		 * Verification du tableau de valeurs
+		 */
+		if (! is_array($lignes) && strlen($lignes) > 0)
+			return false;
 		if (! is_array ( $lignes ))
 			$lignes = array ();
+		foreach ($lignes as $key => $value) {
+			if (!is_numeric($value))
+				return false;
+		}
 			// Preparation de la requete de lecture des relations existantes
 		if (strlen ( preg_replace ( "#[^A-Z]+#", "", $nomCle1 )) > 0 )
 			$cle1 = $this->quoteIdentifier . $nomCle1 . $this->quoteIdentifier;
