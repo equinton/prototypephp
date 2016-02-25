@@ -119,6 +119,7 @@ while ( isset ( $module ) ) {
 		}
 	}
 	$resident = 1;
+	$motifErreur = "ok";
 	if ($t_module ["loginrequis"] == 1 && ! isset ( $_SESSION ["login"] ))
 		$resident = 0;
 		/*
@@ -155,6 +156,11 @@ while ( isset ( $module ) ) {
 			$motifErreur = "errorbefore";
 		}
 	}
+	/*
+	 * Enregistrement de l'acces au module
+	 */
+	$log->setLog ( $_SESSION ["login"], $module, $motifErreur );
+	
 	/*
 	 * fin d'analyse du module
 	 */

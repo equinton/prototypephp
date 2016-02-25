@@ -20,14 +20,14 @@ $ident_type = "BDD";
  */
 $BDD_login = "proto";
 $BDD_passwd = "proto";
-$BDD_dsn = "pgsq:host=localhost;dbname=proto";
+$BDD_dsn = "pgsq:host=localhost;dbname=proto;sslmode=require";
 
 /*
  * Base de donnees de developpement
 */
 $BDDDEV_login = "proto";
 $BDDDEV_passwd = "proto";
-$BDDDEV_dsn = "pgsq:host=localhost;dbname=proto";
+$BDDDEV_dsn = "pgsq:host=localhost;dbname=proto;sslmode=require";
 
 /*
  * Rights management, logins and logs records database
@@ -35,7 +35,7 @@ $BDDDEV_dsn = "pgsq:host=localhost;dbname=proto";
 $GACL_dblogin = "proto";
 $GACL_dbpasswd = "proto";
 $GACL_aco = "appli";
-$GACL_dsn = "pgsql:host=localhost;dbname=proto";
+$GACL_dsn = "pgsql:host=localhost;dbname=proto;sslmode=require";
 
 $APPLI_address = "http://localhost/proto";
 $APPLI_mail = "proto@domain.fr";
