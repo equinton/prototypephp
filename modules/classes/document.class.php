@@ -170,7 +170,7 @@ class MimeType extends ObjetBDD {
  *        
  */
 class Document extends ObjetBDD {
-	public $temp = "temp"; // Chemin de stockage des images générées à la volée
+	public $temp = "tmp"; // Chemin de stockage des images générées à la volée
 	/**
 	 * Constructeur de la classe
 	 *
@@ -178,11 +178,12 @@ class Document extends ObjetBDD {
 	 * @param array $param        	
 	 */
 	function __construct($bdd, $param = null) {
+		$this->paramori = $param;
+		$this->param = $param;
 		global $APPLI_nomDossierStockagePhotoTemp;
 		if (strlen ( $APPLI_nomDossierStockagePhotoTemp ) > 0)
 			$this->temp = $APPLI_nomDossierStockagePhotoTemp;
-		$this->paramori = $param;
-		$this->param = $param;
+		
 		$this->table = "document";
 		$this->id_auto = 1;
 		$this->colonnes = array (
@@ -223,72 +224,18 @@ class Document extends ObjetBDD {
 		$param ["fullDescription"] = 1;
 		parent::__construct ( $bdd, $param );
 	}
-	/**
-	 * Recupere les informations d'un document
-	 *
-	 * @param int $id        	
-	 * @return array
-	 */
-	function getData($id) {
-		if ($id > 0 && is_numeric ( $id )) {
-			$sql = "select document_id, document_nom,  content_type, mime_type_id, extension
-				from " . $this->table . "
-				join mime_type using (mime_type_id)
-				where document_id = " . $id;
-			return $this->lireParam ( $sql );
-		}
-	}
-	
-	/**
-	 * Fonction permettant de retourner la liste des documents en fonction de la commande
-	 * sql passee en parametre.
-	 * Elle stocke les documents ou les photos et vignettes dans le dossier temporaire,
-	 * et retourne les chemins d'acces a ces documents
-	 *
-	 * @param string $sql        	
-	 * @return array
-	 */
-	function documentSearch($sql) {
-		if (strlen ( $sql ) > 0) {
-			$data = $this->getListeParam ( $sql );
-			foreach ( $data as $key => $value ) {
-				$data [$key] ["photo_name"] = $this->writeFileImage ( $value ["document_id"], 0 );
-				if (in_array ( $value ["mime_type_id"], array (
-						1,
-						4,
-						5,
-						6,
-						7 
-				) ))
-					$data [$key] ["thumbnail_name"] = $this->writeFileImage ( $value ["document_id"], 2 );
-				
-				if (in_array ( $value ["mime_type_id"], array (
-						4,
-						5,
-						6,
-						7 
-				) ))
-					$data [$key] ["photo800_name"] = $this->writeFileImage ( $value ["document_id"], 1 );
-			}
-			return $data;
-		}
-	}
 	
 	/**
 	 * Ecriture d'un document
 	 *
 	 * @param array $file
 	 *        	: tableau contenant les informations sur le fichier importé
-	 *        	
-	 * @param
-	 *        	int individu_id : cle de l'enregistrement pere
 	 * @param
 	 *        	string description : description du contenu du document
 	 * @return int
 	 */
 	function ecrire($file, $description = NULL) {
 		if ($file ["error"] == 0 && $file ["size"] > 0) {
-			global $message, $log;
 			/*
 			 * Recuperation de l'extension
 			 */
@@ -296,6 +243,13 @@ class Document extends ObjetBDD {
 			$mimeType = new MimeType ( $this->connection, $this->paramori );
 			$mime_type_id = $mimeType->getTypeMime ( $extension );
 			if ($mime_type_id > 0) {
+				$data = array ();
+				$data ["document_nom"] = $file ["name"];
+				$data ["size"] = $file ["size"];
+				$data ["mime_type_id"] = $mime_type_id;
+				$data ["document_description"] = $description;
+				$data ["document_date_import"] = date ( "d/m/Y" );
+				$dataDoc = array ();
 				/*
 				 * Recherche antivirale
 				 */
@@ -309,23 +263,15 @@ class Document extends ObjetBDD {
 						$log->setLog ( $_SESSION ["login"], "Document-ecrire", $texte_erreur );
 					}
 				}
+				
+				/*
+				 * Recherche pour savoir s'il s'agit d'une image ou d'un pdf pour créer une vignette
+				 */
+				$extension = strtolower ( $extension );
+				/*
+				 * Ecriture du document
+				 */
 				if ($virus == false) {
-					$data = array ();
-					$data ["document_nom"] = $file ["name"];
-					$data ["size"] = $file ["size"];
-					$data ["mime_type_id"] = $mime_type_id;
-					$data ["document_description"] = $description;
-					$data ["document_date_import"] = date ( "d/m/Y" );
-					$data ["document_id"] = $file ["document_id"];
-					$dataDoc = array ();
-					
-					/*
-					 * Recherche pour savoir s'il s'agit d'une image ou d'un pdf pour créer une vignette
-					 */
-					$extension = strtolower ( $extension );
-					/*
-					 * Ecriture du document
-					 */
 					$dataBinaire = fread ( fopen ( $file ["tmp_name"], "r" ), $file ["size"] );
 					
 					$dataDoc ["data"] = pg_escape_bytea ( $dataBinaire );
@@ -349,7 +295,6 @@ class Document extends ObjetBDD {
 						$sql = "update " . $this->table . " set data = '" . $dataDoc ["data"] . "', thumbnail = '" . $dataDoc ["thumbnail"] . "' where document_id = " . $id;
 						$this->executeSQL ( $sql );
 					}
-					$log->setLog ( $_SESSION ["login"], "Document-ecrire", $id );
 					return $id;
 				}
 			}
@@ -357,109 +302,20 @@ class Document extends ObjetBDD {
 	}
 	
 	/**
-	 * Fonction ecrivant les documents dans le dossier temporaire
-	 * pour utilisation via un lien
+	 * Recupere les informations d'un document
 	 *
-	 * @param int $id
-	 *        	: numero du document
-	 * @param number $type
-	 *        	: 0 : photo plein format, 1 : photo en resolution 800, 2, : vignette
-	 * @return string
+	 * @param int $id        	
+	 * @return array
 	 */
-	function writeFileImage($id, $type = 0) {
-		global $APPLI_code;
+	function getData($id) {
 		if ($id > 0 && is_numeric ( $id )) {
-			$data = $this->getData ( $id );
-			$resolution = 800;
-			$filename = "";
-			$ok = true;
-			/*
-			 * Preparation du nom de la photo
-			 */
-			switch ($type) {
-				case 1 :
-					$colonne = "data";
-					$a = array (
-							'4',
-							'5',
-							'6',
-							'7' 
-					);
-					if (! in_array ( $data ["mime_type_id"], $a )) {
-						$ok = false;
-					} else {
-						$filename = $APPLI_code . "-" . $id . "x" . $resolution . "." . $data ["extension"];
-					}
-					break;
-				case 2 :
-					$colonne = "thumbnail";
-					$a = array (
-							'1',
-							'4',
-							'5',
-							'6',
-							'7' 
-					);
-					if (! in_array ( $data ["mime_type_id"], $a )) {
-						$ok = false;
-					} else {
-						$filename = $APPLI_code . "-" . $id . '_vignette.png';
-					}
-					break;
-				default :
-					$colonne = "data";
-					$filename = $APPLI_code . "-" . $id . "-" . $data ["document_nom"];
-			}
-			
-			/*
-			 * Traitement des photos
-			 */
-			if (! file_exists ( $filename ) && $ok == true) {
-				$docRef = $this->getBlobReference ( $id, $colonne );
-				if (($data ["mime_type_id"] == 4 || $data ["mime_type_id"] == 5 || $data ["mime_type_id"] == 6)) {
-					$image = new Imagick ();
-					$image->readImageFile ( $docRef );
-					if ($type == 1) {
-						/*
-						 * Redimensionnement de la photo pour l'amener a la resolution d'affichage
-						 */
-						$resize = 0;
-						$geo = $image->getimagegeometry ();
-						if ($geo ["width"] > $resolution || $geo ["height"] > $resolution) {
-							$resize = 1;
-							/*
-							 * Calcul de la résolution dans les deux sens
-							 */
-							if ($geo ["width"] > $resolution) {
-								$resx = $resolution;
-								$resy = $geo ["height"] * ($resolution / $geo ["width"]);
-							} else {
-								$resy = $resolution;
-								$resx = $geo ["width"] * ($resolution / $geo ["height"]);
-							}
-						}
-						if ($resize == 1) {
-							$image->resizeImage ( $resx, $resy, imagick::FILTER_LANCZOS, 1 );
-						}
-					}
-					$document = $image->getimageblob ();
-				} else {
-					/*
-					 * Autres types de documents : ecriture directe du contenu
-					 */
-					rewind ( $docRef );
-					$document = stream_get_contents ( $docRef );
-					if ($document == false)
-						printr ( "erreur de lecture " . $docRef );
-				}
-				/*
-				 * Ecriture du document dans le dossier temporaire
-				 */
-				$handle = fopen ( $this->temp . "/" . $filename, 'wb' );
-				fwrite ( $handle, $document );
-				fclose ( $handle );
-			}
-			return $filename;
+			$this->UTF8 = false;
+			$this->codageHtml = false;
+			$sql = "select document_id, document_nom, content_type, mime_type_id, extension
+				from " . $this->table . "
+				join mime_type using (mime_type_id)
+				where document_id = " . $id;
+			return $this->lireParam ( $sql );
 		}
 	}
 	
@@ -468,70 +324,199 @@ class Document extends ObjetBDD {
 	 *
 	 * @param string $nomfile
 	 *        	: nom du fichier stocke dans le dossier temporaire
+	 *        	
 	 * @param int $id
 	 *        	: cle du document, necessaire pour recuperer le type mime
 	 */
-	function documentSent($nomfile, $id, $attached = false) {
+	
+	/**
+	 * Envoie un fichier au navigateur, pour affichage
+	 *
+	 * @param int $id
+	 *        	: cle de la photo
+	 * @param int $phototype
+	 *        	: 0 - photo originale, 1 - resolution fournie, 2 - vignette
+	 * @param boolean $attached        	
+	 * @param int $resolution
+	 *        	: resolution pour les photos redimensionnees
+	 */
+	function documentSent($id, $phototype, $attached = false, $resolution = 800) {
 		$id = $this->encodeData ( $id );
-		$nomfile = $this->encodeData ( $nomfile );
-		if (strlen ( $nomfile ) > 0 && is_numeric ( $id ) && $id > 0) {
-			$filename = $this->temp . "/" . $nomfile;
+		$filename = $this->generateFileName ( $id, $phototype, $resolution );
+		if (strlen ( $filename ) > 0 && is_numeric ( $id ) && $id > 0) {
+			// $filename = $this->temp . "/" . $nomfile;
+			if (! file_exists ( $filename ))
+				$this->writeFileImage ( $id, $phototype, $resolution );
 			if (file_exists ( $filename )) {
+				$this->_documentSent ( $filename, $id, $attached );
+			}
+		}
+	}
+	
+	/**
+	 * Fonction generant l'envoi au navigateur
+	 *
+	 * @param string $nomfile        	
+	 * @param int $id        	
+	 * @param boolean $attached        	
+	 */
+	private function _documentSent($nomfile, $id, $attached = false) {
+		/*
+		 * Lecture du type mime
+		 */
+		$data = $this->getData ( $id );
+		if (strlen ( $data ["content_type"] ) > 0) {
+			header ( "content-type: " . $data ["content_type"] );
+			header ( 'Content-Transfer-Encoding: binary' );
+			if ($attached == true)
+				header ( 'Content-Disposition: attachment; filename="' . $data ["document_nom"] . '"' );
+			
+			ob_clean ();
+			flush ();
+			readfile ( $nomfile );
+		}
+	}
+	
+	/**
+	 * Calcule le nom de la photo
+	 *
+	 * @param int $id        	
+	 * @param int $phototype
+	 *        	: type de la photo - 0 : original, 1 : photo reduite, 2 : vignette
+	 * @param number $resolution        	
+	 * @return string
+	 */
+	function generateFileName($id, $phototype, $resolution = 800) {
+		/*
+		 * Preparation du nom de la photo
+		 */
+		switch ($phototype) {
+			case 0 :
+				if (is_numeric ( $id ))
+					$data = $this->getData ( $id );
+				$filename = $this->temp . '/' . $id . "-" . $data ["document_nom"];
+				break;
+			case 1 :
+				$filename = $this->temp . '/' . $id . "x" . $resolution . ".png";
+				break;
+			case 2 :
+				$filename = $this->temp . '/' . $id . '_vignette.png';
+		}
+		return $filename;
+	}
+	
+	/**
+	 * Ecrit une photo dans un dossier temporaire, pour lien depuis navigateur
+	 *
+	 * @param int $id        	
+	 * @param $phototype :
+	 *        	0 - photo originale, 1 - photo a la resolution fournie, 2 - vignette
+	 * @param binary $document        	
+	 * @return string
+	 */
+	function writeFileImage($id, $phototype = 0, $resolution = 800) {
+		if ($id > 0 && is_numeric ( $id ) && is_numeric ( $phototype ) && is_numeric ( $resolution )) {
+			$data = $this->getData ( $id );
+			$okgenerate = false;
+			switch ($phototype) {
+				case 0 :
+					$okgenerate = true;
+					break;
+				case 2 :
+					if (in_array ( $data ["mime_type_id"], array (
+							1,
+							4,
+							5,
+							6 
+					) ))
+						$okgenerate = true;
+					break;
+				case 1 :
+					if (in_array ( $data ["mime_type_id"], array (
+							4,
+							5,
+							6 
+					) ))
+						$okgenerate = true;
+					break;
+			}
+			if ($okgenerate) {
+				// $nomPhoto = array ();
+				
+				$writeOk = false;
 				/*
-				 * Lecture du type mime
+				 * Selection de la colonne contenant la photo
 				 */
-				$data = $this->getData ( $id );
-				if (strlen ( $data ["content_type"] ) > 0) {
-					header ( "content-type: " . $data ["content_type"] );
-					header ( 'Content-Transfer-Encoding: binary' );
-					if ($attached == true)
-						header ( 'Content-Disposition: attachment; filename="' . $data ["document_nom"] . '"' );
-					
-					ob_clean ();
-					flush ();
-					readfile ( $filename );
+				$phototype == 2 ? $colonne = "thumbnail" : $colonne = "data";
+				$filename = $this->generateFileName ( $id, $phototype, $resolution );
+				if (strlen ( $filename ) > 0 && ! file_exists ( $filename )) {
+					/*
+					 * Recuperation des donnees concernant la photo
+					 */
+					// if ($i != 1)
+					$docRef = $this->getBlobReference ( $id, $colonne );
+					if (in_array ( $data ["mime_type_id"], array (
+							4,
+							5,
+							6 
+					) ) && $docRef != NULL) {
+						try {
+							$image = new Imagick ();
+							$image->readImageFile ( $docRef );
+							if ($i == 1) {
+								/*
+								 * Redimensionnement de l'image
+								 */
+								$resize = 0;
+								$geo = $image->getimagegeometry ();
+								if ($geo ["width"] > $resolution || $geo ["height"] > $resolution) {
+									$resize = 1;
+									/*
+									 * Calcul de la résolution dans les deux sens
+									 */
+									if ($geo ["width"] > $resolution) {
+										$resx = $resolution;
+										$resy = $geo ["height"] * ($resolution / $geo ["width"]);
+									} else {
+										$resy = $resolution;
+										$resx = $geo ["width"] * ($resolution / $geo ["height"]);
+									}
+								}
+								if ($resize == 1)
+									$image->resizeImage ( $resx, $resy, imagick::FILTER_LANCZOS, 1 );
+							}
+							$document = $image->getimageblob ();
+							$writeOk = true;
+						} catch ( Exception $e ) {
+						}
+						;
+					} else {
+						/*
+						 * Autres types de documents : ecriture directe du contenu
+						 */
+						// rewind ( $docRef );
+						if ($data ["mime_type_id"] == 1 && $i == 2 || $i == 0) {
+							$writeOk = true;
+							$document = stream_get_contents ( $docRef );
+							if ($document == false)
+								printr ( "erreur de lecture " . $docRef );
+						}
+					}
+					/*
+					 * Ecriture du document dans le dossier temporaire
+					 */
+					if ($writeOk == true) {
+						$handle = fopen ( $filename, 'wb' );
+						fwrite ( $handle, $document );
+						fclose ( $handle );
+					}
 				}
 			}
 		}
+		return $filename;
 	}
 }
-class DocumentUsact extends Document {
-	public $resolution = 800;
-	public $modules = array (
-			"entretien",
-			"juridique",
-			"article" 
-	);
-	
-	/**
-	 * Retourne la liste des documents associes au type (evenement, poisson, bassin) et à la clé correspondante
-	 *
-	 * @param string $type        	
-	 * @param int $id        	
-	 * @return array
-	 */
-	function getListeDocument($type, $id) {
-		if (in_array ( $type, $this->modules ) && $id > 0 && is_numeric ( $id )) {
-			$sql = "select " . $type . "_id, document_id, document_date_import,
-					document_nom, document_description, size, mime_type_id
-					from document
-					join " . $type . "_document using (document_id)
-					where " . $type . "_id = " . $id . "
-					order by document_date_import desc";
-			$liste = $this->getListeParam ( $sql );
-			/*
-			 * Stockage des photos dans le dossier temporaire
-			 */
-			foreach ( $liste as $key => $value ) {
-				$filenames = $this->writeFileImage ( $value ["document_id"], $this->resolution );
-				$liste [$key] ["photo_name"] = $this->writeFileImage ( $value ["document_id"], 0 );
-				$liste [$key] ["photo_preview"] = $this->writeFileImage ( $value ["document_id"], 1 );
-				$liste [$key] ["thumbnail_name"] = $this->writeFileImage ( $value ["document_id"], 2 );
-			}
-			return ($liste);
-		}
-	}
-}
+
 /**
  * ORM permettant de gérer toutes les tables de liaison avec la table Document
  *
