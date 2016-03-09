@@ -54,13 +54,13 @@ $(document).ready(function() {
 {section name=lst loop=$dataDoc}
 <tr>
 <td class="center">
-{if strlen($dataDoc[lst].photo_preview) > 0 }
-<a class="image-popup-no-margins" href="index.php?module=documentSent&document_id={$dataDoc[lst].document_id}&filename={$dataDoc[lst].photo_preview}" title="aperçu de la photo : {$dataDoc[lst].photo_name}">
-<img src="index.php?module=documentSent&document_id={$dataDoc[lst].document_id}&filename={$dataDoc[lst].thumbnail_name}" height="30">
+{if in_array($dataDoc[lst].mime_type_id, array(4, 5, 6)) }
+<a class="image-popup-no-margins" href="index.php?module=documentGet&document_id={$dataDoc[lst].document_id}&document_name={$dataDoc[lst].photo_preview}&attached=0&phototype=1" title="aperçu de la photo : {substr($dataDoc[lst].photo_name, strrpos($dataDoc[lst].photo_name, '/') + 1)}">
+<img src="index.php?module=documentGet&document_id={$dataDoc[lst].document_id}&document_name={$dataDoc[lst].thumbnail_name}&attached=0&phototype=2" height="30">
 </a>
-{elseif strlen($dataDoc[lst].thumbnail_name) > 0 }
-<a class="image-popup-no-margins" href="index.php?module=documentSent&document_id={$dataDoc[lst].document_id}&filename={$dataDoc[lst].thumbnail_name}" title="aperçu du document : {$dataDoc[lst].thumbnail_name}">
-<img src="index.php?module=documentSent&document_id={$dataDoc[lst].document_id}&filename={$dataDoc[lst].thumbnail_name}" height="30">
+{elseif  $dataDoc[lst].mime_type_id == 1}
+<a class="image-popup-no-margins" href="index.php?module=documentGet&document_id={$dataDoc[lst].document_id}&&document_name={$dataDoc[lst].thumbnail_name}&attached=0&phototype=2" title="aperçu du document : {substr($dataDoc[lst].thumbnail_name, strrpos($dataDoc[lst].thumbnail_name, '/') + 1)}">
+<img src="index.php?module=documentGet&document_id={$dataDoc[lst].document_id}&document_name={$dataDoc[lst].thumbnail_name}&attached=0&phototype=2" height="30">
 </a>
 {/if}
 <td>
