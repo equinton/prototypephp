@@ -3,7 +3,7 @@ include_once '../framework/identification/token.class.php';
 $token = new Token ();
 if (! isset ( $_GET ["token"] )) {
 	try {
-		$token->createToken ( "eric.quinton", 1 );
+		$token->createToken ( "eric.quinton", 3600 );
 		//echo $token->token . "<br>";
 		
 		/*

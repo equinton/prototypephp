@@ -10,9 +10,21 @@
 class Token {
 	private $privateKey = "/etc/ssl/private/ssl-cert-snakeoil.key";
 	private $pubKey = "/etc/ssl/certs/ssl-cert-snakeoil.pem";
+	/**
+	 * validityDuration : default duration validity of the token
+	 * @var int
+	 */
 	private $validityDuration = 86400;
 	private $tokenValid = false;
+	/**
+	 * $token : token generate (encode_64 from private key encryption)
+	 * @var string
+	 */
 	public $token;
+	/**
+	 * $login : login read from token
+	 * @var string
+	 */
 	public $login;
 	/**
 	 * Constructor
@@ -72,7 +84,7 @@ class Token {
 		return $tokenOk;
 	}
 	/**
-	 * Decrypt a token, and stock the login
+	 * Decrypt a token, and extract the login
 	 *
 	 * @param array $token        	
 	 */
@@ -138,7 +150,7 @@ class Token {
 	 * @throws Exception
 	 * @return string
 	 */
-	function getKey($type = "priv") {
+	private function getKey($type = "priv") {
 		$contents = "";
 		if ($type == "priv" || $type == "pub") {
 			$type == "priv" ? $filename = $this->privateKey : $filename = $this->pubKey;
