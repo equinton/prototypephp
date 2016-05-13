@@ -15,17 +15,6 @@ class Token {
 	 * @var int
 	 */
 	private $validityDuration = 86400;
-	private $tokenValid = false;
-	/**
-	 * $token : token generate (encode_64 from private key encryption)
-	 * @var string
-	 */
-	public $token;
-	/**
-	 * $login : login read from token
-	 * @var string
-	 */
-	public $login;
 	/**
 	 * Constructor
 	 *
@@ -46,7 +35,7 @@ class Token {
 	 *        	: login to transmit
 	 * @param timestamp $tokenExpire
 	 *        	: duration of validity of the token (seconds)
-	 * @return true|false
+	 * @return String : encrypted and encoded token
 	 */
 	function createToken($login, $validityDuration = -1) {
 		$tokenOk = false;
@@ -74,14 +63,14 @@ class Token {
 							"timestamp" => $data ["timestamp"] 
 					);
 					$tokenOk = true;
-					$this->token = json_encode ( $dataToken );
+					$token = json_encode ( $dataToken );
 				} else
 					throw new Exception ( "Encryption_token_not_realized" );
 			} else
 				throw new Exception ( "validity duration not numeric : " . $validityDuration );
 		} else
 			throw new Exception ( "login_empty" );
-		return $tokenOk;
+		return $token;
 	}
 	/**
 	 * Decrypt a token, and extract the login
@@ -109,17 +98,16 @@ class Token {
 					 * test expire date
 					 */
 					if ($data ["expire"] > $now) {
-						$this->login = $data ["login"];
-						$this->tokenValid = true;
+						$login = $data ["login"];
 					} else
 						throw new Exception ( 'token_expired' );
 				} else
-					throw new Exception ( "parameter_absent" );
+					throw new Exception ( "parameter_into_token_absent" );
 			} else
-				throw new Exception ( "token_rejected" );
+				throw new Exception ( "token_cannot_be_decrypted" );
 		} else
-			throw new Exception ( "token_absent" );		
-		return $this->tokenValid;
+			throw new Exception ( "token_empty" );		
+		return $login;
 	}
 	/**
 	 * Read a token encapsuled into json file
@@ -134,13 +122,6 @@ class Token {
 			return $this->openToken ( $token );
 		}
 		throw new Exception ( "Json file empty" );
-	}
-	
-	/**
-	 * Reinit the class (new reading of token)
-	 */
-	function reinit() {
-		$this->tokenValid = false;
 	}
 	
 	/**

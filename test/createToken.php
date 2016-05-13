@@ -13,7 +13,7 @@ function verifyLogin($login, $password) {
 /*
  * instanciation de la classe
  */
-$token = new Token ();
+$tokenClass = new Token ();
 if (! isset ( $_GET ["token"] ) && ! isset ( $_GET ["login"] )) {
 	/*
 	 * 1ere etape
@@ -35,12 +35,12 @@ if (! isset ( $_GET ["token"] ) && ! isset ( $_GET ["login"] )) {
 				/*
 				 * Creation du token avec une duree de validite d'une heure
 				 */
-				$token->createToken ( $_GET["login"], 3600 );
-				
+				$token = $tokenClass->createToken ( $_GET["login"], 3600 );
+				echo $token."<br>";
 				/*
 				 * Preparation du formulaire de retour du test
 				 */
-				$contenu = json_decode ( $token->token, true );
+				$contenu = json_decode ( $token, true );
 				echo '<html><form method="get" action="createToken.php">';
 				echo '<input name="token" value="' . $contenu ["token"] . '"><br>';
 				echo '<input type="submit"></form></html>';
@@ -54,8 +54,8 @@ if (! isset ( $_GET ["token"] ) && ! isset ( $_GET ["login"] )) {
 		 * Traitement du token pour lire le contenu
 		 */
 		try {
-			$token->openToken ( $_GET ["token"] );
-			echo "login : " . $token->login;
+			$login = $tokenClass->openToken ( $_GET ["token"] );
+			echo "login : " . $login;
 		} catch ( Exception $e ) {
 			echo $e->getMessage ();
 		}
