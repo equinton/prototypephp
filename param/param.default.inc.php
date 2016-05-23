@@ -58,12 +58,7 @@ $LDAP_tls = false;
 $BDD_login = "proto";
 $BDD_passwd = "proto";
 $BDD_dsn = "pgsq:host=localhost;dbname=proto";
-/*
- * Base de donnees de developpement
-*/
-$BDDDEV_login = "proto";
-$BDDDEV_passwd = "proto";
-$BDDDEV_dsn = "pgsq:host=localhost;dbname=proto";
+$BDD_schema = "public";
 /*
  * Parametres concernant SMARTY
  */
@@ -97,6 +92,7 @@ $GACL_dblogin = "proto";
 $GACL_dbpasswd = "proto";
 $GACL_aco = "appli";
 $GACL_dsn = "pgsql:host=localhost;dbname=proto";
+$GACL_schema = "gacl";
 
 /*
  * Gestion des erreurs

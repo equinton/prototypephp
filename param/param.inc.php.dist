@@ -8,7 +8,6 @@ $APPLI_modeDeveloppement = true;
 //$APPLI_notSSL = true;
 $APPLI_modeDeveloppement == true ? $ERROR_display=1 : $_ERROR_display = 0;
 $ERROR_level = E_ERROR ;
-$ADODB_debugmode = 0;
 $OBJETBDD_debugmode = 1;
 $APPLI_utf8 = true;
 
@@ -20,14 +19,8 @@ $ident_type = "BDD";
  */
 $BDD_login = "proto";
 $BDD_passwd = "proto";
-$BDD_dsn = "pgsq:host=localhost;dbname=proto;sslmode=require";
-
-/*
- * Base de donnees de developpement
-*/
-$BDDDEV_login = "proto";
-$BDDDEV_passwd = "proto";
-$BDDDEV_dsn = "pgsq:host=localhost;dbname=proto;sslmode=require";
+$BDD_dsn = "pgsql:host=localhost;dbname=proto;sslmode=require";
+$BDD_schema = "public";
 
 /*
  * Rights management, logins and logs records database
@@ -36,6 +29,7 @@ $GACL_dblogin = "proto";
 $GACL_dbpasswd = "proto";
 $GACL_aco = "appli";
 $GACL_dsn = "pgsql:host=localhost;dbname=proto;sslmode=require";
+$GACL_schema = "gacl";
 
 $APPLI_address = "http://localhost/proto";
 $APPLI_mail = "proto@domain.fr";

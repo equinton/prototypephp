@@ -164,27 +164,19 @@ if (isset ( $_SESSION ["remoteIP"] )) {
  */
 if (! isset ( $bdd )) {
 	$etaconn = true;
-	if ($APPLI_modeDeveloppement == true) {
-		try {
-			$bdd = new PDO ( $BDDDEV_dsn, $BDDDEV_login, $BDDDEV_passwd );
-		} catch ( PDOException $e ) {
+	try {
+		$bdd = new PDO ( $BDD_dsn, $BDD_login, $BDD_passwd );
+	} catch ( PDOException $e ) {
+		if ($APPLI_modeDeveloppement == true)
 			print $e->getMessage () . "<br>";
-			$etaconn = false;
-		}
-	} else {
-		try {
-			$bdd = new PDO ( $BDD_dsn, $BDD_login, $BDD_passwd );
-		} catch ( PDOException $e ) {
-			$etaconn = false;
-		}
+		$etaconn = false;
 	}
 	if ($etaconn == true) {
 		/*
 		 * Mise en place du schema par defaut
 		 */
-		$APPLI_modeDeveloppement == true ? $schema = $BDDDEV_schema : $schema = $BDD_schema;
-		if (strlen ( $schema ) > 0) {
-			$bdd->exec ( "set search_path = " . $schema );
+		if (strlen ( $BDD_schema ) > 0) {
+			$bdd->exec ( "set search_path = " . $BDD_schema );
 		}
 		/*
 		 * Connexion a la base de gestion des droits
@@ -192,6 +184,7 @@ if (! isset ( $bdd )) {
 		try {
 			$bdd_gacl = new PDO ( $GACL_dsn, $GACL_dblogin, $GACL_dbpasswd );
 		} catch ( PDOException $e ) {
+			if ($APPLI_modeDeveloppement == true)
 			print $e->getMessage () . "<br>";
 			$etaconn = false;
 		}
@@ -249,10 +242,10 @@ $log = new Log ( $bdd_gacl, $ObjetBDDParam );
 /*
  * Preparation de la gestion des droits
  */
-if (!isset ( $_SESSION ["droits"] ) )
+if (! isset ( $_SESSION ["droits"] ))
 	include "framework/identification/setDroits.php";
-
-/*
+	
+	/*
  * Chargement des fonctions specifiques
  */
 include_once 'modules/fonctions.php';
