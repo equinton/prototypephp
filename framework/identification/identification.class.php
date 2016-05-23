@@ -287,7 +287,7 @@ class LoginGestion extends ObjetBDD {
 			$res = ObjetBDD::lireParam ( $sql );
 			global $log, $LOG_duree, $message, $LANG;
 			if ($res ["login"] == $login) {
-				$log->setLog ( $login, "connexion", "db-ok - ip:" . $_SESSION ["remoteIP"] );
+				$log->setLog ( $login, "connexion", "db-ok" );
 				$message = $LANG ["message"] [10];
 				/*
 				 * Purge des anciens enregistrements dans log
@@ -295,7 +295,7 @@ class LoginGestion extends ObjetBDD {
 				$log->purge ( $LOG_duree );
 				return TRUE;
 			} else {
-				$log->setLog ( $login, "connexion", "db-ko - ip:" . $_SESSION ["remoteIP"] );
+				$log->setLog ( $login, "connexion", "db-ko" );
 				$message = $LANG ["message"] [11];
 				return FALSE;
 			}
@@ -477,7 +477,7 @@ class Log extends ObjetBDD {
 				),
 				"login" => array (
 						"type" => 0,
-						"requis" => 1 
+						"requis" => 0 
 				),
 				"nom_module" => array (
 						"type" => 0 
@@ -488,7 +488,10 @@ class Log extends ObjetBDD {
 				),
 				"commentaire" => array (
 						"type" => 0 
-				) 
+				),
+				"ipaddress" => array (
+						"type" => 0
+				)
 		);
 		if (! is_array ( $param ))
 			$param == array ();
@@ -519,6 +522,7 @@ class Log extends ObjetBDD {
 			$module = "unknown";
 		$data ["nom_module"] = $GACL_aco."-".$module;
 		$data ["log_date"] = date ( "d/m/Y H:i:s" );
+		$data ["ipaddress"] = $this->getIPClientAddress();
 		return $this->ecrire ( $data );
 	}
 	/**
@@ -534,6 +538,23 @@ class Log extends ObjetBDD {
 					where log_date < current_date - interval '" . $nbJours . " day'";
 			return $this->executeSQL ( $sql );
 		}
+	}
+	/**
+	 * Recupere l'adresse IP de l'agent
+	 */
+	function getIPClientAddress(){
+		/*
+		 * Recherche si le serveur est accessible derriere un reverse-proxy
+		 */
+		if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
+			return  $_SERVER["HTTP_X_FORWARDED_FOR"];
+			/*
+			 * Cas classique
+			 */
+		}else if (isset ($_SERVER["REMOTE_ADDR"])) {
+			return $_SERVER["REMOTE_ADDR"];
+		} else
+			return -1;
 	}
 }
 /**

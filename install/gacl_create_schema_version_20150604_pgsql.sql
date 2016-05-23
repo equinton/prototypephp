@@ -1,4 +1,5 @@
-
+create schema if not exists gacl;
+set search_path = gacl;
 
 CREATE TABLE aclacl (
                 aclaco_id INTEGER NOT NULL,
@@ -195,3 +196,5 @@ select setval('aclaco_aclaco_id_seq', (select max(aclaco_id) from aclaco));
 select setval('acllogin_acllogin_id_seq', (select max(acllogin_id) from acllogin));
 select setval('aclgroup_aclgroup_id_seq', (select max(aclgroup_id) from aclgroup));
 
+alter table log add column ipaddress varchar;
+comment on column log.ipaddress is 'Adresse IP du client';

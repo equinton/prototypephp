@@ -176,7 +176,7 @@ class ObjetBDD {
 	 * $fullDescription = 1 : tous les champs sont decrits
 	 * Defaut : 1
 	 * conserve a des fins de compatibilite
-	 * 
+	 *
 	 * @deprecated
 	 *
 	 * @var int
@@ -454,7 +454,7 @@ class ObjetBDD {
 			 */
 			$collection = $collection [0];
 			if ($this->auto_date == 1) {
-				$collection = $this->utilDatesDBVersLocale ( $this->types, $collection );
+				$collection = $this->utilDatesDBVersLocale ( $collection );
 			}
 			if ($this->codageHtml == true)
 				$collection = $this->htmlEncode ( $collection );
@@ -488,7 +488,7 @@ class ObjetBDD {
 		$collection = $this->execute ( $sql );
 		$collection = $collection [0];
 		if ($this->auto_date == 1) {
-			$collection = $this->utilDatesDBVersLocale ( $this->types, $collection );
+			$collection = $this->utilDatesDBVersLocale ( $collection );
 		}
 		if ($this->codageHtml == true)
 			$collection = $this->htmlEncode ( $collection );
@@ -713,11 +713,12 @@ class ObjetBDD {
 					$cle = $this->cle;
 				$where = $cle . "= :" . $cle;
 				$ds = array (
-						$cle->$data [$this->cle] 
+						$cle => $data [$this->cle] 
 				);
 			}
 			$sql = "select " . $cle . " from " . $this->table . " where " . $where;
 			$rs = $this->executeAsPrepared ( $sql, $ds );
+			echo "<br>";
 			if (count ( $rs ) == 0) {
 				/**
 				 * nouveau avec id passe
@@ -750,7 +751,7 @@ class ObjetBDD {
 		 * Traitement de la mise en fichier
 		 */
 		$total = count ( $data );
-
+		
 		$ds = array ();
 		if ($mode == "ajout") {
 			$sql = "insert into " . $this->table . "(";
@@ -758,7 +759,7 @@ class ObjetBDD {
 			$valeur = ") values (";
 			// echo $this->id_auto."<br>";
 			foreach ( $data as $key => $value ) {
-				//echo $key . " " . $value . "<br>";
+				// echo $key . " " . $value . "<br>";
 				
 				// Traitement de la cle automatique. Uniquement sur cle unique !
 				if ($this->id_auto == 1 && $key == $this->cle) {
@@ -890,7 +891,7 @@ class ObjetBDD {
 	function getListeParam($sql) {
 		$collection = $this->execute ( $sql );
 		if ($this->auto_date == 1)
-			$collection = $this->utilDatesDBVersLocale ( $this->types, $collection );
+			$collection = $this->utilDatesDBVersLocale ( $collection );
 		if ($this->codageHtml == true)
 			$collection = $this->htmlEncode ( $collection );
 		if ($this->toUTF8 == true)
@@ -918,7 +919,7 @@ class ObjetBDD {
 			$sql .= " order by " . $order;
 		$collection = $this->execute ( $sql );
 		if ($this->auto_date == 1)
-			$collection = $this->utilDatesDBVersLocale ( $this->types, $collection );
+			$collection = $this->utilDatesDBVersLocale ( $collection );
 		if ($this->codageHtml == true)
 			$collection = $this->htmlEncode ( $collection );
 		if ($this->toUTF8 == true)
@@ -1181,7 +1182,7 @@ class ObjetBDD {
 		$testok = true;
 		foreach ( $data as $key => $value ) {
 			/*
-			 * Verification des cles
+			 * Verification des champs numeriques
 			 */
 			if ($this->colonnes [$key] ["type"] == 1) {
 				if (strlen ( $value ) > 0 && is_numeric ( $value ) == false) {
@@ -1229,13 +1230,19 @@ class ObjetBDD {
 			/*
 			 * Verification des champs obligatoires
 			 */
-			if ($this->colonnes [$key] ["requis"] == 1 && strlen ( $data ) == 0 && $mode != "ajout") {
-				$this->errorData [] = array (
-						"code" => 4,
-						"colonne" => $value 
-				);
-				$testok = false;
-				throw new Exception ( "field required - " . $key );
+			if ($this->colonnes [$key] ["requis"] == 1 && strlen ( $value ) == 0) {
+				if ($key == $this->cle && $mode == "ajout") {
+					/*
+					 * Inhibition du controle pour la cle en mode ajout
+					 */
+				} else {
+					$this->errorData [] = array (
+							"code" => 4,
+							"colonne" => $value 
+					);
+					$testok = false;
+					throw new Exception ( "field required - " . $key );
+				}
 			}
 		}
 		
@@ -1662,7 +1669,7 @@ class ObjetBDD {
 		$collection = $this->executeAsPrepared ( $sql, $data );
 		$collection = $collection [0];
 		if ($this->auto_date == 1) {
-			$collection = $this->utilDatesDBVersLocale ( $this->types, $collection );
+			$collection = $this->utilDatesDBVersLocale ( $collection );
 		}
 		if ($this->codageHtml == true)
 			$collection = $this->htmlEncode ( $collection );
@@ -1680,7 +1687,7 @@ class ObjetBDD {
 	function getListeParamAsPrepared($sql, $data) {
 		$collection = $this->executeAsPrepared ( $sql, $data );
 		if ($this->auto_date == 1)
-			$collection = $this->utilDatesDBVersLocale ( $this->types, $collection );
+			$collection = $this->utilDatesDBVersLocale ( $collection );
 		if ($this->codageHtml == true)
 			$collection = $this->htmlEncode ( $collection );
 		if ($this->toUTF8 == true)

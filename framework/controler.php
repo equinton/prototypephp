@@ -72,13 +72,14 @@ while ( isset ( $module ) ) {
 							/*
 							 * Verification de l'identification uniquement en base de donnees
 							 */
-						} elseif ($ident_type == "BDD") {
-							$res = $loginGestion->VerifLogin ( $_REQUEST ['login'], $_REQUEST ['password'] );
-							if ($res == TRUE) {
-								$_SESSION ["login"] = $_REQUEST ["login"];
-							}
+						}
+					} elseif ($ident_type == "BDD") {
+						$res = $loginGestion->VerifLogin ( $_REQUEST ['login'], $_REQUEST ['password'] );
+						if ($res == TRUE) {
+							$_SESSION ["login"] = $_REQUEST ["login"];
 						}
 					}
+					
 					/*
 					 * Reinitialisation du menu
 					 */
@@ -132,7 +133,7 @@ while ( isset ( $module ) ) {
 		} else {
 			$droits_array = explode ( ",", $t_module ["droits"] );
 			$resident = 0;
-			foreach ( $droits_array as $key => $value ) {				
+			foreach ( $droits_array as $key => $value ) {
 				if ($_SESSION ["droits"] [$value] == 1)
 					$resident = 1;
 			}
@@ -227,13 +228,13 @@ if ($t_module ["ajax"] != 1) {
 	/*
 	 * Affichage du menu
 	 */
-	if (!isset($_SESSION["menu"])) {
+	if (! isset ( $_SESSION ["menu"] )) {
 		include_once 'framework/navigation/menu.class.php';
-		if (!isset ($menu))
-		$menu = new Menu($APPLI_menufile, $LANG);
-		$_SESSION["menu"] = $menu->generateMenu();
+		if (! isset ( $menu ))
+			$menu = new Menu ( $APPLI_menufile, $LANG );
+		$_SESSION ["menu"] = $menu->generateMenu ();
 	}
-	$smarty->assign ( "menu", $_SESSION["menu"] );
+	$smarty->assign ( "menu", $_SESSION ["menu"] );
 	if (isset ( $_SESSION ["login"] ))
 		$smarty->assign ( "isConnected", 1 );
 		/*
@@ -243,7 +244,7 @@ if ($t_module ["ajax"] != 1) {
 	 * Alerte Mode developpement
 	 */
 	if ($APPLI_modeDeveloppement == true) {
-		$texteDeveloppement = $LANG ["message"] [32] . " : " . $BDD_dsn.' - schema : '.$BDD_schema;
+		$texteDeveloppement = $LANG ["message"] [32] . " : " . $BDD_dsn . ' - schema : ' . $BDD_schema;
 		$smarty->assign ( "developpementMode", $texteDeveloppement );
 	}
 	$smarty->assign ( "moduleListe", $_SESSION ["moduleListe"] );
@@ -255,7 +256,13 @@ if ($t_module ["ajax"] != 1) {
 	 * Encodage ultime des donnees avant envoi vers le navigateur
 	 */
 	foreach ( $smarty->getTemplateVars () as $key => $value ) {
-		if (in_array($key, array("menu", "LANG", "message", "texteNews", "doc")) == false) {
+		if (in_array ( $key, array (
+				"menu",
+				"LANG",
+				"message",
+				"texteNews",
+				"doc" 
+		) ) == false) {
 			$smarty->assign ( $key, encodehtml ( $value ) );
 		}
 	}
