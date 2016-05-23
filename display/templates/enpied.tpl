@@ -1,4 +1,4 @@
-<div id="footer">
+<div class="navbar-static-bottom center" id="footer">
 {$LANG.message.23}
 <br>
 {$LANG.message.25}

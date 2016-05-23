@@ -1,4 +1,15 @@
-<h1><img src="display/images/logo.png" width="40">{$LANG.message.1}
+<div class="navbar-header">
+<div class="bandeau">
+<img src="display/images/logo.png" width="40">
+<p class="navbar-text">{$LANG.message.1}</p>
+{$menu}
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+<h1>
+<img src="display/images/logo.png" width="40">{$LANG.message.1}
 <div class="header_right">
 <a href='index.php?module=setlanguage&langue=fr'>
 <img src='display/images/drapeau_francais.png' height='20' border='0'>
@@ -20,5 +31,16 @@
 {/if}
 </div>
 </h1>
-<div class="menu">{$menu}</div>
+</div>
+</div>
+
+
+
+<div class="row">
+<div class="col-md-12"><div class="menu">{$menu}</div></div>
+</div>
+<div class="row">
+<div class="col-md-12">
 <div class="titre2">{$message}</div>
+</div>
+</div>
