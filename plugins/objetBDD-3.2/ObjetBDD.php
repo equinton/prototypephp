@@ -174,9 +174,11 @@ class ObjetBDD {
 	 * Variable permettant d'indiquer si la table
 	 * est totalement decrite dans la classe
 	 * $fullDescription = 1 : tous les champs sont decrits
-	 * Defaut : 1 
+	 * Defaut : 1
 	 * conserve a des fins de compatibilite
+	 * 
 	 * @deprecated
+	 *
 	 * @var int
 	 */
 	public $fullDescription = 1;
@@ -213,7 +215,7 @@ class ObjetBDD {
 	 * @var boolean
 	 */
 	public $toUTF8 = false;
-
+	
 	/**
 	 * Valeur du SRID pour les imports de donnees geographiques postgis
 	 * Vaut -1 si non fourni
@@ -635,7 +637,6 @@ class ObjetBDD {
 		 */
 		// if ($this->codageHtml == true)
 		$data = $this->htmlDecode ( $data );
-		
 		/*
 		 * Verification des donnees entrees
 		 */
@@ -654,8 +655,9 @@ class ObjetBDD {
 		 * Traitement des dates
 		 */
 		if ($this->auto_date == 1) {
-			$data = $this->utilDatesLocaleVersDB ( $this->types, $data );
+			$data = $this->utilDatesLocaleVersDB ( $data );
 		}
+		
 		/*
 		 * Traitement pour determiner le type de traitement (insert, update)
 		 */
@@ -748,6 +750,7 @@ class ObjetBDD {
 		 * Traitement de la mise en fichier
 		 */
 		$total = count ( $data );
+
 		$ds = array ();
 		if ($mode == "ajout") {
 			$sql = "insert into " . $this->table . "(";
@@ -755,7 +758,7 @@ class ObjetBDD {
 			$valeur = ") values (";
 			// echo $this->id_auto."<br>";
 			foreach ( $data as $key => $value ) {
-				// echo $key." ".$value."<br>";
+				//echo $key . " " . $value . "<br>";
 				
 				// Traitement de la cle automatique. Uniquement sur cle unique !
 				if ($this->id_auto == 1 && $key == $this->cle) {
@@ -840,6 +843,11 @@ class ObjetBDD {
 				}
 			}
 			$sql .= " where " . $where;
+		}
+		if ($this->debug_mode == 2) {
+			echo "sql : " . $sql . "<br>ds : ";
+			print_r ( $ds );
+			echo "<br>";
 		}
 		$rs = $this->executeAsPrepared ( $sql, $ds );
 		if ($mode == "ajout" && $this->id_auto == 1) {
@@ -1018,18 +1026,18 @@ class ObjetBDD {
 	 */
 	function formatDateLocaleVersDB($date, $type = 2) {
 		$date = ltrim ( $date );
-		$date = rtrim ( $date ); 
+		$date = rtrim ( $date );
 		/*
 		 * Separation de la date et de l'heure
 		 */
 		$temp = @explode ( " ", $date );
-		$date = $temp [0]; 
-		$heure = $temp [1]; 
+		$date = $temp [0];
+		$heure = $temp [1];
 		$j = 0;
 		do {
 			$test = @strpos ( $date, $this->sepValide [$j] );
 			if ($test === false)
-				$j ++; 
+				$j ++;
 		} while ( $j < count ( $this->sepValide ) and ($test === false) );
 		$separateurLocal = $this->sepValide [$j];
 		$temp = @explode ( $separateurLocal, $date );
@@ -1070,7 +1078,7 @@ class ObjetBDD {
 		$date = $annee . $this->separateurDB . $mois . $this->separateurDB . $jour;
 		/*
 		 * Reintegration de l'heure le cas echeant
-		 */ 
+		 */
 		if ($type == 3)
 			$date .= " " . $heure;
 		return $date;
@@ -1086,12 +1094,12 @@ class ObjetBDD {
 		/*
 		 * Suppression des espaces, tabulations et autres caracteres indesirables presents en debut et fin de chaine
 		 */
-		$date = ltrim ( $date ); 
-		$date = rtrim ( $date ); 
+		$date = ltrim ( $date );
+		$date = rtrim ( $date );
 		$temp = @explode ( " ", $date );
-		$date = $temp [0]; 
+		$date = $temp [0];
 		$heure = $temp [1];
-		$temp = @explode ( $this->separateurDB, $date );		
+		$temp = @explode ( $this->separateurDB, $date );
 		/*
 		 * Reformatage de la date
 		 */
@@ -1175,7 +1183,7 @@ class ObjetBDD {
 			/*
 			 * Verification des cles
 			 */
-			if ($this->colonnes [$key]["type"] == 1) {
+			if ($this->colonnes [$key] ["type"] == 1) {
 				if (strlen ( $value ) > 0 && is_numeric ( $value ) == false) {
 					$testok = false;
 					$this->errorData [] = array (
@@ -1189,30 +1197,30 @@ class ObjetBDD {
 			/*
 			 * Verification des longueurs des champs textes
 			 */
-			if ($this->colonnes [$key]["longueur"] > 0) {
-				if (strlen ( $value ) > $this->colonnes [$key]["longueur"]) {
+			if ($this->colonnes [$key] ["longueur"] > 0) {
+				if (strlen ( $value ) > $this->colonnes [$key] ["longueur"]) {
 					$testok = false;
 					$this->errorData [] = array (
 							"code" => 2,
 							"colonne" => $key,
 							"valeur" => $value,
-							"demande" => $this->colonnes [$key]["longueur"] 
+							"demande" => $this->colonnes [$key] ["longueur"] 
 					);
-					throw new Exception ( "string length to height (" . $this->colonnes [$key]["longueur"] . ") - " . $key . ":" . $value );
+					throw new Exception ( "string length to height (" . $this->colonnes [$key] ["longueur"] . ") - " . $key . ":" . $value );
 				}
 			}
 			
 			/*
 			 * Verification des masques (patterns)
 			 */
-			if (strlen ( $this->colonnes [$key]["pattern"] ) > 0) {
-				if (strlen ( $value ) > 0 && preg_match ( $this->colonnes [$key]["pattern"], $value ) == 0) {
+			if (strlen ( $this->colonnes [$key] ["pattern"] ) > 0) {
+				if (strlen ( $value ) > 0 && preg_match ( $this->colonnes [$key] ["pattern"], $value ) == 0) {
 					$testok = false;
 					$this->errorData [] = array (
 							"code" => 3,
 							"colonne" => $key,
 							"valeur" => $value,
-							"demande" => $this->colonnes [$key] ["pattern"]
+							"demande" => $this->colonnes [$key] ["pattern"] 
 					);
 					throw new Exception ( "pattern not compliant (" . $this->colonnes [$key] ["pattern"] . ") - " . $key . ":" . $value );
 				}
@@ -1221,7 +1229,7 @@ class ObjetBDD {
 			/*
 			 * Verification des champs obligatoires
 			 */
-			if ($this->colonnes [$key]["requis"] == 1 && strlen ( $data ) == 0) {
+			if ($this->colonnes [$key] ["requis"] == 1 && strlen ( $data ) == 0 && $mode != "ajout") {
 				$this->errorData [] = array (
 						"code" => 4,
 						"colonne" => $value 
@@ -1235,8 +1243,8 @@ class ObjetBDD {
 		 * Verification que tous les champs obligatoires soient renseignes, en mode ajout
 		 */
 		if ($mode == "ajout") {
-			foreach ( $colonnes as $key=>$colonne ) {
-				if ( $colonne["requis"] == 1 && strlen ( $data [$key] ) == 0) {
+			foreach ( $colonnes as $key => $colonne ) {
+				if ($colonne ["requis"] == 1 && strlen ( $data [$key] ) == 0) {
 					$this->errorData [] = array (
 							"code" => 4,
 							"colonne" => $key 
@@ -1528,26 +1536,26 @@ class ObjetBDD {
 		 * Assignation des valeurs par defaut
 		 */
 		foreach ( $this->colonnes as $key => $colonne ) {
-			if (strlen($colonne["defaultValue"]) > 0) {
+			if (strlen ( $colonne ["defaultValue"] ) > 0) {
 				if (is_callable ( array (
 						$this,
-						$colonne["defaultValue"]
+						$colonne ["defaultValue"] 
 				) )) {
 					/*
 					 * Appel de la fonction
 					 */
-					$data [$key] = $this->$colonne["defaultValue"] ();
+					$data [$key] = $this->$colonne ["defaultValue"] ();
 				} else {
 					/*
 					 * Attribution de la valeur par defaut
 					 */
-					$data [$key] = $colonne["defaultValue"];
+					$data [$key] = $colonne ["defaultValue"];
 				}
 			}
 			/*
 			 * Gestion de l'attribut "pere"
 			 */
-			if ($parentValue > 0 && strlen ( $colonne["parentAttrib"] ) > 0) 
+			if ($parentValue > 0 && strlen ( $colonne ["parentAttrib"] ) > 0)
 				$data [$key] = $parentValue;
 		}
 		return $data;
@@ -1640,7 +1648,7 @@ class ObjetBDD {
 		} catch ( PDOException $e ) {
 			if ($this->debug_mode > 0)
 				$this->addMessage ( $e->getMessage () );
-			throw new Exception ( $e->message );
+			throw new Exception ( $e->getMessage () );
 		}
 	}
 	/**
