@@ -2,33 +2,24 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<!-- Jquery -->
 <script src="../display/javascript/jquery-1.12.4.min.js"></script>
 <script src="../display/javascript/jquery-ui.min.js"></script>
 
+<!-- Bootstrap -->
 <link rel="stylesheet"	href="bootstrap/css/bootstrap.min.css">
-
-<!-- Optional theme -->
 <link rel="stylesheet"	href="bootstrap/css/bootstrap-theme.min.css">
-
 <script	src="bootstrap/js/bootstrap.min.js"></script>
-
-<!-- Datatables -->
-<link rel="stylesheet" type="text/css" href="DataTables-1.10.12/media/css/jquery.dataTables.min.css" />
-<link rel="stylesheet" type="text/css" href="DataTables-1.10.12/media/css/dataTables.bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="DataTables-1.10.12/extensions/Buttons/css/buttons.dataTables.min.css" />
-<link rel="stylesheet" type="text/css" href="DataTables-1.10.12/extensions/Buttons/css/buttons.bootstrap.min.css" />
-
-<script type="text/javascript" src="DataTables-1.10.12/media/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="DataTables-1.10.12/media/js/dataTables.bootstrap.min.js"></script>
-<script type="text/javascript" src="DataTables-1.10.12/extensions/Buttons/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="DataTables-1.10.12/extensions/Buttons/js/buttons.bootstrap.min.js"></script>
 
 <!-- extension pour le menu -->
 <script src="smartmenus-1.0.0/jquery.smartmenus.min.js" type="text/javascript"></script>
 <script src="smartmenus-1.0.0/addons/bootstrap/jquery.smartmenus.bootstrap.min.js" type="text/javascript"></script>
 
-
-
+<!-- Datatables -->
+<link rel="stylesheet" type="text/css" href="DataTables-1.10.12/media/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="DataTables-1.10.12/media/css/dataTables.bootstrap.min.css" />
+<script type="text/javascript" src="DataTables-1.10.12/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="DataTables-1.10.12/media/js/dataTables.bootstrap.min.js"></script>
 
 <title>Test</title>
 </head>
@@ -39,14 +30,8 @@
 					var table = $('#table_id').DataTable({
 						language : {
 							url : 'fr_FR.json'
-						},
-						buttons : [
-						
-						'copy' ]
-
+						}
 					});
-					table.buttons().container().appendTo(
-							$('.col-sm-6:eq(0)', table.table().container()));
 				});
 	</script>
 
@@ -54,7 +39,7 @@
 			<h1>
 				<img src="../display/images/logo.png" width="40"> Titre1
 			</h1>
-	<div class="navbar navbar-default" role="navigation">
+	<div class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
       <span class="sr-only">Toggle navigation</span>

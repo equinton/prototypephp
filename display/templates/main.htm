@@ -1,28 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{$LANG.message.1}</title>
-<link rel="stylesheet" href="{$fds}" type="text/css">
 <link rel="icon" type="image/png" href="favicon.png" />
+{include file="main_js.tpl"}
 </head>
 <body>
-{include file="jquery.tpl"}
-<script language="javascript" SRC="display/javascript/fonctions.js"></script>
-<nav class="navbar navbar-default">
+<div id="wrap">
 <div class="container-fluid">
-
-<!-- <div class="container-fluid">-->
-
-<div class="row">
-<div class="span12">
 {include file=$entete}
 {include file=$corps}
+</div>
+</div>
+<div id="footer">
 {include file=$enpied}
 </div>
-</div>
-</div>
-</nav>
 </body>
 </html>

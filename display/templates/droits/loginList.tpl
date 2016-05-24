@@ -1,13 +1,11 @@
 <h2>Liste des logins déclarés dans le module de gestion des droits</h2>
+	<div class="row">
+	<div class="col-md-6">
 <a href="index.php?module=aclloginChange&acllogin_id=0">
 Nouveau login...
 </a>
-<script>
-$(document).ready(function() { 
-setDataTables("loginListe", true, true, true);
-} );
-</script>
-<table id="loginListe" class="tableliste">
+<table id="loginListe" class="table table-bordered table-hover datatable" id="table_id"
+		data-order='[[ 1, "asc" ]]' data-page-length='25'>
 <thead>
 <tr>
 <th>Utilisateur</th>
@@ -27,3 +25,5 @@ setDataTables("loginListe", true, true, true);
 {/section}
 </tbody>
 </table>
+</div>
+</div>

@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+/* Wrapper for page content to push down footer */
+html,
+body {
+  height: 99%;
+}
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 99%;
+  /* Negative indent footer by its height */
+  margin: 0 auto -80px;
+  /* Pad bottom by footer height */
+  padding: 0 0 80px;
+}
+#footer {
+  height: 80px;
+}

@@ -1,13 +1,12 @@
 <h2>Liste des groupes de logins</h2>
+	<div class="row">
+	<div class="col-md-6">
 <a href="index.php?module=groupChange&aclgroup_id=0">
 Nouveau groupe racine...
 </a>
-<script>
-$(document).ready(function() { 
-setDataTables("groupListe");
-} );
-</script>
-<table id="groupListe" class="tableliste">
+
+<table id="groupListe" class="table table-bordered table-hover datatable" 
+		data-order='[[ 1, "asc" ]]' data-page-length='25'>
 <thead>
 <tr>
 <th>Nom du groupe</th>
@@ -35,3 +34,5 @@ setDataTables("groupListe");
 {/section}
 </tbody>
 </table>
+</div>
+</div>

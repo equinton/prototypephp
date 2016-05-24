@@ -1,8 +1,10 @@
 <h2>Liste des applications disponibles dans le module de gestion des droits</h2>
+	<div class="row">
+	<div class="col-md-6">
 <a href="index.php?module=appliChange&aclappli_id=0">
 Nouvelle application...
 </a>
-<table id="appliListe" class="tableliste">
+<table id="appliListe" class="table table-bordered table-hover datatable" data-order='[[ 0, "asc" ]]' data-page-length='25'>
 <thead>
 <tr>
 <th>Nom de l'application</th>
@@ -22,3 +24,5 @@ Nouvelle application...
 {/section}
 </tbody>
 </table>
+</div>
+</div>

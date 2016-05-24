@@ -33,11 +33,11 @@ class Menu {
 	 * @return string
 	 */
 	function generateMenu() {
-		$this->menuList = "<ul>";
+		//$this->menuList = "<ul>";
 		foreach ( $this->menuArray ["item"] as $key => $value ) {
 			$this->menuList .= $this->lireItem ( $value );
 		}
-		$this->menuList .= "</ul>";
+		//$this->menuList .= "</ul>";
 		return $this->menuList;
 	}
 	/**
@@ -81,7 +81,7 @@ class Menu {
 				/*
 				 * Il s'agit d'un tableau imbrique
 				 */
-				$texte .= "<ul>";
+				$texte .= '<ul class="dropdown-menu">';
 				if (count ( $valeur ["item"] ) == 1) {
 					$texte .= $this->lireItem ( $valeur ["item"] );
 				} else {
