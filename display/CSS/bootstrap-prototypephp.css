@@ -1,4 +1,10 @@
 @CHARSET "UTF-8";
+/*
+Couleurs IRSTEA :
+marine : 	#003A80; rgb(0,58,128)
+ocean:		#009EE0; rgb(0,158,224)
+prairie :	#A4C400; rgb(164,196,0)
+*/
 /* Wrapper for page content to push down footer */
 html,
 body {
@@ -15,4 +21,34 @@ body {
 }
 #footer {
   height: 80px;
+}
+.form-horizontal {
+	border-style: solid;
+	border-width: 1px;
+	/*background:  #98c1e9;*/
+	background-color: rgba(0,158,224, 0.3);
+}
+.center {
+	text-align: center;
+}
+
+.right {
+	text-align: right;
+}
+
+.textareaDisplay {
+	white-space:pre-wrap;
+}
+.red {
+	color: red;
+}
+.blue {
+	color: #003A80;;
+}
+.green {
+	color: #A4C400;
+}
+.message {
+	font-style: italic;
+	color: #003A80;
 }

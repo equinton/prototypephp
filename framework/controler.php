@@ -20,6 +20,11 @@ if (check_encoding ( $_REQUEST ) == false) {
  * Recuperation du module
  */
 unset ( $module );
+/**
+ * Generation du module a partir de moduleBase et action
+ */
+if (isset($_REQUEST["moduleBase"])&&isset($_REQUEST["action"]))
+	$_REQUEST["module"] = $_REQUEST["moduleBase"].$_REQUEST["action"];
 if (isset ( $_REQUEST ["module"] ) && strlen ( $_REQUEST ["module"] ) > 0) {
 	$module = $_REQUEST ["module"];
 } else {
@@ -37,6 +42,8 @@ while ( isset ( $module ) ) {
 	 */
 	$t_module = array ();
 	$t_module = $navigation->getModule ( $module );
+	if (count($t_module) == 0) 
+		$message = $LANG["message"][35]." ($module)";
 	/*
 	 * Verification si le login est requis
 	 */

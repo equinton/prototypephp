@@ -1,4 +1,4 @@
-	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 	
 		<div class="navbar-header">
@@ -26,15 +26,21 @@
 			<a href='index.php?module=loginChangePassword'> <img
 				src='display/images/key.png' height='20' border='0'>
 			</a> &nbsp;
-			<img src='display/images/key_green.png' height='20' border='0'
-				title="Vous êtes connecté">
+{if $isConnected == 1}
+<a href="index.php?module="disconnect"></a>
+<img src='display/images/key_green.png' height='20' border='0' title="{$LANG['message'].33}"></a>
+{else}
+<a href="index.php?module="connexion">
+<img src='display/images/key_red.png' height='20' border='0' title="{$LANG['message'].8}">
+></a>
+{/if}			
 		</ul>
 	</div>
 </div>
 <div class="container-fluid">
 <div class="row">
 	<div class="col-md-12">
-		<p>{$message}</p>
+		<p class="message">{$message}</p>
 	</div>
 </div>
 </div>

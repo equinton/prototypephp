@@ -33,6 +33,7 @@ class Menu {
 	 * @return string
 	 */
 	function generateMenu() {
+		$this->menuList = "";
 		//$this->menuList = "<ul>";
 		foreach ( $this->menuArray ["item"] as $key => $value ) {
 			$this->menuList .= $this->lireItem ( $value );
