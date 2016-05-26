@@ -96,6 +96,7 @@ $LANG["message"][32] = "Mode développement - base de données";
 $LANG["message"][33] = "Vous êtes connecté";
 $LANG["message"][34] = "Valeur numérique...";
 $LANG["message"][35] = "Le module demandé n'existe pas";
+$LANG["message"][36] = "Donnée obligatoire";
 
 $LANG["message"]["yes"] = "oui";
 $LANG["message"]["no"] = "non";

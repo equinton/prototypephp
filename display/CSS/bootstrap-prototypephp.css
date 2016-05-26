@@ -52,3 +52,9 @@ body {
 	font-style: italic;
 	color: #003A80;
 }
+/* italique gris petit*/
+.messagebas {
+	color: #A4C400;
+	font-size: small;
+	font-style: italic;
+}

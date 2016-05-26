@@ -1,8 +1,7 @@
 <h2>Modification d'une application (module de gestion des droits)</h2>
-
-<a href="index.php?module=appliList">Retour à la liste des applications</a>
 <div class="row">
 <div class="col-md-6">
+<a href="index.php?module=appliList">Retour à la liste des applications</a>
 <form class="form-horizontal protoform" id="appliForm" method="post" action="index.php">
 <input type="hidden" name="aclappli_id" value="{$data.aclappli_id}">
 <input type="hidden" name="moduleBase" value="appli">
@@ -21,17 +20,15 @@
 <input id="applidetail" type="text" class="form-control" name="applidetail" value="{$data.applidetail}">
 </div>
 </div>
-<div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
+<div class="form-group center">
       <button type="submit" class="btn btn-primary button-valid">{$LANG["message"].19}</button>
       {if $data.aclappli_id > 0 }
       <button class="btn btn-danger button-delete">{$LANG["message"].20}</button>
       {/if}
-    </div>
-  </div>
+ </div>
 
 </form>
 </div>
 </div>
 
-<span class="red">*</span><span class="green">Champ obligatoire</span>
+<span class="red">*</span><span class="messagebas">{$LANG["message"].36}</span>

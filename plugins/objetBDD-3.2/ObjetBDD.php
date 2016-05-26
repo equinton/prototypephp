@@ -88,6 +88,15 @@ class ObjetBDD {
 	 * @public $keys : tableau des cles, si cles multiples
 	 */
 	public $keys;
+	/**
+	 *
+	 * @var $parentAttrib : nom de l'attribut referencant l'enregistrement pere
+	 */
+	public $parentAttrib;
+	/**
+	 *
+	 * @var $cleMultiple : 1 : plusieurs attributs sont utilises pour identifier l'enregistrement
+	 */
 	public $cleMultiple = 0;
 	/**
 	 * @public $id_auto : booleen definissant le type d'id de la table (0=non auto, 1=auto, auto gere par valeur max())
@@ -236,6 +245,8 @@ class ObjetBDD {
 	 */
 	public $transformComma = 1;
 	
+	private $lastResultExec = false;
+	
 	/**
 	 * ObjetBDD
 	 * Fonction d'initialisation de la classe
@@ -278,6 +289,11 @@ class ObjetBDD {
 					$nbcle ++;
 					$this->cle = $key;
 				}
+				/*
+				 * Affectation de l'attribut parent
+				 */
+				if (strlen ( $value ["parentAttrib"] ) > 0)
+					$this->parentAttrib = $value ["parentAttrib"];
 			}
 			
 			/*
@@ -718,7 +734,6 @@ class ObjetBDD {
 			}
 			$sql = "select " . $cle . " from " . $this->table . " where " . $where;
 			$rs = $this->executeAsPrepared ( $sql, $ds );
-			echo "<br>";
 			if (count ( $rs ) == 0) {
 				/**
 				 * nouveau avec id passe
@@ -764,49 +779,54 @@ class ObjetBDD {
 				// Traitement de la cle automatique. Uniquement sur cle unique !
 				if ($this->id_auto == 1 && $key == $this->cle) {
 					// on utilise la cle automatique, et le champ courant est la cle... On ne fait rien !
-				} elseif ($this->id_auto == 2 && $key == $this->cle) {
-					if ($i > 0) {
-						$sql .= ", ";
-						$valeur .= ", ";
-					}
-					// On traite la clé automatique gérée par le max()
-					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle ) ) > 0)
-						$cle = $this->quoteIdentifier . $this->cle . $this->quoteIdentifier;
-					else
-						$cle = $this->cle;
-					$sqlmax = 'select max(' . $cle . ') from ' . $this->table;
-					$rs = $this->execute ( $sqlmax );
-					$temp = $rs->fields;
-					$cle = $temp [$this->cle] + 1;
-					if ($i > 0) {
-						$sql .= ", ";
-						$valeur .= ", ";
-					}
-					$i ++;
-					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) ) > 0)
-						$key = $this->quoteIdentifier . $key . $this->quoteIdentifier;
-					$sql .= $key;
-					$valeur .= $cle;
 				} else {
-					if ($i > 0) {
-						$sql .= ", ";
-						$valeur .= ", ";
+					if ($this->id_auto == 2 && $key == $this->cle) {
+						if ($i > 0) {
+							$sql .= ", ";
+							$valeur .= ", ";
+						}
+						
+						// On traite la clé automatique gérée par le max()
+						if (strlen ( preg_replace ( "#[^A-Z]+#", "", $this->cle ) ) > 0)
+							$cle = $this->quoteIdentifier . $this->cle . $this->quoteIdentifier;
+						else
+							$cle = $this->cle;
+						$sqlmax = 'select max(' . $cle . ') from ' . $this->table;
+						$rs = $this->execute ( $sqlmax );
+						$temp = $rs->fields;
+						$value = $temp [$this->cle] + 1;
+						if ($i > 0) {
+							$sql .= ", ";
+							$valeur .= ", ";
+						}
+						$sql .= $cle;
+						$valeur .=":".$key;
+						$ds[$key] = $value;
+						$i ++;
+					} else {
+						if (strlen ( $value ) > 0) {
+							
+							if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) ) > 0)
+								$cle = $this->quoteIdentifier . $key . $this->quoteIdentifier;
+							if ($i > 0) {
+								$sql .= ", ";
+								$valeur .= ", ";
+							}
+							$i ++;
+							if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) ) > 0)
+								$key = $this->quoteIdentifier . $key . $this->quoteIdentifier;
+							$sql .= $key;
+							if ($this->colonnes [$key] ["type"] == 4) {
+								$valeur .= "ST_GeomFromText( :" . $key . " ," . $this->srid . ")";
+							} else
+								$valeur .= ":" . $key;
+							$ds [$key] = $value;
+						}
 					}
-					$i ++;
-					if (strlen ( preg_replace ( "#[^A-Z]+#", "", $key ) ) > 0)
-						$key = $this->quoteIdentifier . $key . $this->quoteIdentifier;
-					$sql .= $key;
-					if ($value == '' || is_null ( $value )) {
-						$ds [$key] = "NULL";
-					} else
-						$ds [$key] = $value;
-					if ($this->colonnes [$key] ["type"] == 4 && $ds [$key] != "NULL") {
-						$valeur .= "ST_GeomFromText( :" . $key . " ," . $this->srid . ")";
-					} else
-						$valeur .= ":" . $key;
 				}
 			}
 			$sql .= $valeur . ")";
+			
 			/*
 			 * On rajoute la recuperation de la cle avec postgresql
 			 */
@@ -859,8 +879,8 @@ class ObjetBDD {
 				$ret = $last_id [0] ['last_id'];
 			}
 		} else {
-			$test = count ( $rs );
-			if ($test > 0) {
+			
+			if ($this->lastResultExec ) {
 				if ($this->cleMultiple == 1) {
 					$ret = 1;
 				} else {
@@ -1392,6 +1412,13 @@ class ObjetBDD {
 	 *         Ne fonctionne que si la table ne possede que deux champs numeriques
 	 */
 	function ecrireTableNN($nomTable, $nomCle1, $nomCle2, $id, $lignes) {
+		if ($this->debug_mode == 2) {
+			echo "ecrireTableNN - table : $nomtable<br>";
+			echo "cle1 : $nomCle1<br>";
+			echo "cle2 : $nomCle2<br>";
+			echo "id : $id<br>";
+			printr($lignes);
+		}
 		/* Verification des types */
 		if (strlen ( $id ) == 0) {
 			throw new Exception ( "key is empty" );
@@ -1441,6 +1468,14 @@ class ObjetBDD {
 		// Calcul des tableaux de suppression ou de creation
 		$suppr = array_diff ( $orig1, $intersect );
 		$creation = array_diff ( $lignes, $intersect );
+		if ($this->debug_mode == 2) {
+			echo "intersect : ";
+			printr ($intersect);
+			echo "suppr : ";
+			printr ($suppr);
+			echo "creation : ";
+			printr ($creation);
+		}
 		// Lancement des mises en fichier
 		// Gestion des suppressions
 		if (count ( $suppr ) > 0) {
@@ -1450,7 +1485,6 @@ class ObjetBDD {
 				/*
 				 * Execution de la requete
 				 */
-				$res = $stmt->execute ( $data );
 				foreach ( $suppr as $key => $value ) {
 					$ds = array (
 							"key2" => $value 
@@ -1460,7 +1494,7 @@ class ObjetBDD {
 			} catch ( PDOException $e ) {
 				if ($this->debug_mode > 0)
 					$this->addMessage ( $e->getMessage () );
-				throw new Exception ( $e->message );
+				throw new Exception ( $e->getMessage() );
 			}
 		}
 		/*
@@ -1473,7 +1507,7 @@ class ObjetBDD {
 				/*
 				 * Execution de la requete
 				 */
-				foreach ( $suppr as $key => $value ) {
+				foreach ( $creation as $key => $value ) {
 					$ds = array (
 							"id" => $id,
 							"key2" => $value 
@@ -1483,7 +1517,7 @@ class ObjetBDD {
 			} catch ( PDOException $e ) {
 				if ($this->debug_mode > 0)
 					$this->addMessage ( $e->getMessage () );
-				throw new Exception ( $e->message );
+				throw new Exception ( $e->getMessage() );
 			}
 		}
 	}
@@ -1642,17 +1676,22 @@ class ObjetBDD {
 	 * @return s array : tableau des resultats
 	 */
 	function executeAsPrepared($sql, $data, $onlyExecute = false) {
+		if ($this->debug_mode == 2) {
+			echo "executeAsPrepared - $sql<br>";
+			printr($data);
+		}
 		try {
 			$stmt = $this->connection->prepare ( $sql );
 			/*
 			 * Execution de la requete
 			 */
-			$res = $stmt->execute ( $data );
-			if ($res && $onlyExecute == false) {
+			$this->lastResultExec = $stmt->execute ( $data );
+			if ( $this->lastResultExec && $onlyExecute == false) {
 				return $stmt->fetchAll ( PDO::FETCH_ASSOC );
 			} else
-				return $res;
+				return $this->lastResultExec;
 		} catch ( PDOException $e ) {
+			$this->lastResultExec = false;
 			if ($this->debug_mode > 0)
 				$this->addMessage ( $e->getMessage () );
 			throw new Exception ( $e->getMessage () );

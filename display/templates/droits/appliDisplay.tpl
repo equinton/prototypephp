@@ -4,6 +4,7 @@
 {$data.appli} ({$data.applidetail})
 </a>
 </h2>
+<div class="col-md-6">
 <a href="index.php?module=appliChange&aclappli_id={$data.aclappli_id}">
 <img src="display/images/edit.gif" height="25">
 Modifier...
@@ -12,7 +13,7 @@ Modifier...
 <img src="display/images/new.png" height="25">
 Nouveau droit...
 </a>
-<table id="acoliste" class="tableliste">
+<table id="acoliste" class="table table-bordered table-hover">
 <thead>
 <tr>
 <th>Nom du droit d'accès</th>
@@ -30,3 +31,4 @@ Nouveau droit...
 {/section}
 </tbody>
 </table>
+</div>
