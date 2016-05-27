@@ -23,8 +23,8 @@ unset ( $module );
 /**
  * Generation du module a partir de moduleBase et action
  */
-if (isset($_REQUEST["moduleBase"])&&isset($_REQUEST["action"]))
-	$_REQUEST["module"] = $_REQUEST["moduleBase"].$_REQUEST["action"];
+if (isset ( $_REQUEST ["moduleBase"] ) && isset ( $_REQUEST ["action"] ))
+	$_REQUEST ["module"] = $_REQUEST ["moduleBase"] . $_REQUEST ["action"];
 if (isset ( $_REQUEST ["module"] ) && strlen ( $_REQUEST ["module"] ) > 0) {
 	$module = $_REQUEST ["module"];
 } else {
@@ -42,9 +42,9 @@ while ( isset ( $module ) ) {
 	 */
 	$t_module = array ();
 	$t_module = $navigation->getModule ( $module );
-	if (count($t_module) == 0) 
-		$message = $LANG["message"][35]." ($module)";
-	/*
+	if (count ( $t_module ) == 0)
+		$message = $LANG ["message"] [35] . " ($module)";
+		/*
 	 * Verification si le login est requis
 	 */
 	if (strlen ( $t_module ["droits"] ) > 1 || $t_module ["loginrequis"] == 1 || isset ( $_REQUEST ["login"] )) {
@@ -167,7 +167,16 @@ while ( isset ( $module ) ) {
 	/*
 	 * Enregistrement de l'acces au module
 	 */
-	$log->setLog ( $_SESSION ["login"], $module, $motifErreur );
+	try {
+		$log->setLog ( $_SESSION ["login"], $module, $motifErreur );
+	} catch ( Exception $e ) {
+		if ($OBJETBDD_debugmode > 0) {
+			$message = $dataClass->getErrorData ( 1 );
+		} else
+			$message = $LANG ["message"] [38];
+		if ($ERROR_display == 1)
+			$message .= "<br>" . $e->getMessage ();
+	}
 	
 	/*
 	 * fin d'analyse du module

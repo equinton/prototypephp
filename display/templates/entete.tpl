@@ -24,15 +24,15 @@
 				src='display/images/drapeau_anglais.png' height='20' border='0'>
 			</a> &nbsp;
 			<a href='index.php?module=loginChangePassword'> <img
-				src='display/images/key.png' height='20' border='0'>
+				src='display/images/key.png' height='20' border='0' title="{$LANG["login"][31]}">
 			</a> &nbsp;
 {if $isConnected == 1}
-<a href="index.php?module="disconnect"></a>
+<a href="index.php?module=disconnect">
 <img src='display/images/key_green.png' height='20' border='0' title="{$LANG['message'].33}"></a>
 {else}
-<a href="index.php?module="connexion">
+<a href="index.php?module=connexion">
 <img src='display/images/key_red.png' height='20' border='0' title="{$LANG['message'].8}">
-></a>
+</a>
 {/if}			
 		</ul>
 	</div>

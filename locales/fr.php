@@ -67,7 +67,7 @@ $LANG["message"][4] = "Suppression effectuée";
 $LANG["message"][5] = "Enregistrement effectué";
 $LANG["message"][6] = "Vidage effectué";
 $LANG["message"][7] = "Vous êtes maintenant déconnecté";
-$LANG["message"][8] = "Vous n'êtes pas connecté";
+$LANG["message"][8] = "Connexion";
 $LANG["message"][9] = "Vous n'avez pas le droit d'accéder à cette fonction";
 $LANG["message"][10] = "Identification réussie !";
 $LANG["message"][11] = "Identification refusée";
@@ -93,10 +93,13 @@ $LANG["message"][29] = "Echec de connexion à la base de données de gestion des
 $LANG["message"][30] = "Champ obligatoire";
 $LANG["message"][31] = "Confirmez-vous la suppression ?";
 $LANG["message"][32] = "Mode développement - base de données";
-$LANG["message"][33] = "Vous êtes connecté";
+$LANG["message"][33] = "Déconnexion";
 $LANG["message"][34] = "Valeur numérique...";
 $LANG["message"][35] = "Le module demandé n'existe pas";
 $LANG["message"][36] = "Donnée obligatoire";
+$LANG["message"][37] = "Erreur de lecture des informations dans la base de données";
+$LANG["message"][38] = "Erreur d'écriture dans le fichier de traces";
+
 
 $LANG["message"]["yes"] = "oui";
 $LANG["message"]["no"] = "non";
@@ -127,6 +130,13 @@ $LANG["login"][24] = "Nouveau mot de passe";
 $LANG["login"][25] = "Le mot de passe doit avoir une longueur minimale de 8 caractères<br>
 Il doit comprendre au minimum 3 types de caractères différents<br>
 (minuscule, majuscule, chiffre, ponctuation et autre symboles)";
+$LANG["login"][26] = "Droits attribués";
+$LANG["login"][27] ="Modification d'un login (module de gestion des droits)";
+$LANG["login"][28] ="Retour à la liste des logins";
+$LANG["login"][29] ="Nom de l'utilisateur";
+$LANG["login"][30] ="Login utilisé";
+$LANG["login"][31] ="Modifier le mot de passe";
+$LANG["login"][32] ="";
 
 $LANG["ObjetBDDError"][0] = "Le champ ";
 $LANG["ObjetBDDError"][1] = " n'est pas numerique.";

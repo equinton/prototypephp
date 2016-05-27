@@ -1,36 +1,69 @@
-<fieldset class="scheduled-border">
-	<legend class="scheduled-border">Saisie/modification d'un compte</legend>
-	<form class="form-horizontal" method="post" action="index.php">
-	<input type="hidden" name="id" value="{$data.id}">
-	<input type="hidden" name="module" value="loginwrite">
-	<input type="hidden" name="password" value="{$data.password}">
+<h2>Saisie/modification d'un compte</h2>
+<div class="row">
+<div class="col-lg-6">
+<a href="index.php?module=loginList">Retour à la liste des logins</a>
+
+<form class="form-horizontal protoform" method="post" action="index.php">
+<input type="hidden" name="moduleBase" value="login">
+<input type="hidden" name="action" value="Write">
+<input type="hidden" name="id" value="{$data.id}">
+<input type="hidden" name="password" value="{$data.password}">
 	
 
 <div class="form-group">
-<label for="login" class="col-sm-2 control-label">{$LANG.login.0} :</label>
-<div class="col-sm-4">
-<input id="login" name="login" value="{$data.login}" autofocus>
+<label for="login" class="control-label col-md-4">{$LANG.login.0} <span class="red">*</span> :</label>
+<div class="col-md-8">
+<input id="login" type="text" class="form-control" name="login" value="{$data.login}" autofocus>
 </div>
 </div>
 
 <div class="form-group">
-<label for="nom" class="col-sm-2 control-label">{$LANG.login.9} : </label>
-<div class="col-sm-4">
-<input id="nom" name="nom" value="{$data.nom}"></div>
+<label for="nom" class="col-md-4 control-label">{$LANG.login.9} : </label>
+<div class="col-md-8">
+<input id="nom" type="text" class="form-control" name="nom" value="{$data.nom}"></div>
 </div>
 <div class="form-group">
-<label for="prenom" class="col-sm-2 control-label">{$LANG.login.10} : </label>
-<div class="col-sm-4"><input id="prenom" name="prenom" value="{$data.prenom}"></div>
+<label for="prenom" class="col-md-4 control-label">{$LANG.login.10} : </label>
+<div class="col-md-8">
+<input id="prenom" type="text" class="form-control" name="prenom" value="{$data.prenom}">
 </div>
-<br><label for="mail">{$LANG.login.8} : </label><input type="email" id="mail" class="form-control" name="mail" value="{$data.mail}"> 
-<br><label for="datemodif">{$LANG.login.11} : </label><input class="form-control" type="date" id="datemodif" name="datemodif" value="{$data.datemodif}" readonly>
-<br><label for="pass1">{$LANG.login.1} : </label> <input type="password" autocomplete="off" id="pass1" name="pass1" onchange="verifieMdp(this.form.pass1, this.form.pass2)">
-<label for="pass2">{$LANG.login.12}</label> 
-<input type="password" id="pass2" autocomplete="off" name="pass2" onchange="verifieMdp(this.form.pass1, this.form.pass2)">
-<br><label for="generate">{$LANG.login.21}</label> 
-<input id=generate" type="button" name="generate" value="{$LANG.login.22}" onclick="getPassword('pass1', 'pass2', 'motdepasse')">
-	<input name="motdepasse" id="motdepasse" size="20">
-<br><label for="actif">{$LANG.login.13}</label>
+</div>
+<div class="form-group">
+<label for="mail" class="col-md-4 control-label">{$LANG.login.8} : </label>
+<div class="col-md-8">
+<input type="email" id="mail" class="form-control" name="mail" value="{$data.mail}"> 
+</div>
+</div>
+<div class="form-group">
+<label for="datemodif" class="col-md-4 control-label">{$LANG.login.11} : </label>
+<div class="col-md-8">
+<input class="form-control" type="date" id="datemodif" name="datemodif" value="{$data.datemodif}" readonly>
+</div>
+</div>
+<div class="form-group">
+<label for="pass1" class="col-md-4 control-label">{$LANG.login.1} : </label>
+<div class="col-md-8">
+<input class="form-control" type="password" autocomplete="off" id="pass1" name="pass1" onchange="verifieMdp(this.form.pass1, this.form.pass2)">
+</div>
+</div>
+<div class="form-group">
+<label for="pass2" class="col-md-4 control-label">{$LANG.login.12}</label> 
+<div class="col-md-8">
+<input type="password" class="form-control" id="pass2" autocomplete="off" name="pass2" onchange="verifieMdp(this.form.pass1, this.form.pass2)">
+</div>
+</div>
+<div class="form-group">
+<label for="generate" class="col-md-4 control-label">{$LANG.login.21}</label> 
+<div class="col-md-2">
+<input id="generate" type="button" class="btn btn-info" name="generate" value="{$LANG.login.22}" onclick="getPassword('pass1', 'pass2', 'motdepasse')">
+</div>
+<div class="col-md-6">
+<label for="motdepasse" class="sr-only">Mot de passe généré</label>
+<input name="motdepasse" id="motdepasse" size="20">
+</div>
+</div>
+<div class="form-group">
+<label for="actif" class="col-md-4 control-label">{$LANG.login.13}</label>
 <span id="actif">
 <label class="radio-inline">
 <input type="radio" name="actif" value="1" {if $data.actif == 1}checked{/if}>{$LANG.message.yes}
@@ -38,19 +71,16 @@
 <label class="radio-inline">
 <input type="radio" name="actif" value="0" {if $data.actif == 0}checked{/if}>{$LANG.message.no}
 </label>
-		
 </span>
-<button class="btn btn-default" type="submit">{$LANG.message.19}</button>
+</div>
+<div class="form-group center">
+      <button type="submit" class="btn btn-primary button-valid">{$LANG["message"].19}</button>
+      {if $data.id > 0 }
+      <button class="btn btn-danger button-delete">{$LANG["message"].20}</button>
+      {/if}
+ </div>
 </form>
-
-{if $data.id>0}
-<form action="index.php" method="post" onSubmit='return confirmSuppression()'>
-<input type="hidden" name="id" value="{$data.id}">
-<input type="hidden" name="module" value="logindelete">
-<button type="button" class="btn btn-danger" type="submit">{$LANG.message.20}</button>
-</form>
-{/if}
-
-</fieldset>
-
+</div>
+</div>
+<span class="red">*</span><span class="messagebas">{$LANG["message"].36}</span>
 

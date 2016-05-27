@@ -1,45 +1,42 @@
-<h2>Modification d'un login (module de gestion des droits)</h2>
+<h2>{$LANG["login"][27]}</h2>
+<div class="row">
+<div class="col-md-6">
+<a href="index.php?module=aclloginList">{$LANG["login"][28]}</a>
 
-<a href="index.php?module=aclloginList">Retour à la liste des logins</a>
-<div class="formSaisie">
-<div>
-
-<form id="loginForm" method="post" action="index.php?module=aclloginWrite">
+<form class="form-horizontal protoform" id="loginForm" method="post" action="index.php">
+<input type="hidden" name="moduleBase" value="acllogin">
+<input type="hidden" name="action" value="Write">
 <input type="hidden" name="acllogin_id" value="{$data.acllogin_id}">
-<dl>
-<dt>Nom de l'utilisateur <span class="red">*</span> :</dt>
-<dd><input name="logindetail" value="{$data.logindetail}" autofocus required></dd>
-</dl>
-<dl>
-<dt>Login utilisé <span class="red">*</span> : </dt>
-<dd><input name="login" value="{$data.login}" required></dd>
-</dl>
-<dl></dl>
-<div class="formBouton">
-<input class="submit" type="submit" value="Enregistrer">
+<div class="form-group">
+<label for="logindetail"  class="control-label col-md-4">{$LANG["login"][29]} <span class="red">*</span> :</label>
+<div class="col-md-8">
+<input id="logindetail" type="text" class="form-control" name="logindetail" value="{$data.logindetail}" autofocus required></div>
 </div>
+<div class="form-group">
+<label for="login"  class="control-label col-md-4">{$LANG["login"][30]} <span class="red">*</span> : </label>
+<div class="col-md-8">
+<input id="login" type="text" class="form-control" name="login" value="{$data.login}" required>
+</div>
+</div>
+<div class="form-group center">
+      <button type="submit" class="btn btn-primary button-valid">{$LANG["message"].19}</button>
+      {if $data.acllogin_id > 0 }
+      <button class="btn btn-danger button-delete">{$LANG["message"].20}</button>
+      {/if}
+ </div>
 </form>
 </div>
-
-{if $data.acllogin_id > 0 }
-<div class="formBouton">
-<form action="index.php" method="post" onSubmit='return confirmSuppression("Confirmez-vous la suppression ?")'>
-<input type="hidden" name="acllogin_id" value="{$data.acllogin_id}">
-<input type="hidden" name="module" value="aclloginDelete">
-<input class="submit" type="submit" value="Supprimer">
-</form>
 </div>
-{/if}
-</div>
-
-<span class="red">*</span><span class="messagebas">Champ obligatoire</span>
-
-<table class="tableliste">
-<tr>
-<th>Droits attribués</th>
-</tr>
+<span class="red">*</span><span class="messagebas">{$LANG["message"].36}</span>
+<div class="row">
+<div class="col-md-6">
+<fieldset>
+<legend>{$LANG["login"][26]}</legend>
 {foreach $loginDroits as $droit=>$value}
-<tr><td>{$droit}</td></tr>
+<div class="col-md-2 col-sm-offset-2">
+{$droit}
+</div>
 {/foreach}
-
-</table>
+</fieldset>
+</div>
+</div>

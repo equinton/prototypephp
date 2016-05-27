@@ -58,3 +58,10 @@ body {
 	font-size: small;
 	font-style: italic;
 }
+h2 {
+	font-size:large;
+}
+legend {
+	font-size:large;
+	color:#003A80;
+}

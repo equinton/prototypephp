@@ -324,6 +324,20 @@ class LoginGestion extends ObjetBDD {
 		$liste ["datemodif"] = date ( 'd-m-y' );
 		return parent::ecrire ( $liste );
 	}
+
+	/**
+	 * Surcharge de la fonction supprimer pour effacer les traces des anciens mots de passe
+	 * {@inheritDoc}
+	 * @see ObjetBDD::supprimer()
+	 */
+	function supprimer($id) {
+		/*
+		 * Suppression le cas echeant des anciens logins enregistres
+		 */
+		$loginOP = new LoginOldPassword($this->connection, $this->paramori);
+		$loginOP->supprimerChamp($id, "id");
+		return parent::supprimer($id);
+	}
 	/**
 	 * Fonction de validation de changement du mot de passe
 	 *

@@ -14,10 +14,19 @@
  * @return array
  */
 function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
-	global $smarty;
+	global $smarty, $OBJETBDD_debugmode, $ERROR_display;
 	if (is_numeric ( $id )) {
 		if ($id > 0) {
-			$data = $dataClass->lire ( $id );
+			try {
+				$data = $dataClass->lire ( $id );
+			} catch ( Exception $e ) {
+				if ($OBJETBDD_debugmode > 0) {
+					$message = $dataClass->getErrorData ( 1 );
+				} else
+					$message = $LANG ["message"] [37];
+				if ($ERROR_display == 1)
+					$message .= "<br>" . $e->getMessage ();
+			}
 			/*
 			 * Gestion des valeurs par defaut
 			 */
@@ -31,7 +40,8 @@ function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
 		$smarty->assign ( "data", $data );
 		$smarty->assign ( "corps", $smartyPage );
 		return $data;
-	} ;
+	}
+	;
 }
 /**
  * Ecrit un enregistrement en base de donnees
@@ -41,20 +51,21 @@ function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
  * @return int
  */
 function dataWrite($dataClass, $data) {
-	global $message, $LANG, $module_coderetour, $log;
-	$id = $dataClass->write ( $data );
+	global $message, $LANG, $module_coderetour, $log, $OBJETBDD_debugmode, $ERROR_display;
 	if (strlen ( $message ) > 0)
 		$message .= '<br>';
-	if ($id > 0) {
+	try {
+		$id = $dataClass->write ( $data );
 		$message .= $LANG ["message"] [5];
 		$module_coderetour = 1;
 		$log->setLog ( $_SESSION ["login"], get_class ( $dataClass ) . "-write", $id );
-	} else {
-		/*
-		 * Mise en forme du message d'erreur
-		 */
-		$message .= formatErrorData ( $dataClass->getErrorData () );
-		$message .= $LANG ["message"] [12];
+	} catch ( Exception $e ) {
+		if ($OBJETBDD_debugmode > 0) {
+			$message .= $dataClass->getErrorData ( 1 );
+		} else
+			$message .= $LANG ["message"] [12];
+		if ($ERROR_display == 1)
+			$message .= "<br>" . $e->getMessage ();
 		$module_coderetour = - 1;
 	}
 	return ($id);
@@ -67,35 +78,37 @@ function dataWrite($dataClass, $data) {
  * @return int
  */
 function dataDelete($dataClass, $id) {
-	global $message, $LANG, $module_coderetour, $log;
+	global $message, $LANG, $module_coderetour, $log, $OBJETBDD_debugmode, $ERROR_display;
 	$module_coderetour = - 1;
 	$ok = true;
-	if (is_array($id)) {
-		foreach ($id as $key=>$value) {
-			if (! (is_numeric($value)&&$value > 0))
+	if (is_array ( $id )) {
+		foreach ( $id as $key => $value ) {
+			if (! (is_numeric ( $value ) && $value > 0))
 				$ok = false;
 		}
 	} else {
-		if (!(is_numeric ( $id ) && $id > 0))
+		if (! (is_numeric ( $id ) && $id > 0))
 			$ok = false;
 	}
 	if ($ok == true) {
 		if (strlen ( $message ) > 0)
 			$message .= '<br>';
-		$ret = $dataClass->supprimer ( $id );
-		if ($ret > 0) {
+		try {
+			$ret = $dataClass->supprimer ( $id );
 			$message = $LANG ["message"] [4];
 			$module_coderetour = 2;
 			$log->setLog ( $_SESSION ["login"], get_class ( $dataClass ) . "-delete", $id );
-		} else {
-			/*
-			 * Mise en forme du message d'erreur
-			 */
-			$message = formatErrorData ( $dataClass->getErrorData () );
-			$message .= $LANG ["message"] [13];			
+		} catch ( Exception $e ) {
+			if ($OBJETBDD_debugmode > 0) {
+				$message .= $dataClass->getErrorData ( 1 );
+			} else
+				$message .= $LANG ["message"] [13];
+			if ($ERROR_display == 1)
+				$message .= "<br>" . $e->getMessage ();
+			$ret = - 1;
 		}
-	} else 
-		$ret = -1;
+	} else
+		$ret = - 1;
 	return ($ret);
 }
 /**
@@ -104,7 +117,7 @@ function dataDelete($dataClass, $id) {
  * @param string $langue        	
  */
 function setlanguage($langue) {
-	global $language, $LANG, $APPLI_cookie_ttl;
+	global $language, $LANG, $APPLI_cookie_ttl, $APPLI_menufile, $menu;
 	/*
 	 * Chargement de la langue par defaut
 	 */
@@ -132,15 +145,21 @@ function setlanguage($langue) {
 	 */
 	$_SESSION ['LANG'] = $LANG;
 	/*
+	 * Regeneration du menu
+	 */
+	include_once 'framework/navigation/menu.class.php';
+	$menu = new Menu($APPLI_menufile, $LANG);
+	$_SESSION["menu"]=$menu->generateMenu();
+	/*
 	 * Ecriture du cookie
 	 */
 	$cookieParam = session_get_cookie_params ();
-	$cookieParam ["lifetime"] = $APPLI_session_ttl;
+	$cookieParam ["lifetime"] = $APPLI_cookie_ttl;
 	if ($APPLI_modeDeveloppement == false)
 		$cookieParam ["secure"] = true;
 	$cookieParam ["httponly"] = true;
 	
-	setcookie ( 'langue', $langue, time () + $APPLI_session_ttl, $cookieParam ["path"], $cookieParam ["domain"], $cookieParam ["secure"], $cookieParam ["httponly"]  );
+	setcookie ( 'langue', $langue, time () + $APPLI_cookie_ttl, $cookieParam ["path"], $cookieParam ["domain"], $cookieParam ["secure"], $cookieParam ["httponly"] );
 }
 
 /**
@@ -167,7 +186,7 @@ function check_encoding($data) {
 
 /**
  * Encode les donnees en html avant envoi vers le navigateur
- * 
+ *
  * @param unknown $data        	
  * @return string
  */

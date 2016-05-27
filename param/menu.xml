@@ -8,7 +8,7 @@
 	<item module="especeList" value="52" title="53" droits="consult"/>
 </item>
 <item module="administration" value="4" title="5" droits="admin">
-	<item module="loginliste" menulevel="1" menuorder="9" droits="admin" title="3" value="2"/>
+	<item module="loginList" menulevel="1" menuorder="9" droits="admin" title="3" value="2"/>
 	<item module="appliList" droits="admin" value="appliliste" title="applilistetitle"/>
 	<item module="aclloginList" droits="admin" value="aclloginliste" title="aclloginlistetitle"/>
 	<item module="groupList" droits="admin" value="groupliste" title="grouplistetitle"/>

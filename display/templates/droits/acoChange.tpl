@@ -20,7 +20,7 @@ Retour à {$dataAppli.appli} ({$dataAppli.applidetail})
  
 <div class="form-group">
 <label for="aco" class="control-label col-md-4">Nom du droit utilisé dans l'application <span class="red">*</span> :</label>
-<div class="col-md-8"><input type="text" id="aco" name="aco" value="{$data.aco}" autofocus required></div>
+<div class="col-md-8"><input type="text" class="form-control" id="aco" name="aco" value="{$data.aco}" autofocus required></div>
 </div>
 <div class="form-group">
 <fieldset class="col-lg-12">
