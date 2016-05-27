@@ -277,7 +277,8 @@ if ($t_module ["ajax"] != 1) {
 				"LANG",
 				"message",
 				"texteNews",
-				"doc" 
+				"doc",
+				"phpinfo"
 		) ) == false) {
 			$smarty->assign ( $key, encodehtml ( $value ) );
 		}
