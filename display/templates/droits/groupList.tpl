@@ -1,17 +1,16 @@
-<h2>Liste des groupes de logins</h2>
+<h2>{$LANG["login"][33]}</h2>
 	<div class="row">
 	<div class="col-md-6">
 <a href="index.php?module=groupChange&aclgroup_id=0">
-Nouveau groupe racine...
+{$LANG["login"][34]}
 </a>
 
-<table id="groupListe" class="table table-bordered table-hover datatable" 
-		data-order='[[ 1, "asc" ]]' data-page-length='25'>
+<table id="groupListe" class="table table-bordered table-hover " >
 <thead>
 <tr>
-<th>Nom du groupe</th>
-<th>Nombre de<br>logins déclarés</th>
-<th>Rajouter un<br>groupe fils</th>
+<th>{$LANG["login"][35]}</th>
+<th>{$LANG["login"][36]}</th>
+<th>{$LANG["login"][37]}</th>
 </tr>
 </thead>
 <tbody>

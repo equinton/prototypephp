@@ -1,9 +1,9 @@
-<h2>Modification du droit d'une application (module de gestion des droits)</h2>
+<h2>{$LANG["login"][41]}</h2>
 <div class="row">
 <div class="col-lg-6">
-<a href="index.php?module=appliList">Retour à la liste des applications</a>
+<a href="index.php?module=appliList">{$LANG["login"][42]}</a>
 &nbsp;<a href="index.php?module=appliDisplay&aclappli_id={$dataAppli.aclappli_id}">
-Retour à {$dataAppli.appli} ({$dataAppli.applidetail})
+{$LANG["login"][43]} {$dataAppli.appli} ({$dataAppli.applidetail})
 </a>
 
 <form id="acoForm" class="form-horizontal protoform"  method="post" action="index.php">
@@ -19,12 +19,12 @@ Retour à {$dataAppli.appli} ({$dataAppli.applidetail})
  </div>
  
 <div class="form-group">
-<label for="aco" class="control-label col-md-4">Nom du droit utilisé dans l'application <span class="red">*</span> :</label>
+<label for="aco" class="control-label col-md-4">{$LANG["login"][44]} <span class="red">*</span> :</label>
 <div class="col-md-8"><input type="text" class="form-control" id="aco" name="aco" value="{$data.aco}" autofocus required></div>
 </div>
 <div class="form-group">
 <fieldset class="col-lg-12">
-<legend>Groupes disposant du droit :</legend>
+<legend>{$LANG["login"][45]} :</legend>
 {section name=lst loop=$groupes}
 <div class="col-md-2 col-sm-offset-2">
       <div class="checkbox">

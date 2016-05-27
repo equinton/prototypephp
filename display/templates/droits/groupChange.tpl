@@ -1,51 +1,44 @@
-<h2>Modification d'un groupe et rattachement des logins</h2>
+<h2>{$LANG["login"][38]}</h2>
+<div class="row">
+<div class="col-lg-6">
+<a href="index.php?module=groupList">{$LANG["login"][39]}</a>
 
-<a href="index.php?module=groupList">Retour à la liste des groupes</a>
-<div class="formSaisie">
-<div>
-
-<form id="groupForm" method="post" action="index.php?module=groupWrite">
+<form id="groupForm" method="post"  class="form-horizontal protoform"  action="index.php">
+<input type="hidden" name="moduleBase" value="group">
+<input type="hidden" name="action" value="Write">
 <input type="hidden" name="aclgroup_id" value="{$data.aclgroup_id}">
 <input type="hidden" name="aclgroup_id_parent" value="{$data.aclgroup_id_parent}">
-<div class="formBouton">
-<input class="submit" type="submit" value="Enregistrer">
+<div class="form-group center">
+      <button type="submit" class="btn btn-primary button-valid">{$LANG["message"].19}</button>
+      {if $data.aclgroup_id > 0 }
+      <button class="btn btn-danger button-delete">{$LANG["message"].20}</button>
+      {/if}
 </div>
-<dl>
-<dt>Nom du groupe <span class="red">*</span> :</dt>
-<dd><input name="groupe" value="{$data.groupe}" autofocus required></dd>
-</dl>
-<dl>
-<dt>Logins rattachés <span class="red">*</span> : </dt>
-<dd>
-<table class="tablenoborder">
+<div class="form-group">
+<label for="groupe" class="control-label col-md-4">
+{$LANG["login"][35]} <span class="red">*</span> :
+</label>
+<div class="col-md-8"><input type="text" class="form-control" id="groupe" name="groupe" value="{$data.groupe}" autofocus required>
+</div>
+</div>
+<div class="form-group">
+<fieldset class="col-lg-12">
+<legend>{$LANG["login"][40]} <span class="red">*</span></legend>
 {section name=lst loop=$logins}
-<tr><td>
-{$logins[lst].logindetail}
-</td>
-<td>
+<div class="col-md-2 col-sm-offset-2">
+      <div class="checkbox">
+        <label>
+
+
 <input type="checkbox" name="logins[]" value="{$logins[lst].acllogin_id}" {if $logins[lst].checked == 1}checked{/if}>
-</td>
-</tr>
+{$logins[lst].logindetail}
+</label>
+</div>
+</div>
 {/section}
-</table>
-</dd>
-</dl>
-<dl></dl>
-<div class="formBouton">
-<input class="submit" type="submit" value="Enregistrer">
+</fieldset>
 </div>
 </form>
 </div>
-
-{if $data.aclgroup_id > 0 }
-<div class="formBouton">
-<form action="index.php" method="post" onSubmit='return confirmSuppression("Confirmez-vous la suppression ?")'>
-<input type="hidden" name="aclgroup_id" value="{$data.aclgroup_id}">
-<input type="hidden" name="module" value="groupDelete">
-<input class="submit" type="submit" value="Supprimer">
-</form>
 </div>
-{/if}
-</div>
-
-<span class="red">*</span><span class="messagebas">Champ obligatoire</span>
+<span class="red">*</span><span class="messagebas">{$LANG["message"].36}</span>
