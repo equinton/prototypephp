@@ -200,4 +200,22 @@ function encodehtml($data) {
 	}
 	return $data;
 }
+/**
+ * Retourne l'adresse IP du client, en tenant compte le cas echeant du reverse-proxy
+ * @return string
+ */
+function getIPClientAddress(){
+	/*
+	 * Recherche si le serveur est accessible derriere un reverse-proxy
+	 */
+	if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
+		return  $_SERVER["HTTP_X_FORWARDED_FOR"];
+		/*
+		 * Cas classique
+		 */
+	}else if (isset ($_SERVER["REMOTE_ADDR"])) {
+		return $_SERVER["REMOTE_ADDR"];
+	} else
+		return -1;
+}
 ?>

@@ -147,8 +147,9 @@ if (isset ( $_SESSION ["LANG"] ) && $APPLI_modeDeveloppement == false) {
 /**
  * Verification du couple session/adresse IP
  */
+$ipaddress = getIPClientAddress();
 if (isset ( $_SESSION ["remoteIP"] )) {
-	if ($_SESSION ["remoteIP"] != $_SERVER ['REMOTE_ADDR']) {
+	if ($_SESSION ["remoteIP"] != $ipaddress) {
 		// Tentative d'usurpation de session - on ferme la session
 		if ($identification->disconnect ( $APPLI_address ) == 1) {
 			$message = $LANG ["message"] [7];
@@ -157,8 +158,7 @@ if (isset ( $_SESSION ["remoteIP"] )) {
 		}
 	}
 } else {
-	$_SESSION ["remoteIP"] = $_SERVER ['REMOTE_ADDR'];
-}
+	$_SESSION ["remoteIP"] = $ipaddress;
 /*
  * Connexion a la base de donnees
  */
