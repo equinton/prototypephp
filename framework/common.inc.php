@@ -147,7 +147,7 @@ if (isset ( $_SESSION ["LANG"] ) && $APPLI_modeDeveloppement == false) {
 /**
  * Verification du couple session/adresse IP
  */
-$ipaddress = getIPClientAddress();
+$ipaddress = getIPClientAddress ();
 if (isset ( $_SESSION ["remoteIP"] )) {
 	if ($_SESSION ["remoteIP"] != $ipaddress) {
 		// Tentative d'usurpation de session - on ferme la session
@@ -157,9 +157,9 @@ if (isset ( $_SESSION ["remoteIP"] )) {
 			$message = $LANG ["message"] [8];
 		}
 	}
-} else {
+} else
 	$_SESSION ["remoteIP"] = $ipaddress;
-/*
+	/*
  * Connexion a la base de donnees
  */
 if (! isset ( $bdd )) {
@@ -176,7 +176,13 @@ if (! isset ( $bdd )) {
 		 * Mise en place du schema par defaut
 		 */
 		if (strlen ( $BDD_schema ) > 0) {
-			$bdd->exec ( "set search_path = " . $BDD_schema );
+			try {
+				$bdd->exec ( "set search_path = " . $BDD_schema );
+			} catch ( PDOException $e ) {
+				if ($APPLI_modeDeveloppement == true)
+					print $e->getMessage () . "<br>";
+				$etaconn = false;
+			}
 		}
 		/*
 		 * Connexion a la base de gestion des droits
@@ -185,7 +191,7 @@ if (! isset ( $bdd )) {
 			$bdd_gacl = new PDO ( $GACL_dsn, $GACL_dblogin, $GACL_dbpasswd );
 		} catch ( PDOException $e ) {
 			if ($APPLI_modeDeveloppement == true)
-			print $e->getMessage () . "<br>";
+				print $e->getMessage () . "<br>";
 			$etaconn = false;
 		}
 		if ($etaconn == true) {
@@ -200,6 +206,7 @@ if (! isset ( $bdd )) {
 	} else
 		echo $LANG ["message"] [22];
 }
+
 /*
  * Activation de SMARTY
  */
