@@ -52,6 +52,11 @@ $LDAP_user_attrib = "uid";
 $LDAPGROUP_port = 389;
 $LDAP_v3 = true;
 $LDAP_tls = false;
+ /*
+ * Duree de validite du token d'identification
+ */
+$tokenIdentityValidity = 36000; // 10 heures
+/*
 /*
  * Parametres concernant la base de donnees
  */
