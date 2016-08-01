@@ -23,6 +23,7 @@
 $(document).ready(function() {
 	$('.taux,nombre').attr('title','{$LANG[message].34}');
 	<!--$('.taux').attr('placeholder', '100, 95.5...');-->
+	 $.datepicker.setDefaults($.datepicker.regional['fr']);
 	$(".date").datepicker( { dateFormat: "dd/mm/yy" } );
 	$('.taux').attr( {
 		'pattern': '[0-9]+(\.[0-9]+)?',
@@ -34,5 +35,10 @@ $(document).ready(function() {
 	}
 	);
 	$('.timepicker').attr('pattern', '[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]');
+	$.timepicker.setDefaults($.timepicker.regional['fr']);
+	$('.datetimepicker').datetimepicker({ 
+		dateFormat: "dd/mm/yy",
+		timeFormat: 'HH:mm:ss',
+	})
 } ) ;
 </script>
