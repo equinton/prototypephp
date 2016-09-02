@@ -41,6 +41,7 @@ class Message {
 			if ($i > 0)
 				$data .= "<br>";
 			$data .= htmlentities ( $value );
+			$i ++;
 		}
 		return $data;
 	}
@@ -99,7 +100,7 @@ class Vue {
  * @author quinton
  *        
  */
-class VueHtml extends Vue {
+class VueSmarty extends Vue {
 	/**
 	 * instance smarty
 	 * 
@@ -120,13 +121,30 @@ class VueHtml extends Vue {
 			"doc",
 			"phpinfo" 
 	);
+	private $templateMain = "main.htm";
+
 	/**
 	 * Constructeur
-	 * 
-	 * @param Smarty $smarty        	
+	 * @param array $param : liste des parametres specifiques d'implementation
+	 * @param array $var : liste des variables assignees systematiquement
 	 */
-	function __construct(Smarty &$smarty) {
-		$this->smarty = $smarty;
+	function __construct($param, $var) {
+		/*
+		 * Parametrage de la classe smarty
+		 */
+		$this->smarty = new Smarty();
+		$this->smarty->template_dir = $param["templates"];
+		$this->smarty->compile_dir = $param["templates_c"];
+		//$this->smarty->config_dir = $SMARTY_config;
+		$this->smarty->cache_dir = $param["cache_dir"];
+		$this->smarty->caching = $param["cache"];
+		if (isset($param["template_main"]))
+			$this->templateMain = $param["template_main"];
+		/*
+		 * Traitement des assignations de variables standard
+		 */
+		foreach($var as $key => $value)
+			$this->set($value, $key);
 	}
 	/**
 	 *
@@ -143,7 +161,8 @@ class VueHtml extends Vue {
 	 *
 	 * @see Vue::send()
 	 */
-	function send($template) {
+	function send() {
+		global $message;
 		/*
 		 * Encodage des donnees avant envoi vers le navigateur
 		 */
@@ -152,7 +171,14 @@ class VueHtml extends Vue {
 				$this->smarty->assign ( $key, $this->encodehtml ( $value ) );
 			}
 		}
-		$this->smarty->display ( $template );
+		/*
+		 * Rrecuperation des messages
+		 */
+		$this->smarty->assign("message", $message->getAsHtml());
+		/*
+		 * Declenchement de l'affichage
+		 */
+		$this->smarty->display ( $this->templateMain );
 	}
 }
 /**
@@ -196,6 +222,7 @@ class VueCsv extends Vue {
 			/*
 			 * Preparation du fichier
 			 */
+			ob_clean ();
 			header ( 'Content-Type: text/csv' );
 			header ( 'Content-Disposition: attachment;filename=' . $param );
 			$fp = fopen ( 'php://output', 'w' );
@@ -209,6 +236,7 @@ class VueCsv extends Vue {
 			foreach ($this->data as $value)
 				fputcsv($fp, $value);
 			fclose ($fp);
+			ob_flush ();
 		}
 	}
 	/**

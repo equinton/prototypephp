@@ -15,7 +15,7 @@
 
 include_once 'modules/example/example.class.php';
 $dataClass = new Example($bdd,$ObjetBDDParam);
-$keyName = "idExample";
+$keyName = "example_id";
 $id = $_REQUEST[$keyName];
 
 switch ($t_module["param"]) {
@@ -39,20 +39,23 @@ switch ($t_module["param"]) {
 		 $dataSearch = $searchExample->getParam ();
 		if ($searchExample->isSearch () == 1) {
 			$data = $dataClass->getListeSearch ( $dataExample );		
-			$smarty->assign ( "data", $data );
-			$smarty->assign ("isSearch", 1);
+		$vue->set($data , "data");
+		$vue->set(1, "isSearch");
 		}
-		$smarty->assign ("exampleSearch", $dataSearch);
-		$smarty->assign("data", $dataClass->getListe());
-		$smarty->assign("corps", "example/exampleList.tpl");
+		$vue->set($dataSearch, "exampleSearch");
+		$vue->set("example/exampleList.tpl","corps" );
 		break;
 	case "display":
 		/*
 		 * Display the detail of the record
 		 */
 		$data = $dataClass->lire($id);
-		$smarty->assign("data", $data);
-		$smarty->assign("corps", "example/exampleDisplay.tpl");
+		$vue->set($data,"data");
+		/*
+		 * Assignation du modele d'affichage
+		 */
+		$vue->set(  "example/exampleDisplay.tpl", "corps");
+
 		break;
 	case "change":
 		/*

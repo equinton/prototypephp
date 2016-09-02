@@ -119,7 +119,7 @@ $identification->setidenttype ( $ident_type );
 if ($ident_type == "CAS") {
 	$identification->init_CAS ( $CAS_address, $CAS_port, $CAS_uri );
 } elseif ($ident_type == "LDAP" || $ident_type == "LDAP-BDD") {
-	$identification->init_LDAP ( $LDAP_address, $LDAP_port, $LDAP_basedn, $LDAP_user_attrib, $LDAP_v3, $LDAP_tls );
+	$identification->init_LDAP ( $LDAP["address"], $LDAP["port"], $LDAP["basedn"], $LDAP["user_attrib"], $LDAP["v3"], $LDAP["tls"] );
 }
 /*
  * Chargement des fonction generiques
@@ -130,7 +130,6 @@ include_once 'framework/fonctions.php';
  * Gestion de la langue a afficher
  */
 if (isset ( $_SESSION ["LANG"] ) && $APPLI_modeDeveloppement == false) {
-	$LANG = $_SESSION ["LANG"];
 } else {
 	/*
 	 * Recuperation le cas echeant du cookie
@@ -149,6 +148,7 @@ if (isset ( $_SESSION ["LANG"] ) && $APPLI_modeDeveloppement == false) {
 	 */
 	setlanguage ( $langue );
 }
+$SMARTY_variables["LANG"] = $_SESSION ["LANG"];
 /**
  * Verification du couple session/adresse IP
  */
@@ -207,30 +207,6 @@ if (! isset ( $bdd )) {
 }
 
 /*
- * Activation de SMARTY
- */
-$smarty = new Smarty ();
-$smarty->template_dir = $SMARTY_template;
-$smarty->compile_dir = $SMARTY_template_c;
-$smarty->config_dir = $SMARTY_config;
-$smarty->cache_dir = $SMARTY_cache_dir;
-$smarty->caching = $SMARTY_cache;
-/*
- * Assignation des variables "standard"
- */
-$smarty->assign ( "melappli", $APPLI_mail );
-$smarty->assign ( "fds", $path_inc . $APPLI_fds );
-$smarty->assign ( "entete", $SMARTY_entete );
-$smarty->assign ( "enpied", $SMARTY_enpied );
-$smarty->assign ( "corps", $SMARTY_corps );
-$smarty->assign ( "LANG", $LANG );
-$smarty->assign ( "ident_type", $ident_type );
-
-/*
- * Prepositionnement de idFocus, qui permet de positionner le focus automatiquement a l'ouverture d'une page web
- */
-$smarty->assign ( "idFocus", "" );
-/*
  * Preparation du module de gestion de la navigation
  */
 if (isset ( $_SESSION ["navigation"] ) && $APPLI_modeDeveloppement == false) {
@@ -244,12 +220,6 @@ if (isset ( $_SESSION ["navigation"] ) && $APPLI_modeDeveloppement == false) {
  */
 $log = new Log ( $bdd_gacl, $ObjetBDDParam );
 /*
- * Preparation de la gestion des droits
- */
-if (! isset ( $_SESSION ["droits"] ))
-	include "framework/identification/setDroits.php";
-	
-	/*
  * Chargement des fonctions specifiques
  */
 include_once 'modules/fonctions.php';

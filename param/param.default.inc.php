@@ -5,8 +5,8 @@
 * 
 * Parametres par defaut de l'application
 */
-$APPLI_version = "2.0";
-$APPLI_versiondate = "7/5/2014";
+$APPLI_version = "0.1";
+$APPLI_versiondate = "26/08/2016";
 $language = "fr";
 $DEFAULT_formatdate = "fr";
 /*
@@ -44,19 +44,23 @@ $ident_type = "BDD";
 $CAS_plugin = 'plugins/CAS-1.3.3/CAS.php';
 $CAS_address = "http://localhost/CAS";
 $CAS_port = 443;
-$LDAP_address = "localhost";
-$LDAP_port = 389;
-$LDAP_rdn = "cn=manager,dc=example,dc=com";
-$LDAP_basedn = "ou=people,ou=example,o=societe,c=fr";
-$LDAP_user_attrib = "uid";
-$LDAPGROUP_port = 389;
-$LDAP_v3 = true;
-$LDAP_tls = false;
- /*
- * Duree de validite du token d'identification
- */
-$tokenIdentityValidity = 36000; // 10 heures
-/*
+$LDAP = array(
+		"address"=>"localhost",
+		"port" => 389,
+		"rdn" => "cn=manager,dc=example,dc=com",
+		"basedn" => "ou=people,ou=example,o=societe,c=fr",
+		"user_attrib" => "uid",
+		"v3" => true,
+		"tls" => false,
+		"groupSupport"=>true,
+		"groupAttrib"=>"supannentiteaffectation",
+		"commonNameAttrib"=>"displayname",
+		"mailAttrib"=>"mail",
+		'attributgroupname' => "cn",
+		'attributloginname' => "memberuid",
+		'basedngroup' => 'ou=example,o=societe,c=fr'
+);
+
 /*
  * Parametres concernant la base de donnees
  */
@@ -67,15 +71,14 @@ $BDD_schema = "public";
 /*
  * Parametres concernant SMARTY
  */
-$SMARTY_template ='display/templates';
-$SMARTY_template_c = 'display/templates_c';
-$SMARTY_config = 'param/configs_smarty';
-$SMARTY_cache_dir = 'display/smarty_cache';
-$SMARTY_cache = FALSE;
-$SMARTY_entete = "entete.tpl";
-$SMARTY_enpied = "enpied.tpl";
-$SMARTY_principal = "main.htm";
-$SMARTY_corps = "clear.tpl";
+$SMARTY_param = array("templates"=> 'display/templates',
+		"templates_c"=>'display/templates_c',
+		"cache"=>false,
+		"cache_dir"=>'display/smarty_cache',
+		"template_main"=>"main.htm"
+);
+
+
 /*
  * Variables de base de l'application
  */ 
@@ -89,13 +92,24 @@ $APPLI_modeDeveloppementDroit = false;
 $APPLI_utf8 = true;
 $APPLI_menufile = "param/menu.xml";
 $APPLI_nomDossierStockagePhotoTemp = "temp";
+$APPLI_titre = "Gestion des échantillons";
 
+/*
+ * Variables systematiques pour SMARTY
+ */
+$SMARTY_variables = array(
+		"entete"=>"entete.tpl",
+		"enpied"=>"enpied.tpl",
+		"corps"=>"main.tpl",
+		"melappli"=>$APPLI_mail,
+		"ident_type"=>$ident_type
+);
 /*
  * Variables liees a GACL et l'identification via base de donnees
  */
 $GACL_dblogin = "proto";
 $GACL_dbpasswd = "proto";
-$GACL_aco = "appli";
+$GACL_aco = "col";
 $GACL_dsn = "pgsql:host=localhost;dbname=proto";
 $GACL_schema = "gacl";
 
@@ -119,4 +133,14 @@ $APPLI_moduleDroitKO = "droitko";
 $APPLI_moduleErrorBefore = "errorbefore";
 $APPLI_moduleNoLogin = "errorlogin";
 $APPLI_notSSL = false;
+/*
+ * Cles privee et publique utilisees 
+ * pour la generation des jetons
+ */
+$privateKey = "/etc/ssl/private/ssl-cert-snakeoil.key";
+$pubKey = "/etc/ssl/certs/ssl-cert-snakeoil.pem";
+/*
+ * Duree de validite du token d'identification
+ */
+$tokenIdentityValidity = 36000; // 10 heures
 ?>

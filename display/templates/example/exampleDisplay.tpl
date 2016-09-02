@@ -5,13 +5,22 @@
 Modifier...
 </a>
 {/if}
-<table class="tableaffichage">
-<tr>
-<td class="libelleSaisie">Date :</td>
-<td>{$data.dateExample}</td>
-</tr>
-tr>
-<td class="libelleSaisie">Commentaire :</td>
-<td>{$data.comment}</td>
-</tr>
-</table>
+
+
+<fieldset class="col-sm-4">
+<legend>Informations générales</legend>
+<div class="form-display">
+<dl class="dl-horizontal">
+<dt>Id :</dt>
+<dd>{$data.example_id}</dd>
+</dl>
+<dl class="dl-horizontal">
+<dt>Statut :</dt>
+<dd>{$data.example_status_name}</dd>
+</dl>
+<dl class="dl-horizontal">
+<dt>Commentaire :</dt>
+<dd><div class="">{$data.example_comment}</div></dd>
+</dl>
+</div>
+</fieldset>

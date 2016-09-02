@@ -19,28 +19,8 @@ $LANG["menu"][14] = "Droits et comptes";
 $LANG["menu"][15] = "Gestion des droits et des comptes";
 $LANG["menu"][20] = "Aide";
 $LANG["menu"][21] = "Utiliser PrototypePHP";
-$LANG["menu"][22] = "Installation";
-$LANG["menu"][23] = "Installer PrototypePHP";
-$LANG["menu"][24] = "Gestion des droits";
-$LANG["menu"][25] = "Gérer les droits dans l'application";
-$LANG["menu"][26] = "Module de lecture-écriture";
-$LANG["menu"][27] = "Créer un module pour lire ou écrire un enregistrement";
-$LANG["menu"][28] = "Paramétrage du module";
-$LANG["menu"][29] = "Configurer le module dans le fichier xml";
-$LANG["menu"][30] = "Classe d'accès aux données";
-$LANG["menu"][31] = "Créer la classe permettant d'accéder à une table";
-$LANG["menu"][32] = "Gestion de la documentation";
-$LANG["menu"][33] = "Gérer les pages de la documentation";
-$LANG["menu"][34] = "Langues";
-$LANG["menu"][35] = "Gestion des différentes langues, internationalisation de l'application";
-$LANG["menu"][36] = "SMARTY";
-$LANG["menu"][37] = "Manipuler les templates SMARTY";
-$LANG["menu"][38] = "Structure";
-$LANG["menu"][39] = "Organisation de PrototypePHP";
 $LANG["menu"][40] = "Nouveautés";
 $LANG["menu"][41] = "Quoi de neuf dans l'application ?";
-$LANG["menu"][42] = "Module de recherche";
-$LANG["menu"][43] = "Intégrer un module de recherche";
 $LANG["menu"]["phpinfo"] = "PHP info";
 $LANG["menu"]["phpinfotitle"] = "configuration générale du serveur PHP";
 
@@ -54,8 +34,8 @@ $LANG["menu"]["aclloginlistetitle"] = "Logins déclarés dans le module de gesti
 $LANG["menu"]["groupliste"] = "ACL - groupes de logins";
 $LANG["menu"]["grouplistetitle"] = "Groupes de logins et logins rattachés aux groupes";
 
-$LANG["menu"]["example1"] = "Example";
-$LANG["menu"]["example2"] = "It's an example !";
+$LANG["menu"]["example1"] = "Exemple";
+$LANG["menu"]["example2"] = "C'est un exemple !";
 $LANG["menu"]["connexionvalue"] = "Connexion";
 $LANG["menu"]['connexiontitle'] = "S'identifier dans l'application";
 
@@ -102,6 +82,7 @@ $LANG["message"][38] = "Erreur d'écriture dans le fichier de traces";
 $LANG["message"][39] = "Les mots de passe ne sont pas identiques";
 $LANG["message"][40] = "Le mot de passe est trop court (minimum : 8 caractères)";
 $LANG["message"][41] = "Le mot de passe n'est pas assez complexe (mixez 3 jeux de caractères parmi les minuscules, majuscules, chiffres et signes de ponctuation)";
+$LANG["message"][43] = "Suppression du groupe impossible : d'autres groupes lui sont rattachés";
 
 
 $LANG["message"]["yes"] = "oui";

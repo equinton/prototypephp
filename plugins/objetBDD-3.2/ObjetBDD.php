@@ -605,15 +605,6 @@ class ObjetBDD {
 			$sql = "delete from " . $this->table . " where " . $cle . "= :id";
 			$data ["id"] = $id;
 			return $this->executeAsPrepared ( $sql, $data, true );
-			// try {
-			// $res = $this->connection->exec ( "delete from " . $this->table . " where " . $cle . "=" . $id );
-			// } catch ( PDOException $e ) {
-			// $res = - 1;
-			// if ($this->debug_mode > 0)
-			// $this->addMessage ( $e->getMessage () );
-			// throw new Exception ( $e->getMessage () );
-			// }
-			// return $res;
 		}
 	}
 	/**
@@ -651,11 +642,6 @@ class ObjetBDD {
 			$data = $dataBrute;
 		}
 		/*
-		 * Decodage HTML (retour de saisie avec codage prealable)
-		 */
-		// if ($this->codageHtml == true)
-		$data = $this->htmlDecode ( $data );
-		/*
 		 * Verification des donnees entrees
 		 */
 		/*
@@ -664,15 +650,9 @@ class ObjetBDD {
 		if ($this->cleMultiple == 0 && $data [$this->cle] == "" && $this->id_auto > 0)
 			$data [$this->cle] = 0;
 			/*
-		 * Rajout des slashes devant les quotes et autres caracteres concernes pour eviter les attaques par injection de code, et accessoirement autoriser la saisie de guillemets doubles
-		 */
-		if (get_magic_quotes_gpc () == 0) {
-			$data = $this->encodeData ( $data );
-		}
-		/*
 		 * Traitement des dates
 		 */
-		if ($this->auto_date == 1 ) {
+		if ($this->auto_date == 1) {
 			$data = $this->utilDatesLocaleVersDB ( $data );
 		}
 		
@@ -935,9 +915,9 @@ class ObjetBDD {
 	 *
 	 * @return le contenu de la table
 	 */
-	function getListe($order = 0) {
+	function getListe($order = "") {
 		$sql = "select * from " . $this->table;
-		if ($order > 0)
+		if (strlen ( $order ) > 0)
 			$sql .= " order by " . $order;
 		$collection = $this->execute ( $sql );
 		if ($this->auto_date == 1)
@@ -965,7 +945,7 @@ class ObjetBDD {
 	 * @param number $order        	
 	 * @return tableau|NULL
 	 */
-	function getListFromParent($parentId, $order = 0) {
+	function getListFromParent($parentId, $order = "") {
 		if ($parentId > 0 && strlen ( $this->parentAttrib ) > 0) {
 			$sql = "select * from " . $this->table;
 			/*
@@ -975,10 +955,13 @@ class ObjetBDD {
 				$cle = $this->quoteIdentifier . $this->parentAttrib . $this->quoteIdentifier;
 			else
 				$cle = $this->parentAttrib;
-			$sql .= " where " . $cle . " = " . $parentId;
-			if ($order > 0)
-				$sql .= " order by " . $order;
-			return $this->getListeParam ( $sql );
+			$sql .= " where " . $cle . " = :parentId";
+			$data ["parentId"] = $parentId;
+			if (strlen ( $order ) > 0) {
+				$sql .= " order by :order";
+				$data ["order"] = $order;
+			}
+			return $this->getListeParamAsPrepared ( $sql, $data );
 		} else
 			return null;
 	}
@@ -1369,37 +1352,6 @@ class ObjetBDD {
 	}
 	
 	/**
-	 * Retire les codages HTML, et convertit en iso-8859-1 le cas echeant
-	 *
-	 * @param unknown_type $data        	
-	 */
-	private function htmlDecode($data) {
-		if (is_array ( $data )) {
-			foreach ( $data as $key => $value ) {
-				if (is_array ( $value )) {
-					foreach ( $value as $key1 => $value1 ) {
-						$data [$key] [$key1] = htmlspecialchars_decode ( $value1 );
-						/*
-						 * Traitement de l'UTF8
-						 */
-						if ($this->param ["utf8"] == true)
-							$data [$key] [$key1] = utf8_decode ( $data [$key] [$key1] );
-					}
-				} else {
-					$data [$key] = htmlspecialchars_decode ( $value );
-					if ($this->param ["utf8"] == true)
-						$data [$key] = utf8_decode ( $data [$key] );
-				}
-			}
-		} else {
-			$data = htmlspecialchars_decode ( $data );
-			if ($this->param ["utf8"] == true)
-				$data = utf8_decode ( $data );
-		}
-		return $data;
-	}
-	
-	/**
 	 * function ecrireTableNN
 	 *
 	 * @param
@@ -1560,7 +1512,7 @@ class ObjetBDD {
 	}
 	/**
 	 * Fonction retournant la date-heure courante, formatee ou non
-	 * 
+	 *
 	 * @return string
 	 */
 	function getDateHeure() {
@@ -1723,8 +1675,6 @@ class ObjetBDD {
 		if ($this->auto_date == 1) {
 			$collection = $this->utilDatesDBVersLocale ( $collection );
 		}
-		if ($this->codageHtml == true)
-			$collection = $this->htmlEncode ( $collection );
 		if ($this->toUTF8 == true)
 			$collection = $this->utf8Encode ( $collection );
 		return $collection;
@@ -1740,8 +1690,6 @@ class ObjetBDD {
 		$collection = $this->executeAsPrepared ( $sql, $data );
 		if ($this->auto_date == 1)
 			$collection = $this->utilDatesDBVersLocale ( $collection );
-		if ($this->codageHtml == true)
-			$collection = $this->htmlEncode ( $collection );
 		if ($this->toUTF8 == true)
 			$collection = $this->utf8Encode ( $collection );
 		return $collection;

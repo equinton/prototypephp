@@ -13,13 +13,18 @@ include_once ("framework/common.inc.php");
  * Codage UTF-8
  */
 if (check_encoding ( $_REQUEST ) == false) {
-	$message->set( "Problème dans les données fournies : l'encodage des caractères n'est pas celui attendu");
+	$message->set ( "Problème dans les données fournies : l'encodage des caractères n'est pas celui attendu" );
 	$_REQUEST ["module"] = "default";
 }
+/**
+ * Decodage des variables html
+ */
+$_REQUEST = htmlDecode($_REQUEST);
 /**
  * Recuperation du module
  */
 unset ( $module );
+
 /**
  * Generation du module a partir de moduleBase et action
  */
@@ -37,15 +42,34 @@ $moduleRequested = $module;
 /**
  * Gestion des modules
  */
+$isHtml = false;
 while ( isset ( $module ) ) {
 	/*
 	 * Recuperation du tableau contenant les attributs du module
 	 */
-	$t_module = array ();
 	$t_module = $navigation->getModule ( $module );
 	if (count ( $t_module ) == 0)
-		$message->set( $LANG ["message"] [35] . " ($module)");
-		/*
+		$message->set ( $LANG ["message"] [35] . " ($module)" );
+	/*
+	 * Preparation de la vue
+	 */
+	if (! isset ( $vue ) && isset ( $t_module ["type"] )) {
+		switch ($t_module ["type"]) {
+			case "ajax" :
+				$vue = new VueAjaxJson ();
+				break;
+			case "csv" :
+				$vue = new VueCsv ();
+				break;
+			case "smarty" :
+			case "html" :
+			default :
+				$isHtml = true;
+				$vue = new VueSmarty ( $SMARTY_param, $SMARTY_variables );
+		}
+	}
+	
+	/*
 	 * Verification si le login est requis
 	 */
 	if (strlen ( $t_module ["droits"] ) > 1 || $t_module ["loginrequis"] == 1 || isset ( $_REQUEST ["login"] )) {
@@ -64,7 +88,7 @@ while ( isset ( $module ) ) {
 					if (strlen ( $login ) > 0)
 						$_SESSION ["login"] = $login;
 				} catch ( Exception $e ) {
-					$message->set( $e->getMessage ());
+					$message->set ( $e->getMessage () );
 				}
 			} elseif ($ident_type == "CAS") {
 				/*
@@ -81,15 +105,20 @@ while ( isset ( $module ) ) {
 					 * Verification de l'identification aupres du serveur LDAP, ou LDAP puis BDD
 					 */
 					if ($ident_type == "LDAP" || $ident_type == "LDAP-BDD") {
-						$res = $identification->testLoginLdap ( $_REQUEST ["login"], $_REQUEST ["password"] );
-						if ($res == - 1 && $ident_type == "LDAP-BDD") {
-							/*
-							 * L'identification en annuaire LDAP a echoue : verification en base de donnees
-							 */
-							$res = $loginGestion->VerifLogin ( $_REQUEST ['login'], $_REQUEST ['password'] );
-							if ($res == TRUE) {
-								$_SESSION ["login"] = $_REQUEST ["login"];
+						try {
+							$res = $identification->testLoginLdap ( $_REQUEST ["login"], $_REQUEST ["password"] );
+							if ($res == - 1 && $ident_type == "LDAP-BDD") {
+								/*
+								 * L'identification en annuaire LDAP a echoue : verification en base de donnees
+								 */
+								$res = $loginGestion->controlLogin ( $_REQUEST ['login'], $_REQUEST ['password'] );
+								if ($res) {
+									$_SESSION ["login"] = $_REQUEST ["login"];
+								}
 							}
+						} catch ( Exception $e ) {
+							if ($ERROR_display == 1 )
+								$message->set ( $e->getMessage () );
 							/*
 							 * Verification de l'identification uniquement en base de donnees
 							 */
@@ -104,11 +133,11 @@ while ( isset ( $module ) ) {
 					/*
 					 * Gestion de la saisie du login
 					 */
-					$smarty->assign ( "corps", "ident/login.tpl" );
-					$smarty->assign ( "tokenIdentityValidity", $tokenIdentityValidity );
+					$vue->set ( "ident/login.tpl", "corps" );
+					$vue->set ( $tokenIdentityValidity, "tokenIdentityValidity" );
 					if ($t_module ["retourlogin"] == 1)
-						$smarty->assign ( "module", $_REQUEST ["module"] );
-					$message->set( $LANG ["login"] [2]);
+						$vue->set ( $_REQUEST ["module"], "module" );
+					$message->set ( $LANG ["login"] [2] );
 				}
 			}
 			/*
@@ -130,7 +159,16 @@ while ( isset ( $module ) ) {
 				/*
 				 * Calcul des droits
 				 */
-				include "framework/identification/setDroits.php";
+				require_once 'framework/droits/droits.class.php';
+				$acllogin = new Acllogin ( $bdd_gacl, $ObjetBDDParam );
+				try {
+					$_SESSION ["droits"] = $acllogin->getListDroits ( $_SESSION ["login"], $GACL_aco, $LDAP );
+				} catch (Exception $e) {
+					if ($APPLI_modeDeveloppement)
+						$message->set($e->getMessage());
+				}
+				
+				//include "framework/identification/setDroits.php";
 				/*
 				 * Integration des commandes post login
 				 */
@@ -140,7 +178,7 @@ while ( isset ( $module ) ) {
 				 */
 				if ($_REQUEST ["loginByTokenRequested"] == 1) {
 					require_once 'framework/identification/token.class.php';
-					$tokenClass = new Token ($privateKey, $pubKey);
+					$tokenClass = new Token ( $privateKey, $pubKey );
 					try {
 						$token = $tokenClass->createToken ( $_SESSION ["login"], $tokenIdentityValidity );
 						/*
@@ -206,7 +244,7 @@ while ( isset ( $module ) ) {
 		$log->setLog ( $_SESSION ["login"], $moduleRequested, $motifErreur );
 	} catch ( Exception $e ) {
 		if ($OBJETBDD_debugmode > 0) {
-			$message->set($log->getErrorData ( 1 ));
+			$message->set ( $log->getErrorData ( 1 ) );
 		} else
 			$message->set ( $LANG ["message"] [38] );
 		if ($ERROR_display == 1)
@@ -219,24 +257,7 @@ while ( isset ( $module ) ) {
 	if ($t_module ["type"] != "ajax")
 		$_SESSION ["moduleBefore"] = $module;
 	unset ( $module_coderetour );
-	/*
-	 * Preparation de la vue
-	 */
-	$paramSend = "";
-	if (!isset ( $vue )  && isset ( $t_module ["type"] )) {
-		switch ($t_module ["type"]) {
-			case "ajax" :
-				$vue = new VueAjaxJson ();
-				break;
-			case "csv" :
-				$vue = new VueCsv();
-				break;
-			case "html" :
-			default :
-				$vue = new VueHtml ( $smarty );
-				$paramSend = $SMARTY_principal;
-		}
-	}
+	
 	/*
 	 * Execution du module
 	 */
@@ -283,17 +304,12 @@ while ( isset ( $module ) ) {
 			case "errorbefore" :
 				$module = $APPLI_moduleErrorBefore;
 				break;
-			default: 
-				unset($module);
+			default :
+				unset ( $module );
 		}
 	}
 }
-if ($t_module ["type"] == "html") {
-	/*
-	 * Traitement particulier de l'affichage html
-	 */
-	$vue->set ( $message->getAsHtml (), "message" );
-	
+if ($isHtml) {
 	/*
 	 * Affichage du menu
 	 */

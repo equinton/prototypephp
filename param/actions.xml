@@ -3,72 +3,72 @@
 		retourok="model" retournull="model" loginrequis="1" 
 		 param="param1" type="html|ajax" droitko="droitko" modulebefore="module1,module2">
 	</model>
-	<default action="framework/default.php" type="html"></default>
-	<droitko action="framework/droitko.php" type="html"></droitko>
+	<default action="framework/default.php" type="smarty"></default>
+	<droitko action="framework/droitko.php" type="smarty"></droitko>
 	<droits menudroits="admin" droits="admin" menulevel="0" menuorder="7" menuvalue="14" menutitle="15" />
 	<gestiondroits action="framework/identification/gestiondroits.php" droits="admin" loginrequis="0" retourlogin="1" droitko="droitko"/>
 	
-	<loginList action="framework/identification/login.php" param="list" droits="admin" retourlogin="1"  type="html"/>
-	<loginChange action="framework/identification/login.php" param="change" droits="admin"  type="html"/>
+	<loginList action="framework/identification/login.php" param="list" droits="admin" retourlogin="1"  type="smarty"/>
+	<loginChange action="framework/identification/login.php" param="change" droits="admin"  type="smarty"/>
 	<loginWrite action="framework/identification/login.php" param="write" droits="admin" retourko="loginChange" retourok="loginList" modulebefore="loginChange" />
 	<loginDelete action="framework/identification/login.php" param="delete" droits="admin" retourko="loginChange" retoursuppr="loginList" modulebefore="loginChange"/>
-	<loginChangePassword action="framework/identification/login.php" param="changePassword" loginrequis="1" type="html" />
+	<loginChangePassword action="framework/identification/login.php" param="changePassword" loginrequis="1" type="smarty" />
 	<loginChangePasswordExec action="framework/identification/login.php" param="changePasswordExec" loginrequis="1" retourko="loginChangePassword" modulebefore="loginChangePassword" />
 
 	<administration action="modules/administration/index.php" droits="admin"
-		retourko="" retourok="" retournull="" droitko="droitko" type="html"></administration>
+		retourko="" retourok="" retournull="" droitko="droitko" type="smarty"></administration>
 	<gestion action="modules/gestion/index.php" droits="gestion" retourko=""
-		retournull="" retourok="" droitko="droitko" type="html">
+		retournull="" retourok="" droitko="droitko" type="smarty">
 	</gestion>
-	<errorbefore action="framework/errorbefore.php" retourlogin="1" type="html" ></errorbefore>
-	<errorlogin action="framework/errorlogin.php" retourlogin="1" type="html" ></errorlogin>
+	<errorbefore action="framework/errorbefore.php" retourlogin="1" type="smarty" ></errorbefore>
+	<errorlogin action="framework/errorlogin.php" retourlogin="1" type="smarty" ></errorlogin>
 	<test action="test/test.php" retourko=""
-		retournull="" type="html">
+		retournull="" type="smarty">
 	</test>
-	<connexion loginrequis="1"  type="html"/>
-	<disconnect action="framework/identification/disconnect.php"  type="html"/>
-	<apropos action="framework/apropos.php" type="html" />
-	<phpinfo action="framework/phpinfo.php" droits="admin" retourlogin="1"  type="html"/>
-	<quoideneuf action="doc/quoideneuf.php"  retourlogin="1"  type="html"/>
-	<setlanguage action='framework/setlanguage.php'  retourlogin="1" type="html" />
+	<connexion loginrequis="1"  type="smarty"/>
+	<disconnect action="framework/identification/disconnect.php"  type="smarty"/>
+	<apropos action="framework/apropos.php" type="smarty" />
+	<phpinfo action="framework/phpinfo.php" droits="admin" retourlogin="1"  type="smarty"/>
+	<quoideneuf action="doc/quoideneuf.php"  retourlogin="1"  type="smarty"/>
+	<setlanguage action='framework/setlanguage.php'  retourlogin="1" type="smarty" />
 	
 	<docindex action="doc/index.php" param1="index.html" type="???" ></docindex>
-	<docinstallation action="doc/index.php" param1="Installation.html" type="html" />
-	<docdroits action="doc/index.php" param1="Gestion_droits.html" type="html" />
-	<docmodulelecture action="doc/index.php" param1="module_lecture.html" type="html" />
-	<docparammodule action="doc/index.php" param1="Parametrage_module.html" type="html" />
-	<docclasseaccess action="doc/index.php" param1="classe_acces_donnees.html"  type="html"/>
-	<docgestiondoc action="doc/index.php" param1="Gestion_documentation.html"  type="html"/>
-	<docinternationalisation action="doc/index.php" param1="Internationalisation.html"  type="html"/>
-	<docsmarty action="doc/index.php" param1="Utiliser_SMARTY.html"  type="html"/>
-	<docdescriptionorganisation action="doc/index.php" param1="Organisation_application.html"   type="html"/>
-	<docmodulerecherche action="doc/index.php" param1="module_recherche.html" type="html" />
+	<docinstallation action="doc/index.php" param1="Installation.html" type="smarty" />
+	<docdroits action="doc/index.php" param1="Gestion_droits.html" type="smarty" />
+	<docmodulelecture action="doc/index.php" param1="module_lecture.html" type="smarty" />
+	<docparammodule action="doc/index.php" param1="Parametrage_module.html" type="smarty" />
+	<docclasseaccess action="doc/index.php" param1="classe_acces_donnees.html"  type="smarty"/>
+	<docgestiondoc action="doc/index.php" param1="Gestion_documentation.html"  type="smarty"/>
+	<docinternationalisation action="doc/index.php" param1="Internationalisation.html"  type="smarty"/>
+	<docsmarty action="doc/index.php" param1="Utiliser_SMARTY.html"  type="smarty"/>
+	<docdescriptionorganisation action="doc/index.php" param1="Organisation_application.html"   type="smarty"/>
+	<docmodulerecherche action="doc/index.php" param1="module_recherche.html" type="smarty" />
 	
-	<exampleList action="modules/example/example.php" param="list" droits="consult"    type="html"/>
-	<exampleDisplay action="modules/example/example.php" param="display" droits="consult" type="html" />
-	<exampleChange action="modules/example/example.php" param="change" droits="gestion"  type="html"/>
+	<exampleList action="modules/example/example.php" param="list" droits="consult"    type="smarty"/>
+	<exampleDisplay action="modules/example/example.php" param="display" droits="consult" type="smarty" />
+	<exampleChange action="modules/example/example.php" param="change" droits="gestion"  type="smarty"/>
 	<exampleWrite action="modules/example/example.php" param="write" droits="gestion" retourok="exampleList" retourko="exampleChange" modulebefore="exampleChange" />
 	<exampleDelete action="modules/example/example.php" param="delete" droits="admin" retoursuppr="exampleList" retourko="exampleChange" />
 
 <!-- gestion des droits nouvelle formule -->
-	<appliList action="framework/droits/appli.php" param="list" droits="admin" retourlogin="1"  type="html" />
-	<appliDisplay action="framework/droits/appli.php" param="display" droits="admin"  type="html"/>
-	<appliChange action="framework/droits/appli.php" param="change" droits="admin"  type="html"/>
+	<appliList action="framework/droits/appli.php" param="list" droits="admin" retourlogin="1"  type="smarty" />
+	<appliDisplay action="framework/droits/appli.php" param="display" droits="admin"  type="smarty"/>
+	<appliChange action="framework/droits/appli.php" param="change" droits="admin"  type="smarty"/>
 	<appliWrite action="framework/droits/appli.php" param="write" droits="admin" retourok="appliDisplay" retourko="appliChange" modulebefore="appliChange" />
 	<appliDelete action="framework/droits/appli.php" param="delete" droits="admin" retoursuppr="appliList" retourko="appliChange"  modulebefore="appliChange"/>
 
-	<aclloginList action="framework/droits/login.php" param="list" droits="admin" retourlogin="1" type="html" />
-	<aclloginChange action="framework/droits/login.php" param="change" droits="admin"  type="html"/>
+	<aclloginList action="framework/droits/login.php" param="list" droits="admin" retourlogin="1" type="smarty" />
+	<aclloginChange action="framework/droits/login.php" param="change" droits="admin"  type="smarty"/>
 	<aclloginWrite action="framework/droits/login.php" param="write" droits="admin" retourok="aclloginList" retourko="aclloginChange" modulebefore="aclloginChange" />
 	<aclloginDelete action="framework/droits/login.php" param="delete" droits="admin" retoursuppr="aclloginList" retourko="aclloginChange"  modulebefore="aclloginChange"/>
 
-	<groupList action="framework/droits/group.php" param="list" droits="admin" retourlogin="1"  type="html" />
-	<groupChange action="framework/droits/group.php" param="change" droits="admin" type="html" />
+	<groupList action="framework/droits/group.php" param="list" droits="admin" retourlogin="1"  type="smarty" />
+	<groupChange action="framework/droits/group.php" param="change" droits="admin" type="smarty" />
 	<groupWrite action="framework/droits/group.php" param="write" droits="admin" retourok="groupList" retourko="groupChange" modulebefore="groupChange" />
 	<groupDelete action="framework/droits/group.php" param="delete" droits="admin" retoursuppr="groupList" retourko="groupChange"  modulebefore="groupChange"/>
 
-	<acoDisplay action="framework/droits/aco.php" param="display" droits="admin" type="html" />
-	<acoChange action="framework/droits/aco.php" param="change" droits="admin"  type="html"/>
+	<acoDisplay action="framework/droits/aco.php" param="display" droits="admin" type="smarty" />
+	<acoChange action="framework/droits/aco.php" param="change" droits="admin"  type="smarty"/>
 	<acoWrite action="framework/droits/aco.php" param="write" droits="admin" retourok="appliDisplay" retourko="acoChange" modulebefore="acoChange" />
 	<acoDelete action="framework/droits/aco.php" param="delete" droits="admin" retoursuppr="appliDisplay" retourko="acoChange"  modulebefore="acoChange"/>
 
