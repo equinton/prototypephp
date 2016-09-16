@@ -143,4 +143,9 @@ $pubKey = "/etc/ssl/certs/ssl-cert-snakeoil.pem";
  * Duree de validite du token d'identification
  */
 $tokenIdentityValidity = 36000; // 10 heures
+/*
+ * Emplacement du fichier contenant les paramètres spécifiques de l'entree DNS (multiples applications avec 
+ * le meme code)
+ */
+$paramIniFile = "./param.ini";
 ?>
