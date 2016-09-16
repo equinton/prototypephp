@@ -14,34 +14,26 @@
  * @return array
  */
 function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
-	global $vue, $OBJETBDD_debugmode, $ERROR_display, $message;
+	global $vue, $OBJETBDD_debugmode, $message;
 	if (isset ( $vue )) {
 		if (is_numeric ( $id )) {
-			if ($id > 0) {
-				try {
-					$data = $dataClass->lire ( $id );
-				} catch ( Exception $e ) {
-					if ($OBJETBDD_debugmode > 0) {
-						$message->set ( $dataClass->getErrorData ( 1 ) );
-					} else
-						$message->set ( $LANG ["message"] [37] );
-					if ($ERROR_display == 1)
-						$message->set ( $e->getMessage () );
-				}
-				/*
-				 * Gestion des valeurs par defaut
-				 */
-			} else {
-				if (is_numeric ( $idParent ) || $idParent == null)
-					$data = $dataClass->getDefaultValue ( $idParent );
+			
+			try {
+				$data = $dataClass->lire ( $id, true, $idParent );
+			} catch ( Exception $e ) {
+				if ($OBJETBDD_debugmode > 0) {
+					$message->set ( $dataClass->getErrorData ( 1 ) );
+				} else
+					$message->set ( $LANG ["message"] [37] );
+				$message->setSyslog ( $e->getMessage () );
 			}
-			/*
-			 * Affectation des donnees a smarty
-			 */
-			$vue->set ( $data, "data" );
-			$vue->set ( $smartyPage, "corps" );
-			return $data;
 		}
+		/*
+		 * Affectation des donnees a smarty
+		 */
+		$vue->set ( $data, "data" );
+		$vue->set ( $smartyPage, "corps" );
+		return $data;
 	} else {
 		global $module;
 		$message->set ( "Error : vue type not defined for the requested module ($module)" );
@@ -57,7 +49,7 @@ function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
  * @return int
  */
 function dataWrite($dataClass, $data) {
-	global $message, $LANG, $module_coderetour, $log, $OBJETBDD_debugmode, $ERROR_display;
+	global $message, $LANG, $module_coderetour, $log, $OBJETBDD_debugmode;
 	try {
 		$id = $dataClass->ecrire ( $data );
 		$message->set ( $LANG ["message"] [5] );
@@ -68,8 +60,7 @@ function dataWrite($dataClass, $data) {
 			$message->set ( $dataClass->getErrorData ( 1 ) );
 		} else
 			$message->set ( $LANG ["message"] [12] );
-		if ($ERROR_display == 1)
-			$message->set ( $e->getMessage () );
+		$message->setSyslog ( $e->getMessage () );
 		$module_coderetour = - 1;
 	}
 	return ($id);
@@ -82,7 +73,7 @@ function dataWrite($dataClass, $data) {
  * @return int
  */
 function dataDelete($dataClass, $id) {
-	global $message, $LANG, $module_coderetour, $log, $OBJETBDD_debugmode, $ERROR_display;
+	global $message, $LANG, $module_coderetour, $log, $OBJETBDD_debugmode;
 	$module_coderetour = - 1;
 	$ok = true;
 	if (is_array ( $id )) {
@@ -98,15 +89,14 @@ function dataDelete($dataClass, $id) {
 		try {
 			$ret = $dataClass->supprimer ( $id );
 			$message->set ( $LANG ["message"] [4] );
-			$module_coderetour = 2;
+			$module_coderetour = 1;
 			$log->setLog ( $_SESSION ["login"], get_class ( $dataClass ) . "-delete", $id );
 		} catch ( Exception $e ) {
 			if ($OBJETBDD_debugmode > 0) {
 				$message->set ( $dataClass->getErrorData ( 1 ) );
 			} else
 				$message->set ( $LANG ["message"] [13] );
-			if ($ERROR_display == 1)
-				$message->set ( $e->getMessage () );
+			$message->setSyslog ( $e->getMessage () );
 			$ret = - 1;
 		}
 	} else
@@ -207,7 +197,8 @@ function getIPClientAddress() {
 }
 /**
  * Fonction recursive decodant le html en retour de navigateur
- * @param array|string $data
+ * 
+ * @param array|string $data        	
  * @return array|string
  */
 function htmlDecode($data) {

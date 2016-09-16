@@ -61,6 +61,9 @@ while ( isset ( $module ) ) {
 			case "csv" :
 				$vue = new VueCsv ();
 				break;
+			case "pdf":
+				$vue = new VuePdf();
+				break;
 			case "smarty" :
 			case "html" :
 			default :
@@ -117,14 +120,13 @@ while ( isset ( $module ) ) {
 								}
 							}
 						} catch ( Exception $e ) {
-							if ($ERROR_display == 1 )
-								$message->set ( $e->getMessage () );
+							$message->setSyslog( $e->getMessage () );
 							/*
 							 * Verification de l'identification uniquement en base de donnees
 							 */
 						}
 					} elseif ($ident_type == "BDD") {
-						$res = $loginGestion->VerifLogin ( $_REQUEST ['login'], $_REQUEST ['password'] );
+						$res = $loginGestion->controlLogin ( $_REQUEST ['login'], $_REQUEST ['password'] );
 						if ($res == TRUE) {
 							$_SESSION ["login"] = $_REQUEST ["login"];
 						}
@@ -241,14 +243,13 @@ while ( isset ( $module ) ) {
 	 * Enregistrement de l'acces au module
 	 */
 	try {
-		$log->setLog ( $_SESSION ["login"], $moduleRequested, $motifErreur );
+		$log->setLog ( $_SESSION ["login"], $module, $motifErreur );
 	} catch ( Exception $e ) {
 		if ($OBJETBDD_debugmode > 0) {
 			$message->set ( $log->getErrorData ( 1 ) );
 		} else
 			$message->set ( $LANG ["message"] [38] );
-		if ($ERROR_display == 1)
-			$message->set ( $e->getMessage () );
+			$message->setSyslog( $e->getMessage () );
 	}
 	
 	/*
@@ -270,19 +271,14 @@ while ( isset ( $module ) ) {
 		if (isset ( $module_coderetour )) {
 			switch ($module_coderetour) {
 				case - 1 :
+					unset($vue);
 					$module = $t_module ["retourko"];
 					break;
 				case 0 :
-					$module = $t_module ["retournull"];
-					break;
 				case 1 :
-					$module = $t_module ["retourok"];
-					break;
 				case 2 :
-					$module = $t_module ["retoursuppr"];
-					break;
 				case 3 :
-					$module = $t_module ["retournext"];
+					$module = $t_module ["retourok"];
 					break;
 			}
 		}
@@ -346,8 +342,17 @@ if ($isHtml) {
 /**
  * Declenchement de l'envoi vers le navigateur
  */
-if (isset ( $vue ))
-	$vue->send ( $paramSend );
+if (isset ( $vue )) {
+	try {
+		$vue->send ( $paramSend );
+	} catch (Exception $e) {
+		$message->setSyslog($e->getMessage());
+	}
+}
+/**
+ * Generation des messages d'erreur pour Syslog
+ */
+$message->sendSyslog();
 /**
  * Fin de traitement
  */

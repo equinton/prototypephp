@@ -8,8 +8,8 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<div class="navbar-brand"><img src="display/images/logo.png" height="25"></div>
-			<span class="navbar-text"><b>{$LANG.message.1}</b></span>
+			<div class="navbar-brand"><img src="favicon.png" height="25"></div>
+			<span class="navbar-text hidden-xs hidden-sm"><b>{$APPLI_titre}</b></span>
 		</div>
 		<!-- Affichage du menu -->
 		<div class="collapse navbar-collapse" id="navbar_collapse">
@@ -17,7 +17,7 @@
 		</ul>
 
 		<!-- Boutons a droite du menu -->
-		<ul class="nav navbar navbar-right">
+		<ul class="nav navbar navbar-right hidden-xs hidden-sm">
 			<a href='index.php?module=setlanguage&langue=fr'> <img
 				src='display/images/drapeau_francais.png' height='20' border='0'>
 			</a>
@@ -39,7 +39,7 @@
 		</div>
 	</div>
 </div>
-{if strlen($message)>0}
+{if (strlen($message) > 0) }
 <div class="container-fluid">
 <div class="row">
 	<div class="col-md-12 message">
