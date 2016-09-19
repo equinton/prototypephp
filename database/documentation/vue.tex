@@ -1,5 +1,65 @@
 \chapter{Les vues - fonctionnement général}\label{vue}
 
+\chapter{Génération du menu}
+Pour les pages web, le menu est généré de manière dynamique :
+\begin{itemize}
+\item lors du premier appel à l'application ;
+\item après toute opération de connexion ou de déconnexion.
+\end{itemize}
+
+Le menu est stocké en variable de session, pour accélérer l'affichage.
+
+Il est structuré sous la forme d'une liste non ordonnée (balises ul et li), et contient les classes utilisées par bootstrap pour son affichage.
+
+\section{Fichier de description}
+
+Le menu est généré à partir du fichier \textbf{param/menu.xml}. La branche principale s'appelle \textit{<menu>}. Voici un exemple d'entrée, qui correspond au menu d'administration :
+
+\begin{lstlisting}
+<item module="administration" value="4" title="5" droits="admin">
+	<item module="loginList" droits="admin" title="3" value="2"/>
+	<item module="appliList" droits="admin" value="appliliste" title="applilistetitle"/>
+	<item module="aclloginList" droits="admin" value="aclloginliste" title="aclloginlistetitle"/>
+	<item module="groupList" droits="admin" value="groupliste" title="grouplistetitle"/>
+	<item module="phpinfo" droits="admin" value="phpinfo" title="phpinfotitle"/>
+</item>
+\end{lstlisting}
+
+Les entrées du menu sont déclarées dans des balises \textbf{item}. Voici les attributs utilisables :
+
+\begin{longtable}{|p{2.5cm}|c|p{9cm}|}
+\hline
+\textbf{Attribut} & \textbf{Requis} & \textbf{Signification} \\
+\hline
+\endhead
+module & X & Nom du module à exécuter, tel que décrit dans le fichier actions.xml (\textit{cf.} \ref{actions} \textit{\nameref{actions}}, page \pageref{actions})\\
+ \hline
+droits & & Droit nécessaire pour afficher l'entrée du menu. Il est possible d'indiquer plusieurs droits, en les séparant par une virgule\\
+ \hline
+loginrequis & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur est connecté \\
+ \hline
+onlynoconnect & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur n'est pas connecté\\
+ \hline
+value & X & nom de la sous-variable du tableau \$LANG["menu"], qui contient le libellé à afficher (\textit{cf.} \ref{langue} \textit{\nameref{langue}}, page \pageref{langue})\\
+ \hline
+title & X & nom de la sous-variable du tableau  \$LANG["menu"], qui contient le libellé à afficher au survol de la souris (attribut HTML \textit{title})  (\textit{cf.} \ref{langue} \textit{\nameref{langue}}, page \pageref{langue})\\
+ \hline
+
+\caption{Liste des attributs utilisables pour décrire les entrées du menu}
+\end{longtable}
+
+Une entrée \textit{item} peut contenir d'autres entrées \textit{item}, ce qui permet de décrire les menus en cascade. Actuellement, le menu n'a été testé qu'avec 2 niveaux (menu principal horizontal, et menus verticaux associés).
+
+L'ordre d'affichage est celui décrit dans le fichier xml.
+
+\section{Génération en mode développement}
+
+Si la variable \textit{APPLI\_modeDeveloppement} est positionnée à \textit{true}, le menu est généré à chaque appel.
+
+\chapter{Gestion des langues}\label{langue}
+
+
+
 \chapter{La vue Smarty}\label{smarty}
 
 \chapter{Les autres vues}

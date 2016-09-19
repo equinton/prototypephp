@@ -249,17 +249,65 @@ GACL\_schema & schéma utilisé\\
 \hline
 GACL\_aco & nom du code de l'application utilisé dans la gestion des droits (\textit{cf.} \ref{droits} \textit{\nameref{droits}}, page \pageref{droits} )\\
 \hline
- & \\
-\hline
- & \\
-\hline
- & \\
-\hline
+
 
 \caption{Variables utilisées pour paramétrer les connexions}
 \end{longtable}
 
+Il est possible de créer des comptes séparés, voire de ne donner accès qu'en lecture à la base des droits (à l'exception de la table \textit{log}, qui contient la trace de toutes les actions demandées).
 
 \chapter{Décrire les actions}
 
-\chapter{Identification des utilisateurs et gestion des droits}\label{droits}
+Les actions possibles dans le logiciel sont décrites dans un fichier, par défaut \textit{param/actions.xml}. C'est un fichier XML dont la racine s'appelle \textit{navigation}. 
+
+Une action est la conjonction entre un contexte et une opération, par exemple \textit{poissonList} pour afficher la liste des poissons, \textit{poissonChange} pour afficher la page de modification d'un poisson, \textit{poissonWrite} ou \textit{poissonDelete} pour déclencher l'écriture en base de données.
+
+Dans le contexte de ce framework, l'action s'appelle \textit{module} (nom du champ transmis depuis le navigateur). L'attribut \textit{action} contient le nom du fichier PHP appelé. Il est associé à l'attribut \textit{param}, qui permet d'indiquer le détail de l'action à réaliser (par exemple, \textit{list} ou \textit{change}).
+
+Voici la liste des attributs disponibles pour un module (ou une action) :
+\begin{longtable}{|p{2.5cm}|c|p{9cm}|}
+\hline
+\textbf{Attribut} & \textbf{Requis} & \textbf{Signification} \\
+\hline
+\endhead
+action & X & nom de la page PHP à exécuter (accès relatif depuis la racine de l'application) \\
+ \hline
+param &  & paramètre analysé dans la page, pour savoir quelle action doit être réalisée. Par convention, les actions possibles sont les suivantes : list, read, change, write, delete, ou autre action \\
+ \hline
+droits &  & Liste des droits nécessaires pour exécuter l'action. Si plusieurs droits sont possibles, ils doivent être séparés par une virgule\\
+ \hline
+loginrequis & & Indique, en l'absence de droits spécifiques, si l'action nécessite d'être connecté. Vaut 1 si la connexion est requise\\
+ \hline
+modulebefore & & Pour les opérations d'écriture, permet d'indiquer le nom du module qui doit impérativement être exécuté avant. Cela limite les risques d'attaques de type CSRF et les rafraîchissements intempestifs dans les formulaires. Plusieurs modules peuvent être indiqués, en les séparant par une virgule\\
+ \hline
+retourok & & indique le nom du module qui sera exécuté si le code de retour (variable \$module\_coderetour) vaut 1 \\
+ \hline
+retourko & & indique le nom du module qui sera exécuté si le code de retour (variable \$module\_coderetour) vaut -1 (échec d'exécution) \\
+ \hline
+type & (X) & pour les modules envoyant des données au navigateur, indique le type de la vue qui sera utilisée. Les valeurs possibles sont smarty ou html (même vue), ajax, pdf, csv  \\
+ \hline
+droitko & & nom du module appelé si les droits ne sont pas suffisants pour exécuter l'action demandée \\
+\hline 
+ 
+ \caption{Liste des attributs utilisables pour décrire une action}\label{actions}
+\end{longtable}
+
+Le module \textit{model} n'est pas analysé, il sert à montrer l'ensemble des options possibles. 
+
+Le module \textit{default} correspond au module appelé par défaut, si l'application est appelée sans indiquer de nom de module (variable \textit{module} non transmise soit dans le lien, soit dans le formulaire).
+
+Voici quelques exemples d'utilisation :
+\begin{lstlisting}
+	<appliList action="framework/droits/appli.php" param="list" droits="admin" retourlogin="1"  type="smarty" />
+	<appliDisplay action="framework/droits/appli.php" param="display" droits="admin"  type="smarty"/>
+	<appliChange action="framework/droits/appli.php" param="change" droits="admin"  type="smarty"/>
+	<appliWrite action="framework/droits/appli.php" param="write" droits="admin" retourok="appliDisplay" retourko="appliChange" modulebefore="appliChange" />
+	<appliDelete action="framework/droits/appli.php" param="delete" droits="admin" retourok="appliList" retourko="appliChange"  modulebefore="appliChange"/>
+\end{lstlisting}
+
+Il s'agit des modules utilisés dans la gestion des droits. Ils nécessitent tous que l'utilisateur dispose du droit \textit{admin}. Une seule page est appelée (\textit{appli.php}), l'action à réaliser étant analysée à partir de l'attribut \textit{param}.
+
+Les modules \textit{appliWrite} et \textit{appliDelete} ne génèrent pas directement d'affichage : ils sont là uniquement pour écrire des informations dans la base de données. Par contre, ils enchaînent, en fonction de leur code de retour, soit sur le réaffichage du formulaire de saisie, soit sur le retour au détail ou à la liste.
+Ces deux modules ne peuvent être exécutés que si le précédent est \textit{appliChange}, c'est à dire si le formulaire de saisie a été affiché.
+
+\chapter{Identifier les utilisateurs et gérer les droits}\label{droits}

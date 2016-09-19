@@ -1,10 +1,12 @@
 \documentclass[12pt %
 ,a4paper %
 ,titlepage %
-%,twoside %
+,twoside %
 %,openany % ouvre les sections indifféremment sur la page de gauche ou de droite
 ]{book}
 
+%\usepackage{layout}
+%\usepackage[nomarginpar, margin=3cm]{geometry}
 % Paramétrages de la langue et de l'encodage
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
@@ -34,6 +36,15 @@
 
 % Insertion de code source dans le texte, à utiliser avec \begin{lstlisting} et \lstset{java|html|php...}
 \usepackage{listings}
+
+% Definition de l'affichage du code
+\lstset %
+{basicstyle=\ttfamily, %frame=single %
+,showstringspaces=false %
+,tabsize=3 %
+,breaklines=true, %
+,inputencoding=utf8 %
+}
 
 % Définition des entêtes
 \usepackage{fancyhdr}
@@ -142,7 +153,7 @@ hyphenation
 \subtitle{\sousTitre}
 \author{\auteur}
 \begin{document}
-
+%\layout
 %Supprime les veuves et orphelines
 \widowpenalty=10000
 \clubpenalty=10000
@@ -157,16 +168,16 @@ hyphenation
 \fancyfoot[CO]{\sffamily\thepage}
 \fancyfoot[CE]{\sffamily\thepage}
 % Redéfinition de \cleardoublepage pour créer une page totalement vide
-\makeatletter
-\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
-  \hbox{}
-  \vspace*{\fill}
-
-  \vspace{\fill}
-  \thispagestyle{empty}
-  \newpage
-  \if@twocolumn\hbox{}\newpage\fi\fi\fi}
-\makeatother
+%\makeatletter
+%\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
+%  \hbox{}
+%  \vspace*{\fill}
+%
+%  \vspace{\fill}
+%  \thispagestyle{empty}
+%  \newpage
+%  \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+%\makeatother
 
 \tableofcontents
 
