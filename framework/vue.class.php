@@ -19,27 +19,24 @@ class Message {
 	 * @var array
 	 */
 	private $message = array ();
-	private $syslog = array();
+	private $syslog = array ();
 	private $displaySyslog = false;
-	
 	function __construct($displaySyslog = false) {
 		$this->displaySyslog = $displaySyslog;
 	}
-	
 	function set($value) {
 		$this->message [] = $value;
 	}
-	
 	function setSyslog($value) {
-		$this->syslog[] = $value;
+		$this->syslog [] = $value;
 	}
 	/**
 	 * Retourne le tableau brut
 	 */
 	function get() {
 		if ($this->displaySyslog) {
-			return array_merge($this->message, $this->syslog);
-		} else 
+			return array_merge ( $this->message, $this->syslog );
+		} else
 			return $this->message;
 	}
 	/**
@@ -52,8 +49,8 @@ class Message {
 		$data = "";
 		$i = 0;
 		if ($this->displaySyslog) {
-			$tableau =  array_merge($this->message, $this->syslog);
-		} else 
+			$tableau = array_merge ( $this->message, $this->syslog );
+		} else
 			$tableau = $this->message;
 		foreach ( $tableau as $value ) {
 			if ($i > 0)
@@ -65,14 +62,14 @@ class Message {
 	}
 	function sendSyslog() {
 		global $APPLI_code;
-		$dt = new DateTime();
-		$date = $dt->format("D M d H:i:s.u Y");
-		$pid = getmypid();
+		$dt = new DateTime ();
+		$date = $dt->format ( "D M d H:i:s.u Y" );
+		$pid = getmypid ();
 		$code_error = "err";
 		$level = "notice";
-		foreach ($this->syslog as $value) {
-		openlog("[$date] [$APPLI_code:$level] [pid $pid] $code_error",LOG_PERROR , LOG_LOCAL7);
-		syslog(LOG_NOTICE, $value);
+		foreach ( $this->syslog as $value ) {
+			openlog ( "[$date] [$APPLI_code:$level] [pid $pid] $code_error", LOG_PERROR, LOG_LOCAL7 );
+			syslog ( LOG_NOTICE, $value );
 		}
 	}
 }
@@ -238,8 +235,13 @@ class VueAjaxJson extends Vue {
 			/*
 		 * Envoi au navigateur
 		 */
+		if (count ( $data ) == 1) {
+			$json = json_encode ( $data [0], JSON_HEX_QUOT | JSON_FORCE_OBJECT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE );
+		} else
+			$json = json_encode ( $data );
 		ob_clean ();
-		echo json_encode ( $data );
+		//header ( 'Content-Type: application/json' );
+		echo $json;
 		ob_flush ();
 	}
 }
@@ -354,6 +356,72 @@ class VuePdf extends Vue {
 	 */
 	function setDisposition($disp = "attachment") {
 		$this->disposition = $disp;
+	}
+}
+/**
+ * Classe permettant d'envoyer un fichier au navigateur, quel que soit son type
+ *
+ * @author quinton
+ *        
+ */
+class vueBinaire extends Vue {
+	private $param = array (
+			"filename" => "", /* nom du fichier tel qu'il apparaitra dans le navigateur */
+			"disposition" => "attachment", /* attachment : le fichier est telecharge, inline : le fichier est affiche */
+			"tmp_name" => "", /* emplacement du fichier dans le serveur */
+			"content_type" => "" /* type mime */
+	);
+	/**
+	 *
+	 * Envoi du fichier au navigateur
+	 *
+	 * {@inheritdoc}
+	 *
+	 * @see Vue::send()
+	 */
+	function send() {
+		if (strlen ( $this->param ["tmp_name"] ) > 0) {
+			/*
+			 * Recuperation du content-type s'il n'a pas ete fourni
+			 */
+			if (strlen ( $this->param ["content_type"] ) == 0) {
+				$finfo = finfo_open ( FILEINFO_MIME_TYPE );
+				$this->param ["content_type"] = finfo_file ( $finfo, $this->param ["tmp_name"] );
+				finfo_close ( $finfo );
+			}
+			header ( 'Content-Type: ' . $this->param ["content_type"] );
+			header ( 'Content-Transfer-Encoding: binary' );
+			if ($this->param ["disposition"] == "attachment" && strlen ( $this->param ["filename"] > 0 )) {
+				header ( 'Content-Disposition: attachment; filename="' . basename ( $this->param ["filename"] ) . '"' );
+			} else
+				header ( 'Content-Disposition: inline' );
+			header ( 'Content-Length: ' . filesize ( $this->param ["tmp_name"] ) );
+			/*
+			 * Ajout des entetes de cache
+			 */
+			header ( 'Expires: 0' );
+			header ( 'Cache-Control: must-revalidate' );
+			header ( 'Pragma: no-cache' );
+			
+			/*
+			 * Envoi au navigateur
+			 */
+			ob_clean ();
+			flush ();
+			readfile ( $this->param ["tmp_name"] );
+		}
+	}
+	
+	/**
+	 * Met a jour les parametres necessaires pour l'export
+	 *
+	 * @param array $param        	
+	 */
+	function setParam(array $param) {
+		if (is_array ( $param )) {
+			foreach ( $param as $key => $value )
+				$this->param [$key] = $value;
+		}
 	}
 }
 ?>
