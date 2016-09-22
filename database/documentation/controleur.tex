@@ -84,7 +84,7 @@ Les fichiers sont organisés selon cette arborescence :
 
 Seuls le fichier index.php, à la racine, les dossiers display et test sont accessibles directement. Les autres dossiers sont protégés par des fichiers .htaccess.
 
-\section{Paramètres}
+\section{Paramètres}\label{param}
 
 Les paramètres utilisés dans l'application sont gérés avec 3 fichiers différents :
 \begin{itemize}
@@ -255,6 +255,40 @@ GACL\_aco & nom du code de l'application utilisé dans la gestion des droits (\t
 \end{longtable}
 
 Il est possible de créer des comptes séparés, voire de ne donner accès qu'en lecture à la base des droits (à l'exception de la table \textit{log}, qui contient la trace de toutes les actions demandées).
+
+\section{Gestion des messages}
+
+Une classe est instanciée systématiquement pour gérer les messages, la classe \textit{Message}. Deux types de messages sont pris en compte :
+\begin{itemize}
+\item les messages envoyés au navigateur, à destination de l'utilisateur ;
+\item les messages enregistrés dans Syslog, le mécanisme de gestion des messages systèmes de Linux.
+\end{itemize}
+
+Les messages sont enregistrés dans un tableau, qui sera ensuite dépilé pour générer les textes soit à afficher, soit à stocker dans Syslog.
+
+La classe dispose des fonctions suivantes :
+\begin{longtable}{|p{5cm}|p{8cm}|}
+\hline
+\textbf{fonction} & \textbf{Objectif} \\
+\hline
+\endhead
+\_\_construct(\$displaySyslog = false) & Constructeur de la classe. La variable permet d'indiquer si les messages destinés à Syslog sont également affichés à l'écran (mode par défaut en développement) \\
+\hline
+set(\$value) & Ajoute un nouveau libellé utilisateur \\
+\hline
+setSyslog(\$value) & Ajout un nouveau message système \\
+\hline
+get() & Retourne le tableau contenant l'ensemble des messages, avec ou sans les messages systèmes, selon le mode indiqué dans le constructeur \\
+\hline
+getAsHtml() & Formate les messages pour les envoyer au navigateur. Chaque message est séparé par un retour à la ligne. Les libellés sont encodés en HTML avant d'être envoyés \\
+\hline
+sendSyslog() & Génère un message dans Syslog. Actuellement, le message est toujours de type NOTICE. \\
+\hline
+
+\caption{Fonctions utilisables dans la classe Message}
+\end{longtable}
+
+Les messages sont systématiquement transmis à la vue Smarty, et l'envoi des messages systèmes est la dernière action réalisée avant l'affichage de la vue.
 
 \chapter{Décrire les actions}
 
