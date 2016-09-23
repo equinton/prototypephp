@@ -177,6 +177,7 @@ class ObjetBDD {
 	public $errorData;
 	/**
 	 * @public $codageHtml
+	 * @deprecated
 	 * Indique si les informations recuperees en base de donnees ou injectees doivent etre
 	 * passees par les instructions htmlspecialchars et htmlspecialchars_decode
 	 * Par defaut, a true
