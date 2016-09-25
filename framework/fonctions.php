@@ -109,7 +109,7 @@ function dataDelete($dataClass, $id) {
  * @param string $langue        	
  */
 function setlanguage($langue) {
-	global $language, $LANG, $APPLI_cookie_ttl, $APPLI_menufile, $menu;
+	global $language, $LANG, $APPLI_cookie_ttl, $APPLI_menufile, $menu, $ObjetBDDParam;
 	/*
 	 * Chargement de la langue par defaut
 	 */
@@ -132,6 +132,7 @@ function setlanguage($langue) {
 			$LANG = array_replace_recursive ( $LANGORI, $LANGDIFF );
 		}
 	}
+	$ObjetBDDParam["formatDate"] = $FORMATDATE;
 	/*
 	 * Mise en session de la langue
 	 */
