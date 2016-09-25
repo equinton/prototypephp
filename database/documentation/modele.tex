@@ -139,7 +139,7 @@ longueur & pour les champs de type varchar, indique la longueur maximale autoris
 pattern & pattern traité par expression régulière, pour tester la correspondance de l'information fournie au modèle décrit \\
 \hline
 
-\caption{Liste des attributs permettant de décrire les colonnes de la table}
+\caption{Liste des attributs permettant de décrire les colonnes de la table\label{objetbdd-attr}}
 
 \end{longtable}
 
@@ -224,7 +224,16 @@ Retourne la liste des enregistrements fils correspondant à la clé étrangère 
 function getListeParamAsPrepared($sql, $data)
 \end{lstlisting}
 
-Permet de récupérer une liste d'enregistrements à partir de la requête SQL fournie et du tableau des données à insérer (requêtes préparées PDO).
+Permet de récupérer une liste d'enregistrements à partir de la requête SQL fournie et du tableau des données à insérer (requêtes préparées PDO), avec transformation des dates
+
+\subsection{getListeParam}
+\begin{lstlisting}
+function getListeParam($sql)
+\end{lstlisting}
+
+Exécute la requête et retourne la liste des enregistrements correspondants, avec transformation des dates.
+
+Attention : cette fonction ne gère pas la préparation des requêtes : il importe au codeur d'en tenir compte pour éviter les risques d'injection de code. Elle ne devrait être utilisée que dans les cas où une requête préparée ne peut être utilisée.
 
 \subsection{ecrireTableNN}
 
@@ -341,6 +350,212 @@ Transforme les dates présentes dans le tableau joint au format supporté par la
 
 \section{Utilisation avancée}
 \subsection{Requête multi-table contenant des champs date}
+Un des cas fréquents posé par ObjetBDD est celui des requêtes manuelles qui retournent des dates. L'objectif est de les formater pour les mettre dans le même état que les dates décrites dans la table associée à la classe.
 
+Le plus simple consiste à rajouter la colonne date complémentaire à la liste des variables juste avant d'exécuter la requête. Voici un exemple :
+\begin{lstlisting}
+$sql = "select t1.id, t1.date1, t2.id2, t2.date2
+from table1 t1
+join table2 t2 using (id)";
+$this->colonnes["date2"]=array("type"=>2);
+return $this->getListeParam($sql);
+\end{lstlisting}
 
-\chapter{Décrire les actions}
+Une fois le contenu de la requête récupéré, la classe pourra alors appliquer la transformation de date sur la colonne issue de la  seconde table.
+
+\section{Le tableau de paramètres ObjetBDDParam\label{objetbddparam}
+
+ObjetBDDParam est une variable contenant les paramètres par défaut utilisés pour initialiser les instances issues d'ObjetBDD. C'est en particulier assez pratique pour gérer le choix de la langue d'affichage pour les dates. Il est également possible de modifier, de manière globale dans le logiciel, le fonctionnement d'ObjetBDD.
+
+Ce tableau devrait être passé systématiquement en paramètre de toute instanciation d'objet basé sur ObjetBDD.
+
+\chapter{Exécuter les actions}
+Le framework est conçu pour n'exécuter que les actions décrites dans un fichier XML (\textit{cf.} \ref{labelxml} \textit{\nameref{labelxml}}, page \pageref{labelxml}).
+
+Les actions sont identifiées par deux informations : d'une part, le nom du fichier PHP à exécuter, et d'autre part un paramètre permettant de décrire ce qu'il faut réaliser précisément. Ce second paramètre pourrait ne pas être utilisé, mais cela impliquerait un fichier par action. 
+Le framework a été conçu pour obtenir un bon équilibre entre le nombre de fichiers et la navigation dans le code.
+
+\section{Les actions standard}
+
+En général, on identifie facilement les actions suivants sur un type d'objet :
+\begin{itemize}
+\item l'affichage d'une boite de recherche et de la liste des dossiers correspondants ;
+\item l'affichage du détail d'un enregistrement ;
+\item l'affichage de la page permettant de créer ou de modifier un enregistrement ;
+\item l'écriture des informations en base de données ;
+\item la suppression d'une fiche.
+\end{itemize}
+
+Par convention, ces actions sont nommées \textbf{list}, \textbf{display}, \textbf{change}, \textbf{write} et \textbf{delete}. 
+
+Voici un exemple de code standard utilisé pour traiter tous les modules (fichier modules/example/example.php, à recopier et à adapter...) :
+
+\begin{lstlisting}
+include_once 'modules/example/example.class.php';
+$dataClass = new Example($bdd,$ObjetBDDParam);
+$keyName = "example_id";
+$id = $_REQUEST[$keyName];
+
+switch ($t_module["param"]) {
+	case "list":
+		/*
+		 * Display the list of all records of the table
+		 */
+		 /*
+		 * $searchExample must be defined into modules/beforesession.inc.php :
+		 * include_once 'modules/classes/searchParam.class.php';
+		 * and into modules/common.inc.php :
+		 * if (!isset($_SESSION["searchExample"])) {
+    	 * $searchExample = new SearchExample();
+		 *	$_SESSION["searchExample"] = $searchExample; 
+		 *	} else {
+		 *	$searchExample = $_SESSION["searchExample"];
+		 *	}
+		 * and, also, into modules/classes/searchParam.class.php...
+		 */
+		 $searchExample->setParam ( $_REQUEST );
+		 $dataSearch = $searchExample->getParam ();
+		if ($searchExample->isSearch () == 1) {
+			$data = $dataClass->getListeSearch ( $dataExample );		
+		$vue->set($data , "data");
+		$vue->set(1, "isSearch");
+		}
+		$vue->set($dataSearch, "exampleSearch");
+		$vue->set("example/exampleList.tpl","corps" );
+		break;
+	case "display":
+		/*
+		 * Display the detail of the record
+		 */
+		$data = $dataClass->lire($id);
+		$vue->set($data,"data");
+		/*
+		 * Assignation du modele d'affichage
+		 */
+		$vue->set(  "example/exampleDisplay.tpl", "corps");
+
+		break;
+	case "change":
+		/*
+		 * open the form to modify the record
+		 * If is a new record, generate a new record with default value :
+		 * $_REQUEST["idParent"] contains the identifiant of the parent record 
+		 */
+		dataRead($dataClass, $id, "example/exampleChange.tpl", $_REQUEST["idParent"]);
+		break;
+	case "write":
+		/*
+		 * write record in database
+		 */
+		$id = dataWrite($dataClass, $_REQUEST);
+		if ($id > 0) {
+			$_REQUEST[$keyName] = $id;
+		}
+		break;
+	case "delete":
+		/*
+		 * delete record
+		 */
+		dataDelete($dataClass, $id);
+		break;
+}
+\end{lstlisting}
+
+Quelques explications...
+
+Le code commence par charger la classe héritée d'ObjetBDD, puis celle-ci est instanciée avec, en paramètres, la connexion PDO à utiliser et le tableau \textit{ObjetBDDParam}, qui contient la configuration par défaut d'ObjetBDD (\textit{cf.} \ref{objetbddparam} \textit{\nameref{objetbddparam}}, page \pageref{objetbddparam}).
+
+Le nom de la clé associée est indiqué, ce qui permet d'obtenir une code plus générique.
+
+Ensuite, le tableau contenant la description de l'action (t\_param) est analysé, et plus particulièrement sa valeur \textit{param}, qui correspond à ce qu'on attend du module, avec une instruction \textit{switch}.
+
+Quelques précisions sur ce qui est implémenté par défaut.
+
+\subsection{list}
+
+Permet d'afficher une boite de recherche et la liste des dossiers associés. 
+
+\subsubsection{La classe de gestion des critères de recherche}
+
+Les paramètres de recherche peuvent être stockés en variable de session, pour que l'utilisateur récupère la liste des dossiers affichés précédemment quand il revient sur cet écran. 
+
+Chaque jeu de paramètres est déclaré dans une instance héritée de la classe \textit{SearchParam}, dans le fichier \textit{modules/classes/search.class.php}.
+
+Voici un exemple d'instanciation de cette classe de recherche :
+\begin{lstlisting}
+class SearchExample extends SearchParam {
+	function __construct() {
+		$this->param = array (
+				"comment" => "",
+				"numero" => 0,
+				"numero1" => "",
+				"dateExample" => date ( 'd/m/Y' ) 
+		);
+		$this->paramNum = array (
+				"numero",
+				"numero1" 
+		);
+		parent::__construct ();
+	}
+}
+\end{lstlisting}
+
+Deux tableaux doivent être déclarés. Le premier correspond aux attributs utilisables dans la recherche, et leur valeur par défaut doit être indiquée. Le second indique quels sont les champs qui sont numériques.
+
+Deux fonctions sont utilisés couramment : 
+\begin{itemize}
+\item setParam(\$\_REQUEST) : met à jour les paramètres de recherche ;
+\item getParam() : retourne le tableau avec les paramètres de recherche.
+\end{itemize}
+
+De plus, une fonction utilitaire permet de savoir s'il s'agit de la première fois que la recherche est utilisée. Si le formulaire contient un champ configuré ainsi :
+\begin{lstlisting}
+<input type="hidden" name="isSearch" value="1">
+\end{lstlisting}
+Il est alors facile de savoir si le formulaire de recherche a déjà ou non été appelé (la variable \textit{isSearch} est initialisée à 0).
+
+\subsubsection{Affichage de la liste}
+L'affichage de la liste va être traité par la vue Smarty. Le contenu va être transmis (par convention, dans une variable nommée \textit{data}, mais dans certains cas, il vaut mieux utiliser d'autres libellés, surtout si plusieurs informations doivent être affichées en parallèle).
+
+Il est important également de transmettre le nom du \textit{template} qui devra être utilisé, en assignant la valeur à la variable normalisée \textit{corps}.
+
+\subsection{display}
+
+L'entrée \textit{display} permet d'afficher le détail des informations relatives à un enregistrement. Le fonctionnement est beaucoup plus simple que pour l'affichage de la liste : il suffit de transmettre à la vue le contenu de l'enregistrement lu à partir d'ObjetBDD.
+
+Toutefois, si la table contient de nombreuses tables filles, il faudra adapter le code pour transmettre également à la vue l'ensemble des listes d'informations associées.
+
+\subsection{change}
+
+Cette entrée va déclencher l'affichage du formulaire de modification. Par défaut, si la clé vaut 0, on considère qu'il s'agit d'une création.
+
+Pour simplifier l'écriture, une fonction générique est utilisée : 
+
+\begin{lstlisting}
+dataRead($dataClass, $id, "example/exampleChange.tpl", $_REQUEST["idParent"]);
+\end{lstlisting}
+
+Cette fonction va réaliser automatiquement la lecture de l'information dans la classe ObjetBDD. Si la clé vaut 0, les valeurs par défaut seront récupérées. S'il s'agit d'une table fille, la valeur de la clé parente sera également ajoutée, si la classe a été décrite en ce sens (\textit{cf.} \ref{objetbdd-attr} \textit{\nameref{objetbdd-attr}}, page \pageref{objetbdd-attr}).
+
+Le troisième paramètre correspond au nom du \textit{template} Smarty à utiliser, qui sera assigné automatiquement.
+
+\subsection{write}
+Cette entrée est celle qui est utilisée pour traiter les écritures en base de données. Elle utilise également une fonction générique : 
+\begin{lstlisting}
+$id = dataWrite($dataClass, $_REQUEST);
+\end{lstlisting}
+
+Cette fonction gère l'écriture dans la base de données, traite les erreurs, et retourne l'identifiant, qui doit être supérieur à 0 si l'opération a aboutit.
+
+Une fois l'écriture réalisée, la valeur de l'identifiant est mise à jour, pour que le module appelé après dispose de la bonne valeur (affichage du détail après une création, par exemple).
+
+\subsection{delete}
+Cette dernière opération, qui traite la suppression d'un enregistrement, utilise également une fonction générique :
+
+\begin{lstlisting}
+dataDelete($dataClass, $id);
+\end{lstlisting}
+
+Cette fonction gère également les erreurs et les enchaînements en fonction du résultat de l'opération.
+
+Attention : le framework n'a pas été conçu pour gérer les suppressions en cascade. Il faut donc soit coder les effacements dans les tables filles à partir d'une surcharge de la fonction \textit{supprimer()} d'ObjetBDD, soit configurer la base de données pour qu'elle réalise l'opération elle-même.
