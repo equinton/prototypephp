@@ -161,7 +161,7 @@ ADODB\_debugmode & obsolète \\
 \caption{Variables générales de l'application}
 \end{longtable} 
 
-\subsection{Identification}
+\subsection{Identification}\label{paramident}
 \begin{longtable}{|p{5cm}|p{8cm}|}
 \hline
 \textbf{Variable} & \textbf{Signification} \\
@@ -345,3 +345,58 @@ Les modules \textit{appliWrite} et \textit{appliDelete} ne génèrent pas direct
 Ces deux modules ne peuvent être exécutés que si le précédent est \textit{appliChange}, c'est à dire si le formulaire de saisie a été affiché.
 
 \chapter{Identifier les utilisateurs et gérer les droits}\label{droits}
+\section{Identifier les utilisateurs}
+
+Quatre modes d'identification sont prévus dans le logiciel :
+\begin{itemize}
+\item uniquement dans le logiciel (comptes stockés dans la base de données) ;
+\item à partir d'un annuaire LDAP ;
+\item d'abord en recherchant dans l'annuaire LDAP, puis ensuite dans la base des comptes de l'application (mode mixte) ;
+\item auprès d'un serveur CAS.
+\end{itemize}
+
+L'identification retenue est déclarée dans les paramètres généraux (\textit{cf.} \ref{paramident} \textit{\nameref{paramident}}, page \pageref{paramident}).
+
+Si l'identification à partir d'un annuaire LDAP ou d'un serveur CAS ne nécessite guère d'autres informations que celles décrites dans les paramètres, l'identification par base de données comprend des mécanismes particuliers pour protéger les mots de passe et limiter les risques associés. Voici les règles imposées lors de la création d'un mot de passe : 
+\begin{itemize}
+\item il doit avoir une longueur minimale de 8 caractères ;
+\item il doit comporter 3 jeux de caractères différents (minuscules, majuscules, chiffres et autres caractères) ;
+\item il n'est pas possible de réutiliser un mot de passe pour le même compte.
+\end{itemize}
+
+Les mots de passe sont salés (utilisation du login) et chiffrés (chiffrement SHA-256).
+
+L'écran de création propose un bouton de génération automatique d'un mot de passe, qui devra être transmis à l'utilisateur, en lui demandant d'en changer (il peut modifier son mot de passe une fois connecté).
+
+Dans sa version actuelle, le framework ne dispose pas d'un mécanisme de récupération par envoi de mails.
+
+Les mots de passe n'expirent pas.
+
+\section{Gérer les droits}
+
+Les droits sont gérés selon le principe initialement utilisé dans la bibliothèque PHPGACL, aujourd'hui obsolète. 
+
+Les logins sont déclarés dans des groupes organisés de manière hiérarchique : un groupe hérite des droits attribués à ses parents.
+
+Les droits utilisés dans le logiciel sont associés à des groupes. Il est possible d'attribuer plusieurs droits à un même groupe, et un droit peut être détenu par des groupes différents.
+
+Si le paramètre \textit{\$LDAP["groupSupport"]} est positionné à \textit{true}, les groupes dont fait partie le compte LDAP sont également récupérés, et peuvent être détenteurs de droits dans le logiciel (le nom des groupes est sensible à la casse).
+
+Voici le schéma des tables utilisées pour gérer les droits :
+
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{dessin/acl_only}
+\caption{Schéma des tables utilisées pour gérer les droits}
+\end{figure}
+
+Voici la description des tables :
+\begin{description}
+\item[acllogin] Liste des logins utilisés. Si un compte est créé dans la base locale d'identification, un enregistrement est également créé dans cette table. Pour les identifications LDAP ou CAS, ils doivent être identiques. Si seuls les groupes LDAP sont utilisés pour un compte, il n'a pas besoin d'être décrit ici
+\item[aclappli] Liste des applications gérées. Il est ainsi possible de gérer, à partir de la même base de données, plusieurs ensembles de droits, qui utilisent les mêmes logins
+\item[aclaco] liste des droits déclarés dans l'application
+\item[aclgroup] Liste des groupes contenant les logins, et qui détiennent les droits. Un groupe peut hériter d'un autre groupe. Les droits associés au groupe parent sont également attribués au groupe hérité.
+\item[acllogingroup] table permettant de déclarer les logins associés à un groupe
+\item[aclacl] table décrivant les droits détenus par un groupe
+\end{description}
+
+Le module d'administration permet de saisir toutes ces informations. Il faut que l'utilisateur dispose du droit \textit{admin}, c'est à dire faire partie du groupe \textit{admin} (configuration par défaut à l'initialisation de la base des droits) pour pouvoir accéder à ces fonctions.

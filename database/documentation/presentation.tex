@@ -1,5 +1,5 @@
-\chapter*{Présentation}
-\section*{Historique}
+\chapter{Présentation}
+\section{Historique}
 Au début des années 2000, PHP commençait à être largement utilisé pour créer des applications web. Certains frameworks étaient déjà présents, mais ils présentaient souvent des difficultés pour les appréhender et n'étaient pas forcément adaptés aux besoins de l'époque (performance souvent insuffisante en raison d'un chargement systématique de toutes les classes, fonctionnement exclusivement objet, etc.). De plus, ils ne permettaient que difficilement de remplacer certains composants par d'autres.
 
 Des outils comme Smarty, un moteur de templates qui permet de séparer le code HTML du code PHP commençaient à se faire une place. On trouvait également des bibliothèques assez élaborées comme PHPGACL pour gérer les droits de manière particulièrement pertinente.
@@ -21,13 +21,13 @@ La première version publiée l'a été en 2008, dans sourceforge \\ (\url{https
 Si le principe général d'une conception MVC a prévalu depuis plusieurs années, des améliorations récentes, notamment dans la gestion des vues, a été apportée. À partir de septembre 2016, une meilleure gestion des droits a été implémentée, notamment dans les contextes de travail avec un annuaire d'entreprise LDAP. 
 Il n'est pas impossible également que le support de Shibboleth puisse être intégré dans le futur, notamment quand des bibliothèques prêtes à l'emploi seront disponibles.
 
-\section*{Gestion des versions}
+\section{Gestion des versions}
 
 Le framework est mis à jour en parallèle aux développements de logiciels bâtis à partir de celui-ci. Le code disponible reflète donc les retranscriptions des modifications apportées au gré des évolutions envisagées par son concepteur.
 
 Il n'existe ainsi plus depuis plusieurs mois de gestion de version : le plus simple est de se référer à la date du commit, en utilisant la branche \textit{bootstrap}, qui est celle de travail actuel.
 
-\section*{plugins utilisés}
+\section{plugins utilisés}
 Les bibliothèques suivantes sont installées dans le framework :
 \begin{itemize}
 \item pour le code PHP :
@@ -50,7 +50,7 @@ Les bibliothèques suivantes sont installées dans le framework :
 
 Elles sont mises à jour régulièrement, mais il est préférable de vérifier si de nouvelles versions sont disponibles avant de procéder à une mise en production.
 
-\section*{Modèle MVC}
+\section{Modèle MVC}
 
 Le framework est basé sur un modèle MVC, qui présente les caractéristiques suivantes :
 \begin{itemize}
@@ -62,3 +62,66 @@ Le framework est basé sur un modèle MVC, qui présente les caractéristiques s
 Le framework n'a pas une philosophie \og tout objet \fg{}, comme peuvent l'être d'autres, pour tirer parti de la souplesse du php. De nombreuses fonctions permettent de faciliter et limiter le code à écrire.
 
 Quelques classes génériques sont utilisées (une classe Message, par exemple), et l'application recourt fortement aux variables de session. 
+
+\section{Licences}
+
+Le framework est distribué sous licence LGPL v2 et CECILL-C.
+
+Voici la liste des licences des composants utilisés :
+
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2cm}|p{7cm}|>{\raggedright\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}p{1.5cm}|}
+\hline
+\textbf{Composant - version} & \textbf{Site web et usage} & \textbf{Langage} & \textbf{Licence} \\
+\hline
+\endhead
+ObjetBDD 3.2 &  Accès aux tables des bases de données (ORM) & PHP & LGPL \\
+\hline
+SMARTY 3.1.24 & \url{http://www.smarty.net} Moteur de templates & PHP & LGPL \\
+\hline
+PHPCAS 1.3.3 & \url{https://wiki.jasig.org/display/CASC/phpCAS} Identification via un serveur CAS & PHP & Apache 2.0\\
+\hline
+fpdf17 & \url{http://www.fpdf.org/} Génération de fichiers PDF & PHP & Aucune restriction d'usage\\
+\hline
+odtphp & \url{URL}  publipostage dans des fichiers ODT & PHP & \\
+\hline
+openoffice-generation & \url{URL} Génération de fichiers ODS & PHP & \\
+\hline
+phpExcelReader & \url{URL} Lecture de fichiers XLS & PHP & \\
+\hline
+tcpdf & \url{URL} Génération de fichiers PDF & PHP & \\
+\hline
+
+
+Php-clamav 0.15.8 & \url{http://php-clamav.sourceforge.net/} & PHP & GPL v2 \\
+\hline
+
+bootstrap & \url{URL} Affichage HTML & CSS et Javascript &  \\
+\hline
+carhartl-jquery-cookie 1.5.1 & \url{https://github.com/carhartl/jquery-cookie} Gestion des cookies dans le navigateur & Javascript & MIT \\
+\hline
+Datatables 1.10.12 & \url{http://www.datatables.net/} Affichage des tables & Javascript & MIT \\
+\hline
+datetime-moment & \url{URL} Gestion du tri des dates dans Datatables & Javascript & \\
+\hline
+moment & \url{URL} bibliothèque utilisée par le composant précédent pour le tri des dates & Javascript & \\
+\hline
+Jquery & \url{http://jquery.com/} Fonctions d'encapsulation de Javascript & Javascript & Équivalent BSD \\
+\hline
+JqueryUI & \url{http://jqueryui.com/} Composants graphiques associés à Jquery & Javascript & Équivalent BSD \\
+\hline
+jquery-timepicker-addon & \url{URL} saisie de la date/heure & Javascript & \\
+\hline
+magnific-popup 0.9.9 & \url{http://dimsemenov.com/plugins/magnific-popup/} Affichage des images sous forme de pop-up & Javascript & MIT \\
+\hline
+smartmenus & \url{URL} Affichage des menus dans bootstrap & Javascript & \\
+\hline
+c3js0.4.10 & \url{http://c3js.org/} Création de graphiques & Javascript & MIT \\
+\hline
+openlayers 3.12.1 & \url{http://openlayers.org/} Affichage de cartes & Javascript & \\
+\hline
+
+\caption{Liste des licences des composants utilisés}
+\end{longtable}
+
+Les composants PHP sont stockés dans le dossier \textit{plugins}, les composants Javascript dans \textit{display/javascript}.
