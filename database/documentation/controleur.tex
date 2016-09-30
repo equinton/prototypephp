@@ -1,5 +1,5 @@
 \chapter{Fonctionnement général}
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[width=1.2\linewidth]{dessin/synopsis}
 \caption{Synopsis général de fonctionnement du contrôleur}
 \end{figure}
@@ -371,6 +371,22 @@ L'écran de création propose un bouton de génération automatique d'un mot de 
 Dans sa version actuelle, le framework ne dispose pas d'un mécanisme de récupération par envoi de mails.
 
 Les mots de passe n'expirent pas.
+
+\subsection{Ré-identification par jeton}
+
+Par défaut, les sessions ont une durée de vie d'une heure. Dans certains cas de figure, il est souhaitable que l'utilisateur n'ait pas à ressaisir ses identifiants systématiquement.
+
+Le framework peut générer un jeton chiffré après la première identification, qui sera analysé pour savoir si l'utilisateur peut être ré-identifié automatiquement.
+
+Pour que ce mécanisme fonctionne, il faut :
+\begin{itemize}
+\item que le paramètre \textit{tokenIdentityValidity} ait une durée de validité supérieure à la durée de vie de la session. Il est raisonnable de ne pas fixer une durée de vie supérieure à une journée de travail (10 heures). Le cookie transmis est protégé ;
+\item que les clés privée et publique, utilisées pour le chiffrement du jeton, soient accessibles au serveur web (variables \textit{privateKey} et \textit{publicKey}).
+\end{itemize}
+
+Le jeton est chiffré avec la clé privée, ce qui lui permet d'être lu, le cas échéant, par l'application. Il contient le login et la date d'expiration. 
+
+Si l'utilisateur déclenche une déconnexion, le jeton est supprimé.
 
 \section{Gérer les droits}
 
