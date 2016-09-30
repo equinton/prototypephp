@@ -1,6 +1,40 @@
 \chapter{Mécanismes de sécurité et mise en production}
 
+\section{Protections générales}
+\subsection{Durée de la session}
+Par défaut, les sessions ont une durée de vie d'une heure sans activité. Elles sont supprimées automatiquement, sans tenir compte le cas échéant du cookie de session. Ce dernier est transmis en \textit{http\_only} et en mode \textit{secure}.
+
+Si la session dure plus d'une heure\footnote{la durée par défaut de la session}, l'identifiant de session est régénéré.
+
+\subsection{Protection contre le changement d'adresse IP}
+
+Si l'adresse IP du client change pendant la session, celle-ci est fermée. L'adresse IP récupérée tient compte, le cas échéant, d'un passage par un serveur \textit{Reverse-Proxy}.
+
 \section{Intégrer le transcodage des clés}
+
+Dans certains cas de figure, l'utilisateur ne peut traiter que certains enregistrements d'une table. Le framework dispose d'une classe qui permet de transcoder les clés, pour éviter que l'on puisse modifier indûment une clé.
+
+la classe \textit{TranslateId} (fichier \textit{framework/translateId/translateId.class.php}) permet de gérer le transcodage des clés.
+
+Cette classe doit être instanciée en variable de session.
+
+\subsection{Charger le fichier de classe avant le démarrage de la session}
+
+Dans \textit{modules/beforesession.inc.php}, rajoutez la ligne suivante :
+\begin{lstlisting}
+require_once 'framework/translateId.translateId.class.php';
+\end{lstlisting}
+
+\subsection{Instancier la classe}
+Voici un exemple d'instanciation :
+\begin{lstlisting}
+if (!isset($_SESSION["ti_table"]) 
+	$_SESSION["ti_table"] = new TranslateId("id");
+\end{lstlisting}
+
+\textit{id} correspond au nom de la colonne à transcoder.
+
+
 
 \chapter{Mise en production}
 
