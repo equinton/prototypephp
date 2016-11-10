@@ -416,3 +416,133 @@ Voici la description des tables :
 \end{description}
 
 Le module d'administration permet de saisir toutes ces informations. Il faut que l'utilisateur dispose du droit \textit{admin}, c'est à dire faire partie du groupe \textit{admin} (configuration par défaut à l'initialisation de la base des droits) pour pouvoir accéder à ces fonctions.
+
+\subsection{Créer un nouvel utilisateur}
+
+Les utilisateurs peuvent être issus soit de l'annuaire LDAP, soit de la base interne. 
+Pour créer un nouvel utilisateur dans la base locale :
+\begin{itemize}
+\item \textit{Administration $\rightarrow$ Liste des comptes }
+\item \textit{Nouveau login}
+\item renseignez au minimum le login.
+\end{itemize}
+
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{dessin/user_create}
+\caption{Écran de saisie d'un login de connexion}
+\end{figure}
+
+Pour créer le mot de passe, vous pouvez cliquer sur le bouton \textit{Générez}, qui  en créera un automatiquement. Envoyez-le par mél à son destinataire (par \textit{copier-coller}), en lui demandant de le modifier à la première connexion (icône en forme de clé, dans le bandeau, en haut à droite).
+
+Les mots de passe doivent respecter les règles suivantes :
+\begin{itemize}
+\item ils doivent avoir une longueur minimale de 8 caractères ;
+\item ils doivent comprendre trois types de caractères différents parmi les minuscules, majuscules, chiffres et caractères de ponctuation ;
+\item ils ne peuvent pas être réutilisés pour le même login ;
+\item les mots de passe n'expirent pas.
+\end{itemize}
+
+Les mots de passe sont stockés sous forme d'empreinte, calculée en rajoutant un sel\footnote{chaîne de caractère rajoutée au mot de passe -- en général le login ou un identifiant -- qui permet d'éviter que deux mots de passe identiques, associés à deux logins différents, aient la même empreinte} et encodés en SHA256 : ils ne peuvent pas être retrouvés en cas de perte.
+
+L'application n'intègre pas de module permettant de régénérer automatiquement un mot de passe en cas de perte : c'est au responsable applicatif d'en fournir alors un nouveau.
+
+La création d'un compte entraîne la création d'une entrée identique dans la table des \textit{acllogin}, utilisée pour attribuer les droits.
+
+Pour désactiver temporairement un compte, sélectionnez \textit{non} dans la zone \textit{actif}. Si le compte ne doit plus être utilisé, supprimez-le.
+
+Attention : si le compte disposait des droits d'administration, assurez-vous que vous avez toujours un compte disposant des mêmes droits avant la suppression.
+
+\subsection{Créer un login utilisé dans la gestion des droits}
+
+Indépendamment du compte de connexion, qui peut être soit issu de la base interne, soit récupéré auprès d'un annuaire LDAP ou d'un serveur CAS, l'application a besoin de connaître les utilisateurs pour pouvoir leur attribuer des droits.
+
+À partir du menu, choisissez \textit{Administration $\rightarrow$ ACL - logins}.
+
+Vous pouvez modifier un login existant ou en créer un nouveau. Dans ce cas, vous devrez indiquer au minimum le login utilisé (identique à celui qui est employé pour la connexion à l'application : base de données interne, annuaire LDAP, serveur CAS).
+
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{dessin/acl_login}
+\caption{Écran de modification d'un login dans le module de gestion des droits}
+\end{figure}
+
+
+Sous l'écran de saisie figurent la liste des droits attribués à un login (en modification, le calcul n'est réalisé qu'à l'affichage de la page).
+
+\subsection{Définir les groupes d'utilisateur}
+
+Les groupes d'utilisateurs sont gérés selon un mécanisme d'héritage. Un groupe de haut niveau hérite des groupes précédents : si des droits ont été attribués à un groupe de niveau inférieur, un login associé à un groupe de niveau supérieur les récupère également.
+
+Pour définir les groupes, dans le menu, choisissez \textit{Administration $\rightarrow$ ACL - groupes de logins}.
+
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{dessin/acl_groupe}
+\caption{Liste des groupes de logins}
+\end{figure}
+
+Ainsi, le login déclaré dans le groupe \textit{param} récupérera les droits attribués aux groupes \textit{projet}, \textit{gestion} et \textit{consult}.
+
+Pour créer un groupe, deux possibilités :
+\begin{itemize}
+\item soit le groupe est à la base d'une nouvelle branche : utilisez alors \textit{Nouveau groupe racine...} ;
+\item soit le groupe hérite d'un autre groupe : cliquez sur le signe + (\textit{Rajouter un groupe fils}).
+\end{itemize}
+
+Vous pouvez indiquer les logins qui sont rattachés à ce groupe.
+
+
+\subsection{Créer une application}
+Le framework permet de gérer des droits différents pour des jeux de données différents, à partir du même code applicatif. Chaque couple \textit{logiciel} $\leftrightarrow$ \textit{base de données} constitue donc une \textit{application}, au sens de la gestion des droits.
+
+Il est ainsi possible, à partir de la même base de données, de définir des droits différents selon les jeux de données utilisés (un jeu de données correspond à un schéma de base de données comprenant l'intégralité des tables applicatives).
+
+À partir du menu, choisissez \textit{Administration $\rightarrow$ ACL - droits} :
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{dessin/liste_appli}
+\caption{Liste des applications déclarées}
+\end{figure}
+
+Pour créer une nouvelle application, choisissez \textit{Nouvelle application...}. 
+
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{dessin/appli_change}
+\caption{Écran de saisie d'une application}
+\end{figure}
+
+Le nom de l'application doit impérativement correspondre à la valeur \textit{\$GACL\_appli} dans les fichiers de paramètres : c'est ce qui permet au framework de savoir quels droits appliquer.
+
+\subsection{Définir les droits utilisables dans l'application}
+
+À partir de la liste des applications, cliquez sur le nom de celle pour laquelle vous voulez définir les droits utilisables. 
+À partir de la liste, sélectionnez \textit{Nouveau droit...}.
+
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{dessin/appli_droit}
+\caption{Écran de saisie des droits associés à une application}
+\end{figure}
+
+Le nom du droit doit être celui défini dans le corps de l'application (les droits sont positionnés dans les fichiers \textit{param/actions.xml}, qui contient la liste des modules utilisables, et \textit{param/menu.xml}, qui sert à générer le menu).
+
+Indiquez les groupes d'utilisateurs qui seront associés au droit courant.
+
+\subsection{Cas particulier des groupes et des logins issus d'un annuaire LDAP}
+
+Si vous avez paramétré l'application pour qu'elle s'appuie sur un annuaire LDAP pour gérer l'affectation des utilisateurs dans les groupes, vous n'êtes pas obligés de les déclarer explicitement dans le module de gestion des droits.
+
+\subsubsection{Droits attribués à un groupe LDAP}
+
+Tous les utilisateurs d'un groupe héritent d'un droit dans l'application.
+
+\begin{itemize}
+\item définissez le nom du groupe (en respectant la casse) dans le tableau des groupes d'utilisateurs ;
+\item sélectionnez le nom de ce groupe dans les droits utilisables ;
+\item tous les utilisateurs de l'annuaire LDAP récupéreront automatiquement les droits attribués à ce groupe.
+\end{itemize}
+
+\subsubsection{Droits attribués à un utilisateur particulier de l'annuaire LDAP}
+
+Un utilisateur s'identifie auprès de l'annuaire LDAP, mais dispose de droits particuliers.
+
+\begin{itemize}
+\item créez son login dans la gestion des droits ;
+\item rajoutez-le dans le groupe d'utilisateurs adéquat.
+\end{itemize}
