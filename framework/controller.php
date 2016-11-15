@@ -96,9 +96,12 @@ while ( isset ( $module ) ) {
 				$tokenClass = new Token ();
 				try {
 					$login = $tokenClass->openTokenFromJson ( $_COOKIE ["tokenIdentity"] );
-					if (strlen ( $login ) > 0)
+					if (strlen ( $login ) > 0) {
 						$_SESSION ["login"] = $login;
+						$log->setLog($login, $module."-connexion", "token-ok");
+					}
 				} catch ( Exception $e ) {
+					$log->setLog($login, $module."-connexion", "token-ko");
 					$message->set ( $e->getMessage () );
 				}
 			} elseif ($ident_type == "CAS") {
@@ -158,6 +161,16 @@ while ( isset ( $module ) ) {
 				 * Regeneration de l'identifiant de session
 				 */
 				session_regenerate_id ();
+				/*
+				 * Recuperation de la derniere connexion et affichage a l'ecran
+				 */
+				$lastConnect = $log->getLastConnexion();
+				if (isset($lastConnect["log_date"])) {
+					$texte = $LANG["login"][48];
+					$texte = str_replace(":datelog", $lastConnect["log_date"], $texte);
+					$texte = str_replace (":iplog", $lastConnect["ipaddress"], $texte);
+					$message->set($texte);
+				}
 				/*
 				 * Reinitialisation du menu
 				 */
