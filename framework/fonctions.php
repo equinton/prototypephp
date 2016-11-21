@@ -143,6 +143,7 @@ function setlanguage($langue) {
 	include_once 'framework/navigation/menu.class.php';
 	$menu = new Menu ( $APPLI_menufile, $LANG );
 	$_SESSION ["menu"] = $menu->generateMenu ();
+
 	/*
 	 * Ecriture du cookie
 	 */
