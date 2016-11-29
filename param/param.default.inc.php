@@ -94,7 +94,7 @@ $APPLI_modeDeveloppementDroit = false;
 $APPLI_utf8 = true;
 $APPLI_menufile = "param/menu.xml";
 $APPLI_temp = "temp";
-$APPLI_titre = "Gestion des échantillons";
+$APPLI_titre = "Software Name";
 
 /*
  * Variables systematiques pour SMARTY

@@ -42,7 +42,17 @@ $LDAP [ "basedn"] = "ou=people,ou=example,o=societe,c=fr";
 $LDAP [ "tls"] = false;
 $LDAP ['basedngroup' ] ='ou=group,ou=example,o=societe,c=fr' ;
 
+/*
+ * Chemin d'acces au fichier param.ini
+ * Consultez la documentation pour plus d'informations
+ */
 $paramIniFile = "./param.ini";
+/*
+ * Traitement de param.ini dans un contexte multi-bases (cf. documentation)
+ */
+//$chemin = substr($_SERVER["DOCUMENT_ROOT"],0, strpos($_SERVER["DOCUMENT_ROOT"],"/bin"));
+//$paramIniFile = "$chemin/param.ini";
+
 $SMARTY_variables["melappli"] = $APPLI_mail;
 $SMARTY_variables["ident_type"] = $ident_type;
 ?>
