@@ -10,6 +10,27 @@ Si la session dure plus d'une heure\footnote{la durée par défaut de la session
 
 Si l'adresse IP du client change pendant la session, celle-ci est fermée. L'adresse IP récupérée tient compte, le cas échéant, d'un passage par un serveur \textit{Reverse-Proxy}.
 
+\subsection{Restreindre l'accès à l'application dans le cas d'une identification HEADER}
+
+Si les utilisateurs sont identifiés par un proxy d'identification (variable \$ident\_type positionnée à HEADER), l'application n'a aucun moyen de savoir que le login, transmis dans l'entête HTTP, provient bien du proxy.
+
+Pour limiter les risques, il faut n'autoriser les connexions à l'application que depuis l'adresse IP du proxy (toutes les requêtes passent par lui). Pour cela, modifiez le fichier de description de l'hôte virtuel, soit le fichier \textit{.htaccess} placé à la racine du code, en rajoutant :
+
+Pour l'hôte virtuel :
+\begin{lstlisting}
+    <directory /var/www/monAppli>
+    order allow,deny
+    allow from 10.1.2.3
+    </directory>
+\end{lstlisting} 
+\textit{10.1.2.3} correspond à l'adresse IP du serveur proxy d'identification.
+
+et dans le fichier \textit{.htaccess} :
+\begin{lstlisting}
+    order allow,deny
+    allow from 10.1.2.3
+\end{lstlisting}
+
 \section{Intégrer le transcodage des clés}
 
 Dans certains cas de figure, l'utilisateur ne peut traiter que certains enregistrements d'une table. Le framework dispose d'une classe qui permet de transcoder les clés, pour éviter que l'on puisse modifier indûment une clé.
