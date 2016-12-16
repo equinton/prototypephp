@@ -12,7 +12,7 @@ Si l'adresse IP du client change pendant la session, celle-ci est fermée. L'adr
 
 \subsection{Restreindre l'accès à l'application dans le cas d'une identification HEADER}
 
-Si les utilisateurs sont identifiés par un proxy d'identification (variable \$ident\_type positionnée à HEADER), l'application n'a aucun moyen de savoir que le login, transmis dans l'entête HTTP, provient bien du proxy.
+Si les utilisateurs sont identifiés par un proxy d'identification (variable \textit{\$ident\_type} positionnée à \textit{HEADER}), l'application n'a aucun moyen de savoir que le login, transmis dans l'entête HTTP, provient bien du proxy.
 
 Pour limiter les risques, il faut n'autoriser les connexions à l'application que depuis l'adresse IP du proxy (toutes les requêtes passent par lui). Pour cela, modifiez le fichier de description de l'hôte virtuel, soit le fichier \textit{.htaccess} placé à la racine du code, en rajoutant :
 
