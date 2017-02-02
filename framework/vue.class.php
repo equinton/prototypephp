@@ -140,7 +140,7 @@ class VueSmarty extends Vue {
 	 *
 	 * @var array
 	 */
-	private $htmlVars = array (
+	public $htmlVars = array (
 			"menu",
 			"LANG",
 			"message",
@@ -219,6 +219,18 @@ class VueSmarty extends Vue {
  *        
  */
 class VueAjaxJson extends Vue {
+	private $json = "";
+	private $is_json = false;
+	/**
+	 * affecte une valeur directement au format json 
+	 * (resultat d'une programmation manuelle, p. e.)
+	 * @param string $json
+	 */
+	function setJson($json) {
+		$this->json = $json;
+		$this->is_json = true;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -229,22 +241,28 @@ class VueAjaxJson extends Vue {
 		/*
 		 * Encodage des donnees
 		 */
-		$data = array ();
-		foreach ( $this->data as $key => $value )
-			$data [$key] = $this->encodehtml ( $value );
-			/*
+		if ($this->is_json) {
+			$json = $this->json;
+		} else {
+			$data = array ();
+			foreach ( $this->data as $key => $value )
+				$data [$key] = $this->encodehtml ( $value );
+		$json = json_encode ( $data );
+		}
+		/*
 		 * Envoi au navigateur
 		 */
-		if (count ( $data ) == 1) {
-			$json = json_encode ( $data [0], JSON_HEX_QUOT | JSON_FORCE_OBJECT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE );
-		} else
-			$json = json_encode ( $data );
 		ob_clean ();
-		//header ( 'Content-Type: application/json' );
+		// header ( 'Content-Type: application/json' );
 		echo $json;
 		ob_flush ();
 	}
 }
+/**
+ * Export de donnees au format csv
+ * @author quinton
+ *
+ */
 class VueCsv extends Vue {
 	private $filename;
 	function send($param = "") {
