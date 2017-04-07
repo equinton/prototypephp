@@ -44,6 +44,7 @@ $LOG_duree = 365;
  * LemonLdap, par exemple)
  */
 $ident_header_login_var = "AUTH_USER";
+$ident_header_logout_address = "https://server/cas/logout";
 $ident_type = "BDD";
 //$CAS_plugin="plugins/phpcas-simple/phpcas.php";
 $CAS_plugin = 'plugins/CAS-1.3.3/CAS.php';

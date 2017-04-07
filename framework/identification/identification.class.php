@@ -193,10 +193,6 @@ class Identification {
 		if (! isset ( $this->ident_type )) {
 			return 0;
 		}
-		if ($this->ident_type == "CAS") {
-			phpCAS::client ( CAS_VERSION_2_0, $this->CAS_address, $this->CAS_port, $this->CAS_uri );
-			phpCAS::logout ( $adresse_retour );
-		}
 		// Détruit toutes les variables de session
 		$_SESSION = array ();
 		
@@ -215,6 +211,20 @@ class Identification {
 		$message->set ( $LANG ["message"] [7] );
 		// Finalement, on détruit la session.
 		session_destroy ();
+		if ($this->ident_type == "CAS") {
+			phpCAS::client ( CAS_VERSION_2_0, $this->CAS_address, $this->CAS_port, $this->CAS_uri );
+			phpCAS::logout ( $adresse_retour );
+		}
+		if ($this->ident_type = "HEADER") {
+			/*
+			 * Envoi vers la deconnexion du serveur fournissant le HEADER d'identification
+			 * En principe, l'url de deconnexion du CAS
+			 */
+			if (strlen($ident_header_logout_address) > 0) {
+				header('Location: '.$ident_header_logout_address);
+				flush();
+			}
+		}
 		return 1;
 	}
 	/**
@@ -361,9 +371,9 @@ class LoginGestion extends ObjetBDD {
 	 * @return number
 	 */
 	function changePassword($oldpassword, $pass1, $pass2) {
+		global $log, $LANG, $message;
 		$retour = 0;
 		if (isset ( $_SESSION ["login"] )) {
-			global $LANG;
 			$oldData = $this->lireByLogin ( $_SESSION ["login"] );
 			if ($oldData ["id"] > 0) {
 				$oldpassword_hash = hash ( "sha256", $oldpassword . $_SESSION ["login"] );
@@ -402,7 +412,6 @@ class LoginGestion extends ObjetBDD {
 										$data ["datemodif"] = date ( 'd-m-y' );
 										if ($this->ecrire ( $data ) > 0) {
 											$retour = 1;
-											global $log;
 											$log->setLog ( $login, "password_change", "ip:" . $_SESSION ["remoteIP"] );
 											/*
 											 * Ecriture de l'ancien mot de passe dans la table des anciens mots de passe
@@ -430,10 +439,6 @@ class LoginGestion extends ObjetBDD {
 				$message->set ( $LANG ["login"] [18] );
 			}
 		}
-		$this->errorData [] = array (
-				"code" => 0,
-				"message" => $message 
-		);
 		return $retour;
 	}
 	/**

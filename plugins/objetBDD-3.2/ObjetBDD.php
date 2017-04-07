@@ -835,7 +835,7 @@ class ObjetBDD {
 				} else {
 					$ds [$key] = $value;
 					
-					if ($this->types [$key] == 4) {
+					if ($this->colonnes [$key]["type"] == 4) {
 						/*
 						 * Traitement de l'import d'un champ geographique
 						 */
