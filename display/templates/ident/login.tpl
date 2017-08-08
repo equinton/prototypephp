@@ -1,31 +1,47 @@
-	<table class="tablesaisie">
-	<tr>
-	<td>{$LANG.login.0} :</td>
-	<td> <input name="login" id="login" maxlength="32" required autofocus></td>
-	</tr>
-	<tr><td>
-	{$LANG.login.1} :</td><td>
-	<input name="password" id="password" type="password" autocomplete="off" required maxlength="32"></td>
-	</tr>
-	<tr>
-	<td colspan="2" class="center">
+	<div class="col-sm-6">
+	<div class="form-horizontal protoform">
+	<div class="form-group">
+	<label for="login" class="control-label col-sm-4">
+	{$LANG.login.0} :
+	</label>
+	<div class="col-sm-8"> 
+	<input class="form-control" name="login" id="login" maxlength="32" required autofocus>
+	</div>
+	</div>
+	<div class="form-group">
+	<label for="login" class="control-label col-sm-4">
+	{$LANG.login.1} :
+	</label>
+	<div class="col-sm-8">
+	<input  class="form-control" name="password" id="password" type="password" autocomplete="off" required maxlength="32">
+	</div>
+	</div>
+
 	<form id="theForm" method="POST" action="index.php">
 	<input type="hidden" name="module" value={$module}>
-		
-  <input type="hidden" id="hiddenUsername" name="login"/>
-  <input type="hidden" id="hiddenPassword" name="password"/>
+	<input type="hidden" id="hiddenUsername" name="login"/>
+	<input type="hidden" id="hiddenPassword" name="password"/>
   {if $tokenIdentityValidity > 0}
+  	<div class="form-group center checkbox">
+  	<label>
   {$duration = $tokenIdentityValidity / 3600}
-  {$LANG.login.46} {$duration} {$LANG.login.47} 
   <input type="checkbox" name="loginByTokenRequested" value="1" checked>
-  <br>
+  {$LANG.login.46} {$duration} {$LANG.login.47} 
+  </label>
+  </div>
   {/if}
-	<input type="submit">
+  {if $lostPassword == 1 }
+  <div class="form-group center">
+  <a href="index.php?module=passwordlostIslost">{$LANG["login"].59}</a>
+  </div>
+  {/if}
+  <div class="form-group center">
+	<button type="submit" class="btn btn-primary button-valid">{$LANG["message"].19}</button>
+	</div>
 	</form>
 	
-	</td>
-	</tr>
-	</table>
+	</div>
+</div>
 
 <script>
   $("#theForm").submit(function() {

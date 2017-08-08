@@ -17,4 +17,9 @@ function printr($tableau, $mode_dump = 0, $force = false) {
 		echo "<br>";
 	}
 }
+function test ($content = "") {
+    global $testOccurrence;
+    echo "test $testOccurrence : $content  <br>";
+    $testOccurrence ++;
+}
 ?>

@@ -64,6 +64,11 @@
 	<acoChange action="framework/droits/aco.php" param="change" droits="admin"  type="smarty"/>
 	<acoWrite action="framework/droits/aco.php" param="write" droits="admin" retourok="appliDisplay" retourko="acoChange" modulebefore="acoChange" />
 	<acoDelete action="framework/droits/aco.php" param="delete" droits="admin" retourok="appliDisplay" retourko="acoChange"  modulebefore="acoChange"/>
+	
+	<passwordlostIslost action="framework/identification/passwordLost.php" param="isLost" type="smarty"/>
+	<passwordlostSendmail action="framework/identification/passwordLost.php" param="sendMail" retourok="default"/>
+	<passwordlostReinitchange action="framework/identification/passwordLost.php" param="reinitChange" type="smarty" />
+	<passwordlostReinitwrite action="framework/identification/passwordLost.php" param="reinitWrite" modulebefore="passwordlostReinitchange" retourko="default" retourok="connexion"/>
 
 </navigation>
 	
