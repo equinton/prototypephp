@@ -180,7 +180,6 @@ class Identification
      */
     function disconnect($adresse_retour)
     {
-        global $message, $LANG;
         if (! isset($this->ident_type)) {
             return 0;
         }
@@ -199,7 +198,6 @@ class Identification
         if (isset($_COOKIE["tokenIdentity"])) {
             setcookie("tokenIdentity", '', time() - 42000, "/");
         }
-        $message->set($LANG["message"][7]);
         // Finalement, on détruit la session.
         session_destroy();
         if ($this->ident_type == "CAS") {
