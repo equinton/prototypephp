@@ -167,5 +167,5 @@ $CONNEXION_blocking_duration = 600;
  */
 $APPLI_mailToAdminPeriod = 7200;
 $APPLI_admin_ttl = 600; // Duree maxi d'inactivite pour acceder a un module d'administration
-$APPLI_lostPassword = 1; // Autorise la recuperation d'un nouveau mot de passe en cas de perte
+$APPLI_lostPassword = 0; // Autorise la recuperation d'un nouveau mot de passe en cas de perte
 ?>

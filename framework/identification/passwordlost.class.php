@@ -62,15 +62,19 @@ class Passwordlost extends ObjetBDD
             $lg = new LoginGestion($this->connection, $this->paramori);
             $dl = $lg->getFromMail($mail);
             if ($dl["id"] > 0) {
-                if ($dl["actif"] == 1) {
-                    $this->auto_date = 0;
-                    $data = array();
-                    $data["id"] = $dl["id"];
-                    $data["token"] = $this->generateToken();
-                    $data["expiration"] = date("Y-m-d H:i:s", time() + $duree_token);
-                    $this->ecrire($data);
+                global $log;
+                if ($log->getLastConnexionType($dl["login"]) == "db") {
+                    if ($dl["actif"] == 1) {
+                        $this->auto_date = 0;
+                        $data = array();
+                        $data["id"] = $dl["id"];
+                        $data["token"] = $this->generateToken();
+                        $data["expiration"] = date("Y-m-d H:i:s", time() + $duree_token);
+                        $this->ecrire($data);
+                    } else
+                        throw new Exception("Account not active");
                 } else
-                    throw new Exception("Account not active");
+                    throw new Exception("Account not allowed to reset password");
             } else
                 throw new Exception("Account not found from mail");
         }
@@ -79,7 +83,7 @@ class Passwordlost extends ObjetBDD
 
     /**
      * Verification du token fourni, en gerant l'expiration ou l'utilisation
-     * 
+     *
      * @param string $token
      * @throws Exception
      * @return mixed
@@ -104,12 +108,13 @@ class Passwordlost extends ObjetBDD
                 return $data;
             } else
                 throw new Exception("token not found");
-        } else 
+        } else
             throw new Exception("token empty");
     }
 
     /**
      * Desactivation du token
+     *
      * @param string $token
      */
     function disableToken($token)

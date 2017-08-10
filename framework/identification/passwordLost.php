@@ -12,11 +12,12 @@ $id = $_REQUEST[$keyName];
 
 switch ($t_module["param"]) {
     case "isLost":
-        $vue->set("ident/identMailInput.tpl", "corps");
+        if ($APPLI_lostPassword == 1)
+            $vue->set("ident/identMailInput.tpl", "corps");
         break;
     case "sendMail":
         $module_coderetour = 1;
-        if (isset($_REQUEST["mail"])) {
+        if (isset($_REQUEST["mail"]) && $APPLI_lostPassword == 1) {
             try {
                 $data = $dataClass->createTokenFromMail($_REQUEST["mail"]);
                 if ($data["id"] > 0) {
@@ -31,22 +32,22 @@ switch ($t_module["param"]) {
                     $loginGestion = new LoginGestion($bdd_gacl, $ObjetBDDParam);
                     $dl = $loginGestion->lire($data["id"]);
                     if (strlen($dl["mail"]) > 0) {
-                    require_once 'framework/identification/mail.class.php';
-                    $mail = new Mail($param);
-                    if ($mail->sendMail($dl["mail"], array(
-                        ":nom" => $dl["nom"],
-                        ":prenom" => $dl["prenom"],
-                        ":expiration" => $data["expiration"],
-                        ":appli" => $APPLI_name,
-                        ":adresse" => $APPLI_address . "/index.php?module=passwordlostReinitchange&token=" . $data["token"]
-                    ))) {
-                        $log->setLog("unknown", "passwordlostSendmail","email send to ".$dl["mail"]);
-                        $message->set($LANG["login"][55]);
-                    } else {
-                        $log->setLog("unknown", "passwordlostSendmail-ko", $dl["mail"]);
-                        $message->set($LANG["login"][56]);
-                        $message->setSyslog('passwordlost : send mail aborted to'. $dl["mail"]);
-                    }
+                        require_once 'framework/identification/mail.class.php';
+                        $mail = new Mail($param);
+                        if ($mail->sendMail($dl["mail"], array(
+                            ":nom" => $dl["nom"],
+                            ":prenom" => $dl["prenom"],
+                            ":expiration" => $data["expiration"],
+                            ":appli" => $APPLI_name,
+                            ":adresse" => $APPLI_address . "/index.php?module=passwordlostReinitchange&token=" . $data["token"]
+                        ))) {
+                            $log->setLog("unknown", "passwordlostSendmail", "email send to " . $dl["mail"]);
+                            $message->set($LANG["login"][55]);
+                        } else {
+                            $log->setLog("unknown", "passwordlostSendmail-ko", $dl["mail"]);
+                            $message->set($LANG["login"][56]);
+                            $message->setSyslog('passwordlost : send mail aborted to' . $dl["mail"]);
+                        }
                     } else {
                         $log->setLog("unknown", "passwordlostSendmail-ko", "recipient empty");
                         $message->set($LANG["login"][56]);
@@ -60,7 +61,7 @@ switch ($t_module["param"]) {
         
         break;
     case "reinitChange":
-        if (isset($_REQUEST["token"])) {
+        if (isset($_REQUEST["token"]) && $APPLI_lostPassword == 1) {
             /*
              * Verification de la validite du token
              */
@@ -88,26 +89,28 @@ switch ($t_module["param"]) {
         /*
          * Verification de la validite du token
          */
-        $module_coderetour = -1;
-        try {
-            $data = $dataClass->verifyToken($_REQUEST["token"]);
-            /*
-             * Verification que la derniere connexion soit une connexion de type db
-             */
-            if ($log->getLastConnexionType($data["login"]) == "db") {
-                $loginGestion = new LoginGestion($bdd_gacl, $ObjetBDDParam);
-                if ($loginGestion->changePasswordAfterLost($data["login"], $_REQUEST["pass1"], $_REQUEST["pass2"]) == 1) {
-                    $dataClass->disableToken($_REQUEST["token"]);
-                    $module_coderetour = 1;
+        $module_coderetour = - 1;
+        if ($APPLI_lostPassword == 1) {
+            try {
+                $data = $dataClass->verifyToken($_REQUEST["token"]);
+                /*
+                 * Verification que la derniere connexion soit une connexion de type db
+                 */
+                if ($log->getLastConnexionType($data["login"]) == "db") {
+                    $loginGestion = new LoginGestion($bdd_gacl, $ObjetBDDParam);
+                    if ($loginGestion->changePasswordAfterLost($data["login"], $_REQUEST["pass1"], $_REQUEST["pass2"]) == 1) {
+                        $dataClass->disableToken($_REQUEST["token"]);
+                        $module_coderetour = 1;
+                    }
+                } else {
+                    $message->set($LANG["login"][18]);
                 }
-                
-            } else {
-                $message->set($LANG["login"][18]);
+            } catch (Exception $e) {
+                $message->set($e->getMessage());
+                $message->setSyslog($e->getMessage());
             }
-        } catch (Exception $e) {
-            $message->set($e->getMessage());
-            $message->setSyslog($e->getMessage());
-        }
+        } else 
+            $module_coderetour = 1;
         
         break;
 }
