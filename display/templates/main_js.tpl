@@ -8,14 +8,14 @@
 <script	src="display/javascript/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- extension pour le menu -->
-<script src="display/javascript/smartmenus-1.0.0/jquery.smartmenus.min.js" type="text/javascript"></script>
-<script src="display/javascript/smartmenus-1.0.0/addons/bootstrap/jquery.smartmenus.bootstrap.min.js" type="text/javascript"></script>
+<script src="display/javascript/smartmenus-1.0.1/jquery.smartmenus.min.js" type="text/javascript"></script>
+<script src="display/javascript/smartmenus-1.0.1/addons/bootstrap/jquery.smartmenus.bootstrap.min.js" type="text/javascript"></script>
 
 <!-- Datatables -->
-<link rel="stylesheet" type="text/css" href="display/javascript/DataTables-1.10.12/media/css/jquery.dataTables.min.css" />
-<link rel="stylesheet" type="text/css" href="display/javascript/DataTables-1.10.12/media/css/dataTables.bootstrap.min.css" />
-<script type="text/javascript" src="display/javascript/DataTables-1.10.12/media/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="display/javascript/DataTables-1.10.12/media/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="display/javascript/DataTables-1.10.15/media/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="display/javascript/DataTables-1.10.15/media/css/dataTables.bootstrap.min.css" />
+<script type="text/javascript" src="display/javascript/DataTables-1.10.15/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="display/javascript/DataTables-1.10.15/media/js/dataTables.bootstrap.min.js"></script>
 <!-- Rajout du tri sur la date/heure -->
 <script type="text/javascript" src="display/javascript/moment.min.js"></script>
 <script type="text/javascript" src="display/javascript/datetime-moment.js"></script>
@@ -27,18 +27,23 @@
  
 <!-- composant date/heure -->
 <script type="text/javascript" charset="utf-8" src="display/javascript/jquery-ui-1.12.0.custom/jquery-ui.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="display/javascript/jquery-ui-1.12.0.custom/i18n/datepicker-en.js"></script>
+
 <script type="text/javascript" charset="utf-8" src="display/javascript/jquery-ui-1.12.0.custom/i18n/datepicker-fr.js"></script>
+
 <script type="text/javascript" charset="utf-8" src="display/javascript/jquery-timepicker-addon/jquery-ui-timepicker-addon.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="display/javascript/jquery-timepicker-addon/i18n/jquery-ui-timepicker-fr.js"></script>
 <link rel="stylesheet" type="text/css" href="display/javascript/jquery-ui-1.12.0.custom/jquery-ui.min.css"/>
 <link rel="stylesheet" type="text/css" href="display/javascript/jquery-ui-1.12.0.custom/jquery-ui.theme.min.css"/>
-<link rel="stylesheet" type="text/css" href="display/javascript/jquery-timepicker-addon/jquery-ui-timepicker-addon.min.css"/>
+<!-- <link rel="stylesheet" type="text/css" href="display/javascript/jquery-timepicker-addon/jquery-ui-timepicker-addon.min.css"/>
+ -->
+<!-- OpenLayers -->
+<script type="text/javascript" charset="utf-8" src="display/javascript/ol-v4.2.0-dist/ol.js"></script>
+<link rel="stylesheet" type="text/css" href="display/javascript/ol-v4.2.0-dist/ol.css">
+
 
 <!-- Code specifique -->
 <link rel="stylesheet" type="text/css" href="display/CSS/bootstrap-prototypephp.css" >
 <script type="text/javascript" src="display/javascript/bootstrap-prototypephp.js"></script>
-
 
 <!--  implementation automatique des classes -->
 <script>
@@ -76,7 +81,7 @@ $(document).ready(function() {
 		'maxlength' : "10"
 	});
 	
-	$(".date").datepicker( $.datepicker.regional['fr'] );
+	$(".date,.datepicker").datepicker( $.datepicker.regional['fr'] );
 	$.datepicker.setDefaults($.datepicker.regional['fr']);
 	$('.timepicker').attr('pattern', '[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]');
 	$.timepicker.setDefaults($.timepicker.regional['fr']);

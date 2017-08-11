@@ -7,7 +7,7 @@
  * Lit un enregistrement dans la base de donnees, affecte le tableau a Smarty,
  * et declenche l'affichage de la page associee
  *
- * @param instance $dataClass        	
+ * @param object $dataClass        	
  * @param int $id        	
  * @param string $smartyPage        	
  * @param int $idParent        	
@@ -44,7 +44,7 @@ function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
 /**
  * Ecrit un enregistrement en base de donnees
  *
- * @param instance $dataClass        	
+ * @param object $dataClass        	
  * @param array $data        	
  * @return int
  */
@@ -61,6 +61,7 @@ function dataWrite($dataClass, $data) {
 		} else
 			$message->set ( $LANG ["message"] [12] );
 		$message->setSyslog ( $e->getMessage () );
+		$log->setLog ( $_SESSION ["login"], get_class ( $dataClass ) . "-write-ko", $dataClass->getErrorData ( 1 ) );
 		$module_coderetour = - 1;
 	}
 	return ($id);
@@ -68,7 +69,7 @@ function dataWrite($dataClass, $data) {
 /**
  * Supprime un enregistrement en base de donnees
  *
- * @param instance $dataClass        	
+ * @param object $dataClass        	
  * @param int $id        	
  * @return int
  */
