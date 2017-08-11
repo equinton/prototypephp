@@ -185,6 +185,19 @@ pubKey & clé publique utilisée pour générer les jetons d'identification \\
 \hline
 tokenIdentityValidity & durée de validité, en secondes, des jetons d'identification\\
 \hline
+MAIL\_enabled & si à 1, l'envoi de mail est géré par l'application \\
+\hline
+CONNEXION\_max\_attemps & nombre maximum d'essais de connexion avant blocage du compte \\
+\hline
+CONNEXION\_blocking\_duration & durée de blocage du compte \\
+\hline
+APPLI\_mailToAdminPeriod & durée minimale d'envoi d'un mail de signalement d'un blocage de compte aux administrateurs (pour éviter une saturation de boite) \\
+\hline
+APPLI\_admin\_ttl & durée, en secondes, de la durée de vie de la session d'administration (accès aux modules de droit admin). Au delà, l'administrateur doit se ré-authentifier \\
+\hline
+APPLI\_lostPassword & Si à 1, autorise la récupération du mot de passe perdu (nécessite également que le paramètre MAIL\_enabled soit positionné à 1) \\
+\hline
+
 \caption{Variables utilisées pour paramétrer l'identification}
 \end{longtable}
 
@@ -224,6 +237,29 @@ basedngroup & base de recherche des groupes \\
 \hline
 \caption{Variables utilisées pour paramétrer l'accès à l'annuaire LDAP}
 \end{longtable}
+
+Variables transmises systématiquement à Smarty pour affichage dans toutes les pages :
+
+\begin{longtable}{|p{5cm}|p{8cm}|}
+\hline
+\textbf{Variable} & \textbf{Signification} \\
+\hline
+\endhead
+entete & nom du template contenant le haut de la page et le menu \\
+\hline
+enpied & nom du template contenant le pied de page \\
+\hline
+corps & nom du template contenant le corps de la page (mis à jour dans chaque module d'affichage)\\
+\hline
+melappli & mail générique de l'application, utilisé lors de l'envoi de messages \\
+\hline
+ident\_type & mode d'identification utilisé \\
+\hline
+appliAssist & adresse du site d'assistance ou de dépôt de ticket \\
+\hline
+\caption{Variables transmises en tableau à Smarty systématiquement pour l'affichage dans toutes les pages}
+\end{longtable}
+
 
 \subsection{Connexions aux bases de données}
 
@@ -320,7 +356,7 @@ retourok & & indique le nom du module qui sera exécuté si le code de retour (v
  \hline
 retourko & & indique le nom du module qui sera exécuté si le code de retour (variable \$module\_coderetour) vaut -1 (échec d'exécution) \\
  \hline
-type & (X) & pour les modules envoyant des données au navigateur, indique le type de la vue qui sera utilisée. Les valeurs possibles sont smarty ou html (même vue), ajax, pdf, csv  \\
+type & (X) & pour les modules envoyant des données au navigateur, indique le type de la vue qui sera utilisée. Les valeurs possibles sont smarty ou html (même vue), ajax, pdf, csv, binaire (pour les images)  \\
  \hline
 droitko & & nom du module appelé si les droits ne sont pas suffisants pour exécuter l'action demandée \\
 \hline 

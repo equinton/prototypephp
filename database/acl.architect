@@ -5223,7 +5223,7 @@ Le premier chiffre correspond au lundi</remarks>
     <column id="COL1613" populated="true" UUID="0b724fb6-f877-47b4-95b0-51ae328c2036" autoIncrement="false" autoIncrementSequenceName="aclgroup_groupe_seq" defaultValue="" name="groupe" nullable="0" physicalName="groupe" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL1614" populated="true" UUID="445bffc1-a536-4e60-9c27-2a7a199b8a54" autoIncrement="false" autoIncrementSequenceName="aclgroup_aclgroup_id_seq" defaultValue="" name="aclgroup_id_parent" nullable="1" physicalName="aclgroup_id_parent" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+    <column id="COL1614" populated="true" UUID="445bffc1-a536-4e60-9c27-2a7a199b8a54" autoIncrement="false" autoIncrementSequenceName="aclgroup_aclgroup_id_seq" defaultValue="" name="aclgroup_id_parent" nullable="1" physicalName="aclgroup_id_parent" precision="0" referenceCount="1" scale="0" source-column-ref="COL1612" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
     </column>
     </folder>
@@ -5243,7 +5243,7 @@ Le premier chiffre correspond au lundi</remarks>
     <column id="COL1618" populated="true" UUID="cef3a820-9466-442f-bae9-883f31e65011" autoIncrement="false" autoIncrementSequenceName="acllogin_acllogin_id_seq" defaultValue="" name="acllogin_id" nullable="0" physicalName="acllogin_id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
     </column>
-    <column id="COL1619" populated="true" UUID="014da7a9-7400-45cf-bada-83a7e60548d9" autoIncrement="false" autoIncrementSequenceName="aclgroup_aclgroup_id_seq" defaultValue="" name="aclgroup_id" nullable="0" physicalName="aclgroup_id" precision="0" primaryKeySeq="1" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+    <column id="COL1619" populated="true" UUID="014da7a9-7400-45cf-bada-83a7e60548d9" autoIncrement="false" autoIncrementSequenceName="aclgroup_aclgroup_id_seq" defaultValue="" name="aclgroup_id" nullable="0" physicalName="aclgroup_id" precision="0" primaryKeySeq="1" referenceCount="1" scale="0" source-column-ref="COL1612" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
     </column>
     </folder>
@@ -5276,112 +5276,152 @@ Le premier chiffre correspond au lundi</remarks>
     <column id="COL1628" populated="true" UUID="7e14c131-f7a1-4fbb-bb89-380532f2c60b" autoIncrement="false" defaultValue="" name="commentaire" nullable="1" physicalName="commentaire" precision="2147483647" referenceCount="1" scale="0" source-column-ref="COL205" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks>Donnees complementaires enregistrees</remarks>
     </column>
+    <column id="COL1629" populated="true" UUID="9d8884e8-1e34-459d-8e8f-3fd291112212" autoIncrement="false" autoIncrementSequenceName="log_ipaddress_seq" defaultValue="" name="ipaddress" nullable="1" physicalName="ipaddress" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+     <remarks>Adresse IP de connexion</remarks>
+    </column>
     </folder>
     <folder id="FOLTAB16233" populated="true" name="Exported Keys" physicalName="Exported Keys" type="3">
     </folder>
     <folder id="FOLTAB16232" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
     </folder>
     <folder id="FOLTAB16234" populated="true" name="Indices" physicalName="Indices" type="4">
-    <index id="IDX1629" populated="true" UUID="9c7a906f-e333-4d8d-8538-59aa74543947" clustered="false" index-type="BTREE" name="log_pk" physicalName="log_pk" primaryKeyIndex="true" unique="true" >
-     <index-column id="IDC1630" populated="true" UUID="0dbb1c25-953d-484a-90bd-2a45f878de51" ascendingOrDescending="UNSPECIFIED" column-ref="COL1624" name="log_id" physicalName="log_id" />
+    <index id="IDX1630" populated="true" UUID="9c7a906f-e333-4d8d-8538-59aa74543947" clustered="false" index-type="BTREE" name="log_pk" physicalName="log_pk" primaryKeyIndex="true" unique="true" >
+     <index-column id="IDC1631" populated="true" UUID="0dbb1c25-953d-484a-90bd-2a45f878de51" ascendingOrDescending="UNSPECIFIED" column-ref="COL1624" name="log_id" physicalName="log_id" />
     </index>
-    <index id="IDX1631" populated="true" UUID="fc96dcb1-4f17-4604-a626-e8f2114aea20" clustered="false" index-type="BTREE" name="log_date_idx" physicalName="log_date_idx" primaryKeyIndex="false" unique="false" >
-     <index-column id="IDC1632" populated="true" UUID="87fef5a3-c8e1-4cfb-9050-b3b8368815e1" ascendingOrDescending="UNSPECIFIED" column-ref="COL1627" name="log_date" physicalName="log_date" />
+    <index id="IDX1632" populated="true" UUID="fc96dcb1-4f17-4604-a626-e8f2114aea20" clustered="false" index-type="BTREE" name="log_date_idx" physicalName="log_date_idx" primaryKeyIndex="false" unique="false" >
+     <index-column id="IDC1633" populated="true" UUID="87fef5a3-c8e1-4cfb-9050-b3b8368815e1" ascendingOrDescending="UNSPECIFIED" column-ref="COL1627" name="log_date" physicalName="log_date" />
     </index>
-    <index id="IDX1633" populated="true" UUID="756322c1-d4df-420e-b7fd-e5e902e78cf0" clustered="false" index-type="BTREE" name="log_login_idx" physicalName="log_login_idx" primaryKeyIndex="false" unique="false" >
-     <index-column id="IDC1634" populated="true" UUID="f723f485-66ae-48d4-ae7c-26fe563a8390" ascendingOrDescending="UNSPECIFIED" column-ref="COL1625" name="login" physicalName="login" />
+    <index id="IDX1634" populated="true" UUID="756322c1-d4df-420e-b7fd-e5e902e78cf0" clustered="false" index-type="BTREE" name="log_login_idx" physicalName="log_login_idx" primaryKeyIndex="false" unique="false" >
+     <index-column id="IDC1635" populated="true" UUID="f723f485-66ae-48d4-ae7c-26fe563a8390" ascendingOrDescending="UNSPECIFIED" column-ref="COL1625" name="login" physicalName="login" />
     </index>
    </folder>
   </table>
-  <table id="TAB1635" populated="true" UUID="a395900d-df3a-4035-b620-4582c51b68c7" name="login_oldpassword" objectType="TABLE" physicalName="login_oldpassword" >
+  <table id="TAB1636" populated="true" UUID="a395900d-df3a-4035-b620-4582c51b68c7" name="login_oldpassword" objectType="TABLE" physicalName="login_oldpassword" >
    <remarks>Table contenant les anciens mots de passe</remarks>
-   <folder id="FOLTAB16351" populated="true" name="Columns" physicalName="Columns" type="1">
-    <column id="COL1636" populated="true" UUID="76f3144b-3f55-4973-8570-a59defe5d821" autoIncrement="true" defaultValue="nextval(&apos;login_oldpassword_login_oldpassword_id_seq&apos;::regclass)" name="login_oldpassword_id" nullable="0" physicalName="login_oldpassword_id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" source-column-ref="COL213" sourceDataTypeName="serial" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+   <folder id="FOLTAB16361" populated="true" name="Columns" physicalName="Columns" type="1">
+    <column id="COL1637" populated="true" UUID="76f3144b-3f55-4973-8570-a59defe5d821" autoIncrement="true" defaultValue="nextval(&apos;login_oldpassword_login_oldpassword_id_seq&apos;::regclass)" name="login_oldpassword_id" nullable="0" physicalName="login_oldpassword_id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" source-column-ref="COL213" sourceDataTypeName="serial" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
     </column>
-    <column id="COL1637" populated="true" UUID="76771048-1a13-4a3e-9eb5-30f960dddd0e" autoIncrement="false" defaultValue="nextval(&apos;seq_logingestion_id&apos;::regclass)" name="id" nullable="0" physicalName="id" precision="0" referenceCount="2" scale="0" source-column-ref="COL214" sourceDataTypeName="serial" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+    <column id="COL1638" populated="true" UUID="76771048-1a13-4a3e-9eb5-30f960dddd0e" autoIncrement="false" defaultValue="nextval(&apos;seq_logingestion_id&apos;::regclass)" name="id" nullable="0" physicalName="id" precision="0" referenceCount="2" scale="0" source-column-ref="COL214" sourceDataTypeName="serial" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
     </column>
-    <column id="COL1638" populated="true" UUID="67894334-8af0-4883-bca5-46c6d0bbf1a5" autoIncrement="false" defaultValue="" name="password" nullable="1" physicalName="password" precision="255" referenceCount="1" scale="0" source-column-ref="COL215" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL1639" populated="true" UUID="67894334-8af0-4883-bca5-46c6d0bbf1a5" autoIncrement="false" defaultValue="" name="password" nullable="1" physicalName="password" precision="255" referenceCount="1" scale="0" source-column-ref="COL215" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
     </folder>
-    <folder id="FOLTAB16353" populated="true" name="Exported Keys" physicalName="Exported Keys" type="3">
+    <folder id="FOLTAB16363" populated="true" name="Exported Keys" physicalName="Exported Keys" type="3">
     </folder>
-    <folder id="FOLTAB16352" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
+    <folder id="FOLTAB16362" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
     </folder>
-    <folder id="FOLTAB16354" populated="true" name="Indices" physicalName="Indices" type="4">
-    <index id="IDX1639" populated="true" UUID="fcbd9131-a53b-498b-a4d3-d0aa25772c61" clustered="false" index-type="BTREE" name="login_oldpassword_pk" physicalName="login_oldpassword_pk" primaryKeyIndex="true" unique="true" >
-     <index-column id="IDC1640" populated="true" UUID="0b4ee3fe-6a57-4eea-a889-2a83188d49c8" ascendingOrDescending="UNSPECIFIED" column-ref="COL1636" name="login_oldpassword_id" physicalName="login_oldpassword_id" />
+    <folder id="FOLTAB16364" populated="true" name="Indices" physicalName="Indices" type="4">
+    <index id="IDX1640" populated="true" UUID="fcbd9131-a53b-498b-a4d3-d0aa25772c61" clustered="false" index-type="BTREE" name="login_oldpassword_pk" physicalName="login_oldpassword_pk" primaryKeyIndex="true" unique="true" >
+     <index-column id="IDC1641" populated="true" UUID="0b4ee3fe-6a57-4eea-a889-2a83188d49c8" ascendingOrDescending="UNSPECIFIED" column-ref="COL1637" name="login_oldpassword_id" physicalName="login_oldpassword_id" />
     </index>
    </folder>
   </table>
-  <table id="TAB1641" populated="true" UUID="b2121551-57ed-4670-b9e0-424607b25c8c" name="logingestion" objectType="TABLE" physicalName="logingestion" >
+  <table id="TAB1642" populated="true" UUID="b2121551-57ed-4670-b9e0-424607b25c8c" name="logingestion" objectType="TABLE" physicalName="logingestion" >
    <remarks></remarks>
-   <folder id="FOLTAB16411" populated="true" name="Columns" physicalName="Columns" type="1">
-    <column id="COL1642" populated="true" UUID="90e8f46f-682e-43a3-84a3-530db9734fff" autoIncrement="true" defaultValue="nextval(&apos;seq_logingestion_id&apos;::regclass)" name="id" nullable="0" physicalName="id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" source-column-ref="COL219" sourceDataTypeName="serial" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+   <folder id="FOLTAB16421" populated="true" name="Columns" physicalName="Columns" type="1">
+    <column id="COL1643" populated="true" UUID="90e8f46f-682e-43a3-84a3-530db9734fff" autoIncrement="true" defaultValue="nextval(&apos;seq_logingestion_id&apos;::regclass)" name="id" nullable="0" physicalName="id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" source-column-ref="COL219" sourceDataTypeName="serial" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
     </column>
-    <column id="COL1643" populated="true" UUID="e8a8bd16-d764-4e3c-a674-8626f0f55324" autoIncrement="false" defaultValue="" name="login" nullable="0" physicalName="login" precision="32" referenceCount="1" scale="0" source-column-ref="COL220" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL1644" populated="true" UUID="e8a8bd16-d764-4e3c-a674-8626f0f55324" autoIncrement="false" defaultValue="" name="login" nullable="0" physicalName="login" precision="32" referenceCount="1" scale="0" source-column-ref="COL220" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL1644" populated="true" UUID="e3154d30-930d-4631-93cd-757b4f5123e3" autoIncrement="false" defaultValue="" name="password" nullable="1" physicalName="password" precision="255" referenceCount="1" scale="0" source-column-ref="COL221" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL1645" populated="true" UUID="e3154d30-930d-4631-93cd-757b4f5123e3" autoIncrement="false" defaultValue="" name="password" nullable="1" physicalName="password" precision="255" referenceCount="1" scale="0" source-column-ref="COL221" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL1645" populated="true" UUID="fb834421-65da-4d20-914f-89228b5bfcde" autoIncrement="false" defaultValue="" name="nom" nullable="1" physicalName="nom" precision="32" referenceCount="1" scale="0" source-column-ref="COL222" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL1646" populated="true" UUID="fb834421-65da-4d20-914f-89228b5bfcde" autoIncrement="false" defaultValue="" name="nom" nullable="1" physicalName="nom" precision="32" referenceCount="1" scale="0" source-column-ref="COL222" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL1646" populated="true" UUID="a2b17c6b-441a-4c9b-9958-8d29ac304f0f" autoIncrement="false" defaultValue="" name="prenom" nullable="1" physicalName="prenom" precision="32" referenceCount="1" scale="0" source-column-ref="COL223" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL1647" populated="true" UUID="a2b17c6b-441a-4c9b-9958-8d29ac304f0f" autoIncrement="false" defaultValue="" name="prenom" nullable="1" physicalName="prenom" precision="32" referenceCount="1" scale="0" source-column-ref="COL223" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL1647" populated="true" UUID="eb89acf5-a935-4226-8672-112f26c86d41" autoIncrement="false" defaultValue="" name="mail" nullable="1" physicalName="mail" precision="255" referenceCount="1" scale="0" source-column-ref="COL224" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL1648" populated="true" UUID="eb89acf5-a935-4226-8672-112f26c86d41" autoIncrement="false" defaultValue="" name="mail" nullable="1" physicalName="mail" precision="255" referenceCount="1" scale="0" source-column-ref="COL224" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL1648" populated="true" UUID="3f7b9669-6b61-472c-ab46-aa6bc66ebbb5" autoIncrement="false" defaultValue="" name="datemodif" nullable="1" physicalName="datemodif" precision="0" referenceCount="1" scale="0" source-column-ref="COL225" sourceDataTypeName="date" type="91" userDefinedTypeUUID="ee349be3-6af2-46e1-b305-975f5354b009" >
+    <column id="COL1649" populated="true" UUID="3f7b9669-6b61-472c-ab46-aa6bc66ebbb5" autoIncrement="false" defaultValue="" name="datemodif" nullable="1" physicalName="datemodif" precision="0" referenceCount="1" scale="0" source-column-ref="COL225" sourceDataTypeName="date" type="91" userDefinedTypeUUID="ee349be3-6af2-46e1-b305-975f5354b009" >
      <remarks></remarks>
     </column>
-    <column id="COL1649" populated="true" UUID="09e9aadb-c5f4-4f0e-99d8-5a93f96f3a04" autoIncrement="false" defaultValue="1" name="actif" nullable="1" physicalName="actif" precision="0" referenceCount="1" scale="0" source-column-ref="COL226" sourceDataTypeName="int2" type="5" userDefinedTypeUUID="69fb547f-e14c-4748-9746-4c0e9e94eb52" >
+    <column id="COL1650" populated="true" UUID="09e9aadb-c5f4-4f0e-99d8-5a93f96f3a04" autoIncrement="false" defaultValue="1" name="actif" nullable="1" physicalName="actif" precision="0" referenceCount="1" scale="0" source-column-ref="COL226" sourceDataTypeName="int2" type="5" userDefinedTypeUUID="69fb547f-e14c-4748-9746-4c0e9e94eb52" >
      <remarks></remarks>
     </column>
     </folder>
-    <folder id="FOLTAB16413" populated="true" name="Exported Keys" physicalName="Exported Keys" type="3">
+    <folder id="FOLTAB16423" populated="true" name="Exported Keys" physicalName="Exported Keys" type="3">
     </folder>
-    <folder id="FOLTAB16412" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
+    <folder id="FOLTAB16422" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
     </folder>
-    <folder id="FOLTAB16414" populated="true" name="Indices" physicalName="Indices" type="4">
-    <index id="IDX1650" populated="true" UUID="e0693800-3e51-4f39-81ff-03f9d5ce0eb9" clustered="false" index-type="BTREE" name="pk_logingestion" physicalName="pk_logingestion" primaryKeyIndex="true" unique="true" >
-     <index-column id="IDC1651" populated="true" UUID="c72e4eab-9b1a-4c81-86e2-c05ee1259213" ascendingOrDescending="UNSPECIFIED" column-ref="COL1642" name="id" physicalName="id" />
+    <folder id="FOLTAB16424" populated="true" name="Indices" physicalName="Indices" type="4">
+    <index id="IDX1651" populated="true" UUID="e0693800-3e51-4f39-81ff-03f9d5ce0eb9" clustered="false" index-type="BTREE" name="pk_logingestion" physicalName="pk_logingestion" primaryKeyIndex="true" unique="true" >
+     <index-column id="IDC1652" populated="true" UUID="c72e4eab-9b1a-4c81-86e2-c05ee1259213" ascendingOrDescending="UNSPECIFIED" column-ref="COL1643" name="id" physicalName="id" />
+    </index>
+   </folder>
+  </table>
+  <table id="TAB1653" populated="true" UUID="aced6c19-b9de-451c-b72a-c4f145efb984" name="passwordlost" objectType="TABLE" physicalName="passwordlost" >
+   <remarks>Table de suivi des pertes de mots de passe</remarks>
+   <folder id="FOLTAB16531" populated="true" name="Columns" physicalName="Columns" type="1">
+    <column id="COL1654" populated="true" UUID="fb6dbad7-f100-4ae9-8a35-072a265e8417" autoIncrement="true" autoIncrementSequenceName="passwordlost_passwordlost_id_seq" defaultValue="" name="passwordlost_id" nullable="0" physicalName="passwordlost_id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+     <remarks></remarks>
+    </column>
+    <column id="COL1655" populated="true" UUID="bca27518-cc72-4e62-9910-f594a1ddcf5d" autoIncrement="false" defaultValue="nextval(&apos;seq_logingestion_id&apos;::regclass)" name="id" nullable="0" physicalName="id" precision="0" referenceCount="1" scale="0" sourceDataTypeName="serial" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+     <remarks></remarks>
+    </column>
+    <column id="COL1656" populated="true" UUID="0139340b-a396-4a42-9e41-0a7b08178f6f" autoIncrement="false" autoIncrementSequenceName="passwordlost_token_seq" defaultValue="" name="token" nullable="0" physicalName="token" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+     <remarks>Jeton utilise pour le renouvellement</remarks>
+    </column>
+    <column id="COL1657" populated="true" UUID="8e9842f5-867c-4dd8-99c7-2a7617ce7f94" autoIncrement="false" autoIncrementSequenceName="passwordlost_expiration_seq" defaultValue="" name="expiration" nullable="0" physicalName="expiration" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
+     <remarks>Date d&apos;expiration du jeton</remarks>
+    </column>
+    <column id="COL1658" populated="true" UUID="28efdd26-8976-4b3a-b7b6-1b17cca81913" autoIncrement="false" autoIncrementSequenceName="passwordlost_usedate_seq" defaultValue="" name="usedate" nullable="1" physicalName="usedate" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
+     <remarks></remarks>
+    </column>
+    </folder>
+    <folder id="FOLTAB16533" populated="true" name="Exported Keys" physicalName="Exported Keys" type="3">
+    </folder>
+    <folder id="FOLTAB16532" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
+    </folder>
+    <folder id="FOLTAB16534" populated="true" name="Indices" physicalName="Indices" type="4">
+    <index id="IDX1659" populated="true" UUID="72a332e2-4481-4e9f-8356-6dcb20c6a975" clustered="false" name="passwordlost_pk" physicalName="passwordlost_pk" primaryKeyIndex="true" unique="false" >
+     <index-column id="IDC1660" populated="true" UUID="8e7b4d05-ca43-41fe-a9ee-4aa1eabfbdfc" ascendingOrDescending="UNSPECIFIED" column-ref="COL1654" name="passwordlost_id" physicalName="passwordlost_id" />
     </index>
    </folder>
   </table>
   <relationships>
-   <relationship id="REL1652" populated="true" UUID="f6c6d681-970e-4acf-a7ae-f2bb28d3b488" deferrability="7" deleteRule="3" fk-table-ref="TAB1617" fkCardinality="7" identifying="true" name="acllogin_acllogingroup_fk" physicalName="acllogin_acllogingroup_fk" pk-table-ref="TAB1587" pkCardinality="2" updateRule="3" >
-    <column-mapping id="CMP1653" populated="true" UUID="8e26aab5-71c3-491f-9e8c-2629e3ad87dc" fk-column-ref="COL1618" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1588" />
+   <relationship id="REL1661" populated="true" UUID="f6c6d681-970e-4acf-a7ae-f2bb28d3b488" deferrability="7" deleteRule="3" fk-table-ref="TAB1617" fkCardinality="7" identifying="true" name="acllogin_acllogingroup_fk" physicalName="acllogin_acllogingroup_fk" pk-table-ref="TAB1587" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1662" populated="true" UUID="8e26aab5-71c3-491f-9e8c-2629e3ad87dc" fk-column-ref="COL1618" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1588" />
    </relationship>
-   <relationship id="REL1654" populated="true" UUID="95274559-75d7-4648-a43c-06f0aefe2cad" deferrability="7" deleteRule="3" fk-table-ref="TAB1599" fkCardinality="7" identifying="false" name="aclappli_aclaco_fk" physicalName="aclappli_aclaco_fk" pk-table-ref="TAB1593" pkCardinality="2" updateRule="3" >
-    <column-mapping id="CMP1655" populated="true" UUID="277c7435-acf8-4eb4-ab53-f7f31191fcc4" fk-column-ref="COL1601" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1594" />
+   <relationship id="REL1663" populated="true" UUID="95274559-75d7-4648-a43c-06f0aefe2cad" deferrability="7" deleteRule="3" fk-table-ref="TAB1599" fkCardinality="7" identifying="false" name="aclappli_aclaco_fk" physicalName="aclappli_aclaco_fk" pk-table-ref="TAB1593" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1664" populated="true" UUID="277c7435-acf8-4eb4-ab53-f7f31191fcc4" fk-column-ref="COL1601" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1594" />
    </relationship>
-   <relationship id="REL1656" populated="true" UUID="ff328878-a683-4329-9405-f7e5fa8e39b8" deferrability="7" deleteRule="3" fk-table-ref="TAB1605" fkCardinality="7" identifying="true" name="aclaco_aclacl_fk" physicalName="aclaco_aclacl_fk" pk-table-ref="TAB1599" pkCardinality="2" updateRule="3" >
-    <column-mapping id="CMP1657" populated="true" UUID="cbdef234-df11-47ff-a754-0ef48aabaff4" fk-column-ref="COL1606" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1600" />
+   <relationship id="REL1665" populated="true" UUID="ff328878-a683-4329-9405-f7e5fa8e39b8" deferrability="7" deleteRule="3" fk-table-ref="TAB1605" fkCardinality="7" identifying="true" name="aclaco_aclacl_fk" physicalName="aclaco_aclacl_fk" pk-table-ref="TAB1599" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1666" populated="true" UUID="cbdef234-df11-47ff-a754-0ef48aabaff4" fk-column-ref="COL1606" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1600" />
    </relationship>
-   <relationship id="REL1658" populated="true" UUID="299b4949-fb3b-460e-b87e-696d49fa045d" deferrability="7" deleteRule="3" fk-table-ref="TAB1611" fkCardinality="7" identifying="false" name="aclgroup_aclgroup_fk" physicalName="aclgroup_aclgroup_fk" pk-table-ref="TAB1611" pkCardinality="2" updateRule="3" >
-    <column-mapping id="CMP1659" populated="true" UUID="fe7b82f2-6e8d-4c7e-bd6a-eeee1430a830" fk-column-ref="COL1614" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1612" />
+   <relationship id="REL1667" populated="true" UUID="299b4949-fb3b-460e-b87e-696d49fa045d" deferrability="7" deleteRule="3" fk-table-ref="TAB1611" fkCardinality="7" identifying="false" name="aclgroup_aclgroup_fk" physicalName="aclgroup_aclgroup_fk" pk-table-ref="TAB1611" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1668" populated="true" UUID="fe7b82f2-6e8d-4c7e-bd6a-eeee1430a830" fk-column-ref="COL1614" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1612" />
    </relationship>
-   <relationship id="REL1660" populated="true" UUID="f4e52d27-d17e-4038-8d4a-7353f421d8b2" deferrability="7" deleteRule="3" fk-table-ref="TAB1605" fkCardinality="7" identifying="true" name="aclgroup_aclacl_fk" physicalName="aclgroup_aclacl_fk" pk-table-ref="TAB1611" pkCardinality="2" updateRule="3" >
-    <column-mapping id="CMP1661" populated="true" UUID="ace72322-aa02-4d3c-b775-4434685ac099" fk-column-ref="COL1607" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1612" />
+   <relationship id="REL1669" populated="true" UUID="f4e52d27-d17e-4038-8d4a-7353f421d8b2" deferrability="7" deleteRule="3" fk-table-ref="TAB1605" fkCardinality="7" identifying="true" name="aclgroup_aclacl_fk" physicalName="aclgroup_aclacl_fk" pk-table-ref="TAB1611" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1670" populated="true" UUID="ace72322-aa02-4d3c-b775-4434685ac099" fk-column-ref="COL1607" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1612" />
    </relationship>
-   <relationship id="REL1662" populated="true" UUID="1d27c8cd-e3f1-4848-8f75-baa5c5dacccc" deferrability="7" deleteRule="3" fk-table-ref="TAB1617" fkCardinality="7" identifying="true" name="aclgroup_acllogingroup_fk" physicalName="aclgroup_acllogingroup_fk" pk-table-ref="TAB1611" pkCardinality="2" updateRule="3" >
-    <column-mapping id="CMP1663" populated="true" UUID="6729f6a1-9bc6-418e-a74d-f54c2fff0fa6" fk-column-ref="COL1619" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1612" />
+   <relationship id="REL1671" populated="true" UUID="1d27c8cd-e3f1-4848-8f75-baa5c5dacccc" deferrability="7" deleteRule="3" fk-table-ref="TAB1617" fkCardinality="7" identifying="true" name="aclgroup_acllogingroup_fk" physicalName="aclgroup_acllogingroup_fk" pk-table-ref="TAB1611" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1672" populated="true" UUID="6729f6a1-9bc6-418e-a74d-f54c2fff0fa6" fk-column-ref="COL1619" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1612" />
    </relationship>
-   <relationship id="REL1664" populated="true" UUID="650e529b-c5fc-4edc-b3ef-bbbcbc804082" deferrability="7" deleteRule="3" fk-table-ref="TAB1635" fkCardinality="7" identifying="false" name="logingestion_login_oldpassword_fk" physicalName="logingestion_login_oldpassword_fk" pk-table-ref="TAB1641" pkCardinality="2" updateRule="3" >
-    <column-mapping id="CMP1665" populated="true" UUID="3ff0550c-0393-4799-85b6-568b9888c111" fk-column-ref="COL1637" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1642" />
+   <relationship id="REL1673" populated="true" UUID="650e529b-c5fc-4edc-b3ef-bbbcbc804082" deferrability="7" deleteRule="3" fk-table-ref="TAB1636" fkCardinality="7" identifying="false" name="logingestion_login_oldpassword_fk" physicalName="logingestion_login_oldpassword_fk" pk-table-ref="TAB1642" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1674" populated="true" UUID="3ff0550c-0393-4799-85b6-568b9888c111" fk-column-ref="COL1638" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1643" />
+   </relationship>
+   <relationship id="REL1675" populated="true" UUID="e767ffb0-aaff-4dbd-801b-de883ba4eee0" deferrability="7" deleteRule="3" fk-table-ref="TAB1653" fkCardinality="7" identifying="false" name="logingestion_passwordlost_fk" physicalName="logingestion_passwordlost_fk" pk-table-ref="TAB1642" pkCardinality="2" updateRule="3" >
+    <column-mapping id="CMP1676" populated="true" UUID="6f068d14-bbb6-4b13-88e0-f750e4211395" fk-column-ref="COL1655" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL1643" />
    </relationship>
   </relationships>
  </target-database>
  <ddl-generator type="ca.sqlpower.architect.ddl.GenericDDLGenerator" allow-connection="true"> </ddl-generator>
  <liquibase-settings useSeparateChangeSets="false" generateId="false" idStart="1"/>
+ <compare-dm-settings  ddlGenerator="ca.sqlpower.architect.ddl.PostgresDDLGenerator"  outputFormatAsString="SQL"  saveFlag="true" >
+  <source-stuff   datastoreTypeAsString="DATABASE"   connectName="localhost-sturio"   filePath=""  />
+  <target-stuff   datastoreTypeAsString="PROJECT"   filePath=""  />
+  <liquibase-settings useSeparateChangeSets="false" generateId="false" idStart="1"/>
+ </compare-dm-settings>
  <create-kettle-job-settings filePath="" jobName="" schemaName="" kettleJoinType="0" savingToFile="true" />
- <play-pen zoom="1.0" viewportX="0" viewportY="61" relationship-style="rectilinear" names-displayLogicalNames="true" showPrimaryTag="true" showForeignTag="true" showAlternateTag="true" columnVisibility="ALL" relationshipLabelVisibility="true">
+ <play-pen zoom="1.0" viewportX="0" viewportY="129" relationship-style="rectilinear" names-displayLogicalNames="true" showPrimaryTag="true" showForeignTag="true" showAlternateTag="true" columnVisibility="ALL" relationshipLabelVisibility="true">
   <table-pane table-ref="TAB1587" x="776" y="58" bgColor="0xf6bcbc" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB1593" x="376" y="349" bgColor="0xf6bcbc" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB1599" x="376" y="554" bgColor="0xf6bcbc" fgColor="0x000000" rounded="false" dashed="false"/>
@@ -5389,15 +5429,17 @@ Le premier chiffre correspond au lundi</remarks>
   <table-pane table-ref="TAB1611" x="776" y="346" bgColor="0xf6bcbc" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB1617" x="776" y="216" bgColor="0xf6bcbc" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB1623" x="35" y="686" bgColor="0xc8dccc" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB1635" x="376" y="686" bgColor="0xc8dccc" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB1641" x="776" y="686" bgColor="0xc8dccc" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-link relationship-ref="REL1654" pkConnection="0.586046511627907" fkConnection="0.40654205607476634" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="132"/>
-  <table-link relationship-ref="REL1656" pkConnection="0.494949494949495" fkConnection="0.49122807017543857" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="33"/>
-  <table-link relationship-ref="REL1658" pkConnection="0.5" fkConnection="0.0" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="36"/>
-  <table-link relationship-ref="REL1660" pkConnection="0.6597222222222222" fkConnection="0.5508474576271186" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="132"/>
-  <table-link relationship-ref="REL1652" pkConnection="0.44651162790697674" fkConnection="0.5338983050847458" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="132"/>
-  <table-link relationship-ref="REL1662" pkConnection="0.90625" fkConnection="0.1059322033898305" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="72"/>
-  <table-link relationship-ref="REL1664" pkConnection="0.39705882352941174" fkConnection="0.797979797979798" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="18"/>
+  <table-pane table-ref="TAB1636" x="376" y="686" bgColor="0xc8dccc" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB1642" x="776" y="686" bgColor="0xc8dccc" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB1653" x="1051" y="690" bgColor="0xc8dccc" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-link relationship-ref="REL1663" pkConnection="0.586046511627907" fkConnection="0.40654205607476634" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="132"/>
+  <table-link relationship-ref="REL1665" pkConnection="0.494949494949495" fkConnection="0.49122807017543857" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="33"/>
+  <table-link relationship-ref="REL1667" pkConnection="0.5" fkConnection="0.0" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="36"/>
+  <table-link relationship-ref="REL1669" pkConnection="0.6597222222222222" fkConnection="0.5508474576271186" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="132"/>
+  <table-link relationship-ref="REL1661" pkConnection="0.44651162790697674" fkConnection="0.5338983050847458" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="132"/>
+  <table-link relationship-ref="REL1671" pkConnection="0.90625" fkConnection="0.1059322033898305" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="72"/>
+  <table-link relationship-ref="REL1673" pkConnection="0.39705882352941174" fkConnection="0.797979797979798" rLineColor="0x484848" pkLabelText="" fkLabelText="" orientation="18"/>
+  <table-link relationship-ref="REL1675" pkConnection="0.3924731182795699" fkConnection="0.8611111111111112" rLineColor="0x313739" pkLabelText="" fkLabelText="" orientation="33"/>
  </play-pen>
  <critic-manager>
   <critic-grouping platformType="Generic" enabled="true">
