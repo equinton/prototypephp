@@ -7,7 +7,7 @@
  * Lit un enregistrement dans la base de donnees, affecte le tableau a Smarty,
  * et declenche l'affichage de la page associee
  *
- * @param object $dataClass        	
+ * @param instance $dataClass        	
  * @param int $id        	
  * @param string $smartyPage        	
  * @param int $idParent        	
@@ -23,8 +23,9 @@ function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
 			} catch ( Exception $e ) {
 				if ($OBJETBDD_debugmode > 0) {
 					$message->set ( $dataClass->getErrorData ( 1 ) );
-				} else
+				} else {
 					$message->set ( $LANG ["message"] [37] );
+				}
 				$message->setSyslog ( $e->getMessage () );
 			}
 		}
@@ -38,13 +39,11 @@ function dataRead($dataClass, $id, $smartyPage, $idParent = null) {
 		global $module;
 		$message->set ( "Error : vue type not defined for the requested module ($module)" );
 	}
-	
-	;
 }
 /**
  * Ecrit un enregistrement en base de donnees
  *
- * @param object $dataClass        	
+ * @param instance $dataClass        	
  * @param array $data        	
  * @return int
  */
@@ -58,10 +57,10 @@ function dataWrite($dataClass, $data) {
 	} catch ( Exception $e ) {
 		if ($OBJETBDD_debugmode > 0) {
 			$message->set ( $dataClass->getErrorData ( 1 ) );
-		} else
+		} else {
 			$message->set ( $LANG ["message"] [12] );
+		}
 		$message->setSyslog ( $e->getMessage () );
-		$log->setLog ( $_SESSION ["login"], get_class ( $dataClass ) . "-write-ko", $dataClass->getErrorData ( 1 ) );
 		$module_coderetour = - 1;
 	}
 	return ($id);
@@ -69,7 +68,7 @@ function dataWrite($dataClass, $data) {
 /**
  * Supprime un enregistrement en base de donnees
  *
- * @param object $dataClass        	
+ * @param instance $dataClass        	
  * @param int $id        	
  * @return int
  */
@@ -78,15 +77,17 @@ function dataDelete($dataClass, $id) {
 	$module_coderetour = - 1;
 	$ok = true;
 	if (is_array ( $id )) {
-		foreach ( $id as $key => $value ) {
-			if (! (is_numeric ( $value ) && $value > 0))
+		foreach ( $id as $value ) {
+			if (! (is_numeric ( $value ) && $value > 0)) {
 				$ok = false;
+			}
 		}
 	} else {
-		if (! (is_numeric ( $id ) && $id > 0))
+		if (! (is_numeric ( $id ) && $id > 0)) {
 			$ok = false;
+		}
 	}
-	if ($ok == true) {
+	if ($ok ) {
 		try {
 			$ret = $dataClass->supprimer ( $id );
 			$message->set ( $LANG ["message"] [4] );
@@ -95,8 +96,9 @@ function dataDelete($dataClass, $id) {
 		} catch ( Exception $e ) {
 			if ($OBJETBDD_debugmode > 0) {
 				$message->set ( $dataClass->getErrorData ( 1 ) );
-			} else
+			} else {
 				$message->set ( $LANG ["message"] [13] );
+			}
 			$message->setSyslog ( $e->getMessage () );
 			$ret = - 1;
 		}
@@ -110,7 +112,7 @@ function dataDelete($dataClass, $id) {
  * @param string $langue        	
  */
 function setlanguage($langue) {
-	global $language, $LANG, $APPLI_cookie_ttl, $APPLI_menufile, $menu, $ObjetBDDParam, $FORMATDATE;
+	global $language, $LANG, $APPLI_cookie_ttl, $APPLI_menufile, $menu, $ObjetBDDParam;
 	/*
 	 * Chargement de la langue par defaut
 	 */
@@ -150,8 +152,9 @@ function setlanguage($langue) {
 	 */
 	$cookieParam = session_get_cookie_params ();
 	$cookieParam ["lifetime"] = $APPLI_cookie_ttl;
-	if ($APPLI_modeDeveloppement == false)
+	if (! $APPLI_modeDeveloppement) {
 		$cookieParam ["secure"] = true;
+	}
 	$cookieParam ["httponly"] = true;
 	
 	setcookie ( 'langue', $langue, time () + $APPLI_cookie_ttl, $cookieParam ["path"], $cookieParam ["domain"], $cookieParam ["secure"], $cookieParam ["httponly"] );
@@ -165,15 +168,16 @@ function setlanguage($langue) {
  */
 function check_encoding($data) {
 	$result = true;
-	if (is_array ( $data ) == true) {
-		foreach ( $data as $key => $value ) {
+	if (is_array ( $data )) {
+		foreach ( $data as $value ) {
 			if (check_encoding ( $value ) == false)
 				$result = false;
 		}
 	} else {
 		if (strlen ( $data ) > 0) {
-			if (mb_check_encoding ( $data, "UTF-8" ) == false)
+			if (mb_check_encoding ( $data, "UTF-8" ) == false) {
 				$result = false;
+			}
 		}
 	}
 	return $result;
@@ -195,8 +199,9 @@ function getIPClientAddress() {
 		 */
 	} else if (isset ( $_SERVER ["REMOTE_ADDR"] )) {
 		return $_SERVER ["REMOTE_ADDR"];
-	} else
+	} else {
 		return - 1;
+	}
 }
 /**
  * Fonction recursive decodant le html en retour de navigateur
@@ -236,10 +241,10 @@ function htmlDecode($data) {
  */
 class VirusException extends Exception {
 }
-;
+
 class FileException extends Exception {
 }
-;
+
 function testScan($file) {
 	if (file_exists ( $file )) {
 		if (extension_loaded ( 'clamav' )) {
@@ -258,21 +263,25 @@ function testScan($file) {
 				exec ( "$clamscan $clamscan_options $file", $output );
 				if (count ( $output ) > 0) {
 					$message = $file ["name"] . " : ";
-					foreach ( $output as $value )
+					foreach ( $output as $value ) {
 						$message .= $value . " ";
+					}
 					throw new VirusException ( $message );
 				}
-			} else
+			} else {
 				throw new FileException ( "clamscan not found" );
+			}
 		}
-	} else
+	} else {
 		throw new FileException ( "$file not found" );
+	}
 }
 function getHeaders() {
 	$header = array ();
 	foreach ( $_SERVER as $key => $value ) {
-		if (substr ( $key, 0, 4 ) == "HTTP")
+		if (substr ( $key, 0, 4 ) == "HTTP") {
 			$header [substr ( $key, 5 )] = $value;
+		}
 	}
 	return $header;
 	
