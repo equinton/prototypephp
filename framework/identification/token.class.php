@@ -60,13 +60,12 @@ class Token
      *            : duration of validity of the token (seconds)
      * @return String : encrypted and encoded token
      */
-    function createToken($login, $validityDuration = -1)
+    function createToken($login, $validityDuration = 0)
     {
-        $tokenOk = false;
         if (strlen($login) > 0) {
             if (is_numeric($validityDuration)) {
                 $timestamp = time();
-                $validityDuration > - 1 ? $expire = $timestamp + $validityDuration : $expire = $timestamp + $this->validityDuration;
+                $validityDuration > 0 ? $expire = $timestamp + $validityDuration : $expire = $timestamp + $this->validityDuration;
                 $data = array(
                     "login" => $login,
                     "timestamp" => $timestamp,
@@ -86,7 +85,6 @@ class Token
                         "expire" => $expire,
                         "timestamp" => $data["timestamp"]
                     );
-                    $tokenOk = true;
                     $token = json_encode($dataToken);
                 } else {
                     throw new TokenException("Encryption_token_not_realized");

@@ -70,8 +70,9 @@ class Message
         $i = 0;
         if ($this->displaySyslog) {
             $tableau = array_merge($this->message, $this->syslog);
-        } else
+        } else {
             $tableau = $this->message;
+        }
         foreach ($tableau as $value) {
             if ($i > 0) {
                 $data .= "<br>";
@@ -84,14 +85,13 @@ class Message
 
     function sendSyslog()
     {
-        global $APPLI_code;
         $dt = new DateTime();
         $date = $dt->format("D M d H:i:s.u Y");
         $pid = getmypid();
         $code_error = "err";
         $level = "notice";
         foreach ($this->syslog as $value) {
-            openlog("[$date] [$APPLI_code:$level] [pid $pid] $code_error", LOG_PERROR, LOG_LOCAL7);
+            openlog("[$date] [" . $_SESSION["APPLI_code"] . ":$level] [pid $pid] $code_error", LOG_PERROR, LOG_LOCAL7);
             syslog(LOG_NOTICE, $value);
         }
     }
@@ -121,7 +121,11 @@ class Vue
      */
     function set($value, $variable = "")
     {
-        $this->data = $value;
+        if (strlen($variable) > 0) {
+            $this->data[$variable] = $value;
+        } else {
+            $this->data = $value;
+        }
     }
 
     /**
@@ -201,11 +205,11 @@ class VueSmarty extends Vue
         $this->smarty = new Smarty();
         $this->smarty->template_dir = $param["templates"];
         $this->smarty->compile_dir = $param["templates_c"];
-        // $this->smarty->config_dir = $SMARTY_config;
         $this->smarty->cache_dir = $param["cache_dir"];
         $this->smarty->caching = $param["cache"];
-        if (isset($param["template_main"]))
+        if (isset($param["template_main"])) {
             $this->templateMain = $param["template_main"];
+        }
         /*
          * Traitement des assignations de variables standard
          */
@@ -304,7 +308,6 @@ class VueAjaxJson extends Vue
          * Envoi au navigateur
          */
         ob_clean();
-        // header ( 'Content-Type: application/json' );
         echo $json;
         ob_flush();
     }
@@ -319,17 +322,18 @@ class VueAjaxJson extends Vue
 class VueCsv extends Vue
 {
 
-    private $filename;
+    private $filename = "";
 
     private $delimiter = ";";
 
     function send($filename = "", $delimiter = "")
     {
         if (count($this->data) > 0) {
-            if (strlen($filename) == 0)
-                $filename = $this->filename;
             if (strlen($filename) == 0) {
-                $param = "export-" . date('Y-m-d') . ".csv";
+                $filename = $this->filename;
+            }
+            if (strlen($filename) == 0) {
+                $filename = "export-" . date('Y-m-d-His') . ".csv";
             }
             if (strlen($delimiter) == 0) {
                 $delimiter = $this->delimiter;
@@ -398,13 +402,12 @@ class VuePdf extends Vue
      */
     function send()
     {
-        global $APPLI_code;
         if (! is_null($this->reference)) {
             header("Content-Type: application/pdf");
             if (strlen($this->filename) > 0) {
                 $filename = $this->filename;
             } else {
-                $filename = $APPLI_code . '-' . date('y-m-d') . ".pdf";
+                $filename = $_SESSION["APPLI_code"] . '-' . date('y-m-d') . ".pdf";
             }
             header('Content-Disposition: ' . $this->disposition . '; filename="' . $filename . '"');
             echo $this->reference;
@@ -479,7 +482,7 @@ class VuePdf extends Vue
  * @author quinton
  *        
  */
-class vueBinaire extends Vue
+class VueBinaire extends Vue
 {
 
     private $param = array(
@@ -546,4 +549,5 @@ class vueBinaire extends Vue
         }
     }
 }
+
 ?>

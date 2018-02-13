@@ -65,7 +65,7 @@ $_REQUEST = htmlDecode($_REQUEST);
  */
 if (! isset($_REQUEST["module"])) {
     $uri = explode("/", $_SERVER["REQUEST_URI"]);
-    if (count($uri) > 2) {
+    if (count($uri) > 2 && $APPLI_isFullDns) {
         /*
          * Extraction le cas echeant des variables GET
          */
@@ -176,7 +176,7 @@ while (isset($module)) {
                 $isAjax = true;
                 break;
             case "binaire":
-                $vue = new vueBinaire();
+                $vue = new VueBinaire();
                 $isAjax = true;
                 break;
             case "smarty":
@@ -230,7 +230,7 @@ while (isset($module)) {
                         $token = new Token($privateKey, $pubKey);
                         $login = $token->openToken($_COOKIE["tokenIdentity"]);
                     } catch (Exception $e) {
-                        $message->set($LANG["message"[48]]);
+                        $message->set($LANG["message"][48]);
                         $message->setSyslog($e->getMessage());
                         $log->setLog("unknown", "connexion", "token-ko");
                     }

@@ -270,6 +270,46 @@ class Acllogin extends ObjetBDD
         }
         return $droits;
     }
+    /**
+     * Retourne l'enregistrement correspondant au login
+     * @param string $login
+     * @return array
+     */
+    function getFromLogin($login) {
+        if (strlen($login) > 0) {
+            $sql = "select * from ".$this->table." where login = :login";
+            return $this->lireParamAsPrepared($sql, array("login"=>$login));
+        }
+    }
+
+    /**
+     * Surcharge de la fonction supprimer pour effacer le login, s'il existe
+     * {@inheritDoc}
+     * @see ObjetBDD::supprimer()
+     */
+    function supprimer($id) {
+        if ($id > 0) {
+            /*
+             * Lecture des donnees
+             */
+            $data = $this->lire($id);
+            /*
+             * Suppression du login dans les groupes
+             */
+            $sql = "delete from acllogingroup where acllogin_id = :id";
+            $this->executeAsPrepared($sql, array("id"=>$id));
+            parent::supprimer($id);
+            /*
+             * Recherche s'il existe un login correspondant
+             */
+            require_once 'framework/identification/identification.class.php';
+            $loginGestion = new LoginGestion($this->connection, $this->paramori);
+            $dlg = $loginGestion->getFromLogin($data["login"]);
+            if ($dlg["id"] > 0) {
+                $loginGestion->supprimer($dlg["id"]);
+            }
+        }
+    }
 }
 
 /**
@@ -379,8 +419,9 @@ class Aclgroup extends ObjetBDD
                         }
                     }
                 }
-            } else
+            } else {
                 throw new LdapException("Connexion à l'annuaire LDAP impossible");
+            }
         }
         /*
          * Fusion des groupes
@@ -442,7 +483,7 @@ class Aclgroup extends ObjetBDD
             $sql = "select aclgroup_id, aclgroup_id_parent, groupe from aclgroup
 					where aclgroup_id = " . $id;
             $data = $this->getListeParam($sql);
-            foreach ($data as $key => $value) {
+            foreach ($data as $value) {
                 if ($value["aclgroup_id_parent"] > 0) {
                     $dataParent = $this->getParentGroups($value["aclgroup_id_parent"]);
                     if (count($dataParent) > 0) {
@@ -478,7 +519,7 @@ class Aclgroup extends ObjetBDD
             /*
              * Recherche des groupes enfants
              */
-            $dataChild = $this->getChildGroups($value["aclgroup_id"], $level + 1);
+            $dataChild = $this->getChildGroups($value["aclgroup_id"], 1);
             if (count($dataChild) > 0) {
                 $data = array_merge($data, $dataChild);
             }

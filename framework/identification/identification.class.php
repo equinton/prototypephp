@@ -117,8 +117,7 @@ class Identification
         phpCAS::setVerbose($true);
         phpCAS::client(CAS_VERSION_2_0, $this->CAS_address, $this->CAS_port, $this->CAS_uri);
         phpCAS::forceAuthentication();
-        $login = phpCAS::getUser();
-        return $login;
+        return phpCAS::getUser();
     }
 
     /**
@@ -215,6 +214,7 @@ class Identification
              * Envoi vers la deconnexion du serveur fournissant le HEADER d'identification
              * En principe, l'url de deconnexion du CAS
              */
+            global $ident_header_logout_address;
             if (strlen($ident_header_logout_address) > 0) {
                 header('Location: ' . $ident_header_logout_address);
                 flush();
@@ -473,13 +473,20 @@ class LoginGestion extends ObjetBDD
      */
     function ecrire($data)
     {
-        if (isset($data["pass1"]) && isset($data["pass2"]) && $data["pass1"] == $data["pass2"]) {
+        if (strlen($data["pass1"]) > 0 && strlen($data["pass2"]) > 0 && $data["pass1"] == $data["pass2"]) {
             if ($this->controleComplexite($data["pass1"]) > 2 && strlen($data["pass1"]) > 9) {
                 $data["password"] = hash("sha256", $data["pass1"] . $data["login"]);
+            } else {
+                throw new IdentificationException("Password not enough complex or too small");
             }
         }
         $data["datemodif"] = date('d-m-y');
-        return parent::ecrire($data);
+        $id  = parent::ecrire($data);
+        if ($id > 0 && strlen($data["password"]) > 0) {
+            $lgo = new LoginOldPassword($this->connection, $this->paramori);
+            $lgo->setPassword($id, $data["password"]);
+        }
+        return $id;
     }
 
     /**
@@ -496,7 +503,25 @@ class LoginGestion extends ObjetBDD
          */
         $loginOP = new LoginOldPassword($this->connection, $this->paramori);
         $loginOP->supprimerChamp($id, "id");
-        return parent::supprimer($id);
+        $data = $this->lire($id);
+        if( parent::supprimer($id) > 0) {
+            /*
+             * Recherche si un enregistrement existe dans la gestion des droits
+             */
+            require_once 'framework/droits/droits.class.php';
+            $acllogin = new Acllogin($this->connection, $this->paramori);
+            $datalogin = $acllogin->getFromLogin($data["login"]);
+            if ($datalogin["acllogin_id"] > 0) {
+                $acllogin->supprimer($datalogin["acllogin_id"]);
+            }
+        }
+    }
+    
+    function getFromLogin($login) {
+        if (strlen($login) > 0) {
+            $sql = "select * from ".$this->table." where login = :login";
+            return $this->lireParamAsPrepared($sql, array("login"=>$login));
+        }
     }
 
     /**
@@ -787,9 +812,9 @@ class Log extends ObjetBDD
             "commentaire" => $commentaire
         );
         if (is_null($login)) {
-            if (! is_null($_SESSION["login"]))
+            if (! is_null($_SESSION["login"])) {
                 $login = $_SESSION["login"];
-            else {
+            } else {
                 $login = "unknown";
             }
         }
@@ -798,7 +823,7 @@ class Log extends ObjetBDD
             $module = "unknown";
         }
         $data["nom_module"] = $GACL_aco . "-" . $module;
-        $data["log_date"] = date("d/m/Y H:i:s");
+        $data["log_date"] = date($_SESSION["MASKDATELONG"]);
         $data["ipaddress"] = $this->getIPClientAddress();
         return $this->ecrire($data);
     }
@@ -889,6 +914,7 @@ order by log_id desc limit 2";
      */
     function isAccountBlocked($login, $maxtime = 600, $nbMax = 10)
     {
+        
         $is_blocked = true;
         /*
          * Verification si le compte est bloque, et depuis quand
@@ -899,7 +925,7 @@ order by log_id desc limit 2";
         $sql = "select log_id from log where login = :login " . " and nom_module = 'connexionBlocking'" . " and log_date > :blockingdate " . " order by log_id desc limit 1";
         $data = $this->lireParamAsPrepared($sql, array(
             "login" => $login,
-            "blockingdate" => $date->format("Y-m-d H:i:s")
+            "blockingdate" => $date->format(DATELONGMASK)
         ));
         if ($data["log_id"] > 0) {
             $accountBlocking = true;
@@ -912,7 +938,7 @@ order by log_id desc limit 2";
             $data = $this->getListeParamAsPrepared($sql, array(
                 "login" => $login,
                 "nbmax" => $nbMax,
-                "blockingdate" => $date->format("Y-m-d H:i:s")
+                "blockingdate" => $date->format(DATELONGMASK)
             ));
             $nb = 0;
             /*
@@ -947,7 +973,7 @@ order by log_id desc limit 2";
     function blockingAccount($login)
     {
         $this->setLog($login, "connexionBlocking");
-        global $message, $MAIL_enabled, $APPLI_code, $APPLI_mail, $APPLI_address, $APPLI_mailToAdminPeriod;
+        global $message, $MAIL_enabled, $APPLI_mail, $APPLI_address, $APPLI_mailToAdminPeriod;
         $date = date("Y-m-d H:i:s");
         $message->setSyslog("connexionBlocking for login $login");
         if ($MAIL_enabled == 1) {
@@ -955,7 +981,7 @@ order by log_id desc limit 2";
             require_once 'framework/droits/droits.class.php';
             $MAIL_param = array(
                 "replyTo" => "$APPLI_mail",
-                "subject" => "SECURITY REPORTING - $APPLI_code - account blocked",
+                "subject" => "SECURITY REPORTING - ".$_SESSION["APPLI_code"]." - account blocked",
                 "from" => "$APPLI_mail",
                 "contents" => "<html><body>" . "The account <b>$login<b> was blocked at $date for too many connection attempts" . '<br>Software : <a href="' . $APPLI_address . '">' . $APPLI_address . "</a>" . '</body></html>'
             );
