@@ -9,7 +9,7 @@
 %\usepackage[nomarginpar, margin=3cm]{geometry}
 % Paramétrages de la langue et de l'encodage
 \usepackage[utf8]{inputenc}
-\usepackage[french]{babel}
+\usepackage[frenchb]{babel}
 \usepackage[T1]{fontenc}
 
 % formules mathématiques
@@ -35,7 +35,7 @@
 \usepackage{mathptmx} % times, y compris dans les formules mathématiques
 
 % Insertion de code source dans le texte, à utiliser avec \begin{lstlisting} et \lstset{java|html|php...}
-\usepackage{listings}
+\usepackage{listingsutf8}
 
 % Definition de l'affichage du code
 \lstset %
@@ -43,7 +43,26 @@
 ,showstringspaces=false %
 ,tabsize=3 %
 ,breaklines=true, %
-,inputencoding=utf8 %
+,inputencoding=utf8/latin1 %
+,literate=
+    {é}{{\'e}}{1}%
+    {è}{{\`e}}{1}%
+    {à}{{\`a}}{1}%
+    {â}{{\^a}}{1}%%%
+    {ç}{{\c{c}}}{1}%
+    {œ}{{\oe}}{1}%
+    {ù}{{\`u}}{1}%
+    {É}{{\'E}}{1}%
+    {È}{{\`E}}{1}%
+    {À}{{\`A}}{1}%
+    {Ç}{{\c{C}}}{1}%
+    {Œ}{{\OE}}{1}%
+    {Ê}{{\^E}}{1}%
+    {ê}{{\^e}}{1}%
+    {î}{{\^i}}{1}%
+     {ï}{{\"i}}{1}%%%
+    {ô}{{\^o}}{1}%
+    {û}{{\^u}}{1}%
 }
 
 % Définition des entêtes

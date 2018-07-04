@@ -163,12 +163,13 @@ Il est structuré sous la forme d'une liste non ordonnée (balises \textit{ul} e
 Le menu est généré à partir du fichier \textbf{param/menu.xml}. La branche principale s'appelle \textit{<menu>}. Voici un exemple d'entrée, qui correspond au menu d'administration :
 
 \begin{lstlisting}
-<item module="administration" value="4" title="5" droits="admin">
-	<item module="loginList" droits="admin" title="3" value="2"/>
-	<item module="appliList" droits="admin" value="appliliste" title="applilistetitle"/>
-	<item module="aclloginList" droits="admin" value="aclloginliste" title="aclloginlistetitle"/>
-	<item module="groupList" droits="admin" value="groupliste" title="grouplistetitle"/>
-	<item module="phpinfo" droits="admin" value="phpinfo" title="phpinfotitle"/>
+<item module="administration" label="Administration" tooltip="Administration de l'application" droits="admin">
+	<item module="loginList" menulevel="1" menuorder="9" droits="admin" label="Liste des comptes locaux" tooltip="Liste des logins - identification via la base de données"/>
+	<item module="appliList" droits="admin" label="ACL - droits" tooltip="applications et droits gérés"/>
+	<item module="aclloginList" droits="admin" label="ACL - logins" tooltip="Logins déclarés dans le module de gestion des droits"/>
+	<item module="groupList" droits="admin" label="ACL - groupes de logins" tooltip="Groupes de logins et logins rattachés aux groupes"/>
+	<item module="dbparamList" droits="admin" label="Paramètres de l'application" tooltip="Liste des paramètres pérennes de l'application" />
+	<item module="phpinfo" droits="admin" label="PHP info" tooltip="configuration générale du serveur PHP"/>
 </item>
 \end{lstlisting}
 
@@ -187,9 +188,9 @@ loginrequis & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur est 
  \hline
 onlynoconnect & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur n'est pas connecté\\
  \hline
-value & X & nom de la sous-variable du tableau \$LANG["menu"], qui contient le libellé à afficher (\textit{cf.} \ref{langue} \textit{\nameref{langue}}, page \pageref{langue})\\
+label & X & Texte affiché\\
  \hline
-title & X & nom de la sous-variable du tableau  \$LANG["menu"], qui contient le libellé à afficher au survol de la souris (attribut HTML \textit{title})  (\textit{cf.} \ref{langue} \textit{\nameref{langue}}, page \pageref{langue})\\
+tooltip & X & libellé affiché au survol de la souris (attribut HTML \textit{title})\\
  \hline
 
 \caption{Liste des attributs utilisables pour décrire les entrées du menu}
@@ -205,27 +206,15 @@ Si la variable \textit{APPLI\_modeDeveloppement} est positionnée à \textit{tru
 
 \chapter{Gestion des langues}\label{langue}
 
-Le framework a été conçu pour supporter plusieurs langues européennes. Pour cela, les libellés à afficher peuvent être stockés dans un tableau, \$LANG, qui sera chargé en fonction de la langue demandée.
+Le framework a été conçu pour supporter plusieurs langues européennes.
 
-Les fichiers contenant les libellés (les entrées du tableau) sont placés dans le dossier \textit{locales}.
+Depuis juillet 2018, il utilise la fonction \textit{gettext} pour traduire tous les libellés. La mise au point a été réalisée par Alexandre Maindron, dans le cadre du projet Collec-Science \href{https://github.com/Irstea/collec}{https://github.com/Irstea/collec}.
 
-La variable \$language, dans le fichier \textit{param.default.inc.php} (\textit{cf.} \ref{param} \textit{\nameref{param}}, page \pageref{param}) contient le nom de la langue par défaut. Le fichier correspondant au code (fr.php) est systématiquement chargé. Si une autre langue est demandée, le second fichier sera alors lu, et les nouveaux libellés seront traités en remplacement : cela permet de conserver les libellés d'origine s'ils n'ont pas été traduits.
+Les fichiers de traduction sont déclarés dans le dossier locales/C/LC\_MESSAGES. Le fichier .po contient les libellés à traduire et leur traduction, le fichier .mo la valeur compilée.
 
-Le tableau \$LANG est organisé en plusieurs sous-tableaux :
-\begin{itemize}
-\item menu : contient tous les libellés utilisés dans les menus ;
-\item message : libellés généraux utilisés dans l'ensemble de l'application ;
-\item login : libellés utilisés dans le module de gestion des droits et des utilisateurs ;
-\item ObjetBDDError : messages correspondants aux anomalies détectées par la classe ObjetBDD (\textit{cf.} \ref{objetbdd} \textit{\nameref{objetbdd}}, page \pageref{objetbdd}) ;
-\item les autres entrées sont libres pour l'application.
-\end{itemize}
+Le script \textit{generate\_translation.sh} récupère tous les libellés à traduire, lance le programme \href{https://poedit.net/}{poedit}, et compile le résultat dans le fichier .mo. Le script détaille précisément les opérations effectuées, notamment la récupération des libellés dans les fichiers xml ou dans les modèles Smarty.
 
-Les libellés peuvent inclure des balises HTML, qui seront envoyées telles qu'elles au navigateur. Cela permet d'insérer, par exemple, un retour à la ligne (<br>).
-
-La variable \$LANG est transmise systématiquement à la vue Smarty.
-
-\section{Formatage des dates}
-Le fichier de langue commence par la définition du format de date, qui est ensuite transmis à ObjetBDD pour que la classe en tienne compte lors du formatage des informations. 
+Les fichiers locales/fr.php et locales/en.php ne sont plus utilisés que pour définir des paramètres généraux, notamment pour traiter les formats de dates.
 
 \chapter{Compléments sur Smarty}\label{smarty}
 
@@ -235,6 +224,13 @@ Smarty est basé sur le langage PHP : il est possible d'utiliser beaucoup de mé
 Les commandes Smarty sont encadrées dans des accolades. L'analyseur est capable de rechercher des balises dans des chaînes encadrées par des guillemets ou des cottes. Toute commande ou ordre Smarty doit toucher l'accolade ouvrante.
 
 Les variables, comme en PHP, doivent commencer par le caractère \textit{dollar}.
+
+\subsection{Encadrement des libellés pour gérer le multilinguisme}
+
+Pour qu'ils puissent être pris en charge par GETTEXT et traduits dans la langue demandée, les libellés doivent être encadrés par les balises t :
+\begin{lstlisting}
+{t}libellé à afficher{/t}
+\end{lstlisting}
 
 \subsection{Cohabitation Javascript et Smarty}
 
