@@ -241,9 +241,9 @@ class Acllogin extends ObjetBDD
                  */
                 $inclause = "";
                 $comma = false;
-                foreach ($groupes as $key => $value) {
+                foreach ($groupes as $value) {
                     if ($value["aclgroup_id"] > 0) {
-                        if ($comma == true) {
+                        if ($comma) {
                             $inclause .= ", ";
                         } else {
                             $comma = true;
@@ -263,7 +263,7 @@ class Acllogin extends ObjetBDD
                  * Mise en forme des droits
                  */
                 $droits = array();
-                foreach ($data as $key => $value) {
+                foreach ($data as $value) {
                     $droits[$value[aco]] = 1;
                 }
             }
@@ -385,6 +385,8 @@ class Aclgroup extends ObjetBDD
         if ($ldapParam["groupSupport"]) {
             /*
              * Recuperation des attributs depuis l'annuaire LDAP
+             * Attention : interroge l'annuaire en mode anonyme 
+             -             et donc echoue si l'annuaire requiere un login/mot de passe pour une recherche
              */
             include_once "framework/ldap/ldap.class.php";
             $ldap = new Ldap($ldapParam["address"], $ldapParam["basedn"]);
@@ -395,7 +397,11 @@ class Aclgroup extends ObjetBDD
                     $ldapParam["mailAttrib"],
                     $ldapParam["groupAttrib"]
                 );
-                $filtre = "(" . $ldapParam["user_attrib"] . "=" . $_SESSION["login"] . ")";
+                $filtre = "(" . $ldapParam["user_attrib"] . "=" . $_SESSION["login"] . ")"; // Attention...
+                /* 
+                 * Attention : ne gere pas le cas de user_attrib vide lors d'une connexion a un Active Directory
+                 *             avec le userPrincipalName (et eventuellement l'UPN Suffix defini)
+                 */
                 $dataLdap = $ldap->getAttributs($ldapParam["basedngroup"], $filtre, $attribut);
                 if ($dataLdap["count"] > 0) {
                     $_SESSION["loginNom"] = $dataLdap[0][$ldapParam["commonNameAttrib"]][0];
@@ -613,14 +619,13 @@ class Aclgroup extends ObjetBDD
      */
     function supprimer($id)
     {
-        global $LANG;
         if ($id > 0) {
             /*
              * Recherche de groupes fils
              */
             $dataFils = $this->getChildGroups($id);
             if (count($dataFils) > 0) {
-                throw new DroitException($LANG["message"][43]);
+                throw new DroitException(_("Suppression du groupe impossible : d'autres groupes lui sont rattachés"));
             } else {
                 /*
                  * Suppression des logins rattachés

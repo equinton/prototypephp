@@ -42,6 +42,8 @@ class Identification
 
     var $LDAP_tls;
 
+    var $LDAP_upn_suffix; // User Principal Name (UPN) Suffix pour Active Directory
+
     var $password;
 
     var $login;
@@ -97,8 +99,9 @@ class Identification
      * @param String $LDAP_user_attrib
      * @param String $LDAP_v3
      * @param String $LDAP_tls
+     * @param String $LDAP_upn_suffix
      */
-    function init_LDAP($LDAP_address, $LDAP_port, $LDAP_basedn, $LDAP_user_attrib, $LDAP_v3, $LDAP_tls)
+    function init_LDAP($LDAP_address, $LDAP_port, $LDAP_basedn, $LDAP_user_attrib, $LDAP_v3, $LDAP_tls, $LDAP_upn_suffix="" )
     {
         $this->LDAP_address = $LDAP_address;
         $this->LDAP_port = $LDAP_port;
@@ -106,6 +109,7 @@ class Identification
         $this->LDAP_user_attrib = $LDAP_user_attrib;
         $this->LDAP_v3 = $LDAP_v3;
         $this->LDAP_tls = $LDAP_tls;
+        $this->LDAP_upn_suffix = $LDAP_upn_suffix;
     }
 
     /**
@@ -130,7 +134,7 @@ class Identification
     function testLoginLdap($login, $password)
     {
         $loginOk = "";
-        global $log, $LOG_duree, $message, $LANG;
+        global $log, $LOG_duree, $message;
         if (strlen($login) > 0 && strlen($password) > 0) {
             $login = str_replace(array(
                 '\\',
@@ -163,7 +167,19 @@ class Identification
             if ($this->LDAP_tls) {
                 ldap_start_tls($ldap);
             }
-            $dn = $this->LDAP_user_attrib . "=" . $login . "," . $this->LDAP_basedn;
+            /* 
+             * Pour OpenLDAP et Active Directory, "bind rdn" de la forme : user_attrib=login,basedn
+             *     avec généralement user_attrib=uid pour OpenLDAP,
+             *                    et user_attrib=cn pour Active Directory
+             * Pour Active Directory aussi, "bind rdn" de la forme : login@upn_suffix
+             * D'où un "bind rdn" de la forme générique suivante :
+             *     (user_attrib=)login(@upn_suffix)(,basedn)
+             */
+            $user_attrib_part = !empty($this->LDAP_user_attrib) ? $this->LDAP_user_attrib . "=" : "";
+            $upn_suffix_part = !empty($this->LDAP_upn_suffix) ? "@" . $this->LDAP_upn_suffix : "";
+            $basedn_part = !empty($this->LDAP_basedn) ? "," . $this->LDAP_basedn : "";
+            //     (user_attrib=)login(@upn_suffix)(,basedn) 
+            $dn = $user_attrib_part . $login . $upn_suffix_part . $basedn_part;
             $rep = ldap_bind($ldap, $dn, $password);
             if ($rep == 1) {
                 $loginOk = $login;
@@ -266,7 +282,7 @@ class Identification
      */
     function verifyLogin($loginEntered = "", $password = "", $modeAdmin = false)
     {
-        global $log, $CONNEXION_blocking_duration, $CONNEXION_max_attempts;
+        global $log, $CONNEXION_blocking_duration, $CONNEXION_max_attempts, $message;
         $login = "";
         $verify = false;
         $ident_type = $this->ident_type;
@@ -423,6 +439,13 @@ class LoginGestion extends ObjetBDD
             "password" => array(
                 'type' => 0,
                 'longueur' => 256
+            ),
+            "is_clientws" => array(
+                "type" => 1,
+                "defaultValue" => '0'
+            ),
+            "tokenws" => array(
+                'type' => 0
             )
         );
         parent::__construct($link, $param);
@@ -453,7 +476,26 @@ class LoginGestion extends ObjetBDD
         }
         return $retour;
     }
-
+    
+    /**
+     * Recupere le login a partir d'un jeton pour les services web
+     *
+     * @param String $token
+     * @return array
+     */
+    function getLoginFromTokenWS($login, $token)
+    {
+        if (strlen($token) > 0 && strlen($login) > 0) {
+            $sql = "select login from logingestion where is_clientws = '1' and actif = '1'
+            and login = :login
+            and tokenws = :tokenws";
+            return $this->lireParamAsPrepared($sql, array(
+                "login" => $login,
+                "tokenws" => $token
+            ));
+        }
+    }
+    
     /**
      * Retourne la liste des logins existants, triee par nom-prenom
      *
@@ -480,7 +522,15 @@ class LoginGestion extends ObjetBDD
                 throw new IdentificationException("Password not enough complex or too small");
             }
         }
-        $data["datemodif"] = date('d-m-y');
+        $data["datemodif"] = date($_SESSION["MASKDATELONG"]);
+        /*
+         * Traitement de la generation du token d'identification ws
+         */
+        if ($data["is_clientws"] == 1 && strlen($data["tokenws"]) == 0) {
+            $data["tokenws"] = bin2hex(openssl_random_pseudo_bytes(32));
+        } else {
+            $data["is_clientws"] = 0;
+        }
         $id  = parent::ecrire($data);
         if ($id > 0 && strlen($data["password"]) > 0) {
             $lgo = new LoginOldPassword($this->connection, $this->paramori);
@@ -534,7 +584,7 @@ class LoginGestion extends ObjetBDD
      */
     function changePassword($oldpassword, $pass1, $pass2)
     {
-        global $log, $LANG, $message;
+        global $log,$message;
         $retour = 0;
         if (isset($_SESSION["login"])) {
             $oldData = $this->lireByLogin($_SESSION["login"]);
@@ -547,13 +597,13 @@ class LoginGestion extends ObjetBDD
                     if ($this->passwordVerify($_SESSION["login"], $pass1, $pass2)) {
                         $retour = $this->writeNewPassword($_SESSION["login"], $pass1);
                     } else {
-                        $message->set($LANG["login"][51]);
+                        $message->set(_("La modification du mot de passe a échoué"));
                     }
                 } else {
-                    $message->set($LANG["login"][19]);
+                    $message->set(_("L'ancien mot de passe est incorrect"));
                 }
             } else {
-                $message->set($LANG["login"][18]);
+                $message->set(_("Le mode d'identification utilisé pour votre compte n'autorise pas la modification du mot de passe depuis cette application"));
             }
         }
         
@@ -605,7 +655,7 @@ class LoginGestion extends ObjetBDD
      */
     private function writeNewPassword($login, $pass)
     {
-        global $log, $message, $LANG;
+        global $log, $message;
         $retour = 0;
         $oldData = $this->lireByLogin($login);
         if ($log->getLastConnexionType($login) == "db") {
@@ -621,12 +671,12 @@ class LoginGestion extends ObjetBDD
                 $loginOldPassword = new LoginOldPassword($this->connection, $this->paramori);
                 $loginOldPassword->setPassword($data["id"], $data["password"]);
                 
-                $message->set($LANG["login"][20]);
+                $message->set(_("Le mot de passe a été modifié"));
             } else {
-                $message->set($LANG["login"][50]);
+                $message->set(_("Echec de modification du mot de passe pour une raison inconnue. Si le problème persiste, contactez l'assistance"));
             }
         } else {
-            $message->set($LANG["login"][18]);
+            $message->set(_("Le mode d'identification utilisé pour votre compte n'autorise pas la modification du mot de passe depuis cette application"));
         }
         return $retour;
     }
@@ -642,7 +692,7 @@ class LoginGestion extends ObjetBDD
      */
     private function passwordVerify($login, $pass1, $pass2)
     {
-        global $message, $LANG;
+        global $message;
         $ok = false;
         /*
          * Verification que le mot de passe soit identique
@@ -668,16 +718,16 @@ class LoginGestion extends ObjetBDD
                     if ($nb == 0) {
                         $ok = true;
                     } else {
-                        $message->set($LANG["login"][14]);
+                        $message->set(_("Le mot de passe a déjà été utilisé"));
                     }
                 } else {
-                    $message->set($LANG["login"][15]);
+                    $message->set(_("Le mot de passe n'est pas assez complexe"));
                 }
             } else {
-                $message->set($LANG["login"][16]);
+                $message->set(_("Le mot de passe est trop court"));
             }
         } else {
-            $message->set($LANG["login"][17]);
+            $message->set(_("Le mot de passe n'est pas identique dans les deux zones"));
         }
         return $ok;
     }
@@ -742,7 +792,7 @@ class LoginGestion extends ObjetBDD
         if (strlen($mail) > 0) {
             $sql = "select id, nom, prenom, login, mail, actif ";
             $sql .= " from " . $this->table;
-            $sql .= " where mail = :mail";
+            $sql .= " where lower(mail) = lower(:mail)";
             $sql .= " order by id desc limit 1";
             return $this->lireParamAsPrepared($sql, array(
                 "mail" => $mail

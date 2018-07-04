@@ -4,10 +4,12 @@
 *UTF-8
 * 
 * Parametres par defaut de l'application
+* Si des modifications doivent etre apportees, faites-les dans le fichier param.inc.php
 */
 $APPLI_version = "0.1";
 $APPLI_dbversion = "0.1";
-$APPLI_versiondate = "01/09/2017";
+$APPLI_versiondate = _("4/7/2018");
+//$APPLI_versiondate = "3/7/2018";
 $language = "fr";
 $DEFAULT_formatdate = "fr";
 /*
@@ -45,7 +47,7 @@ $LOG_duree = 365;
  * LemonLdap, par exemple)
  */
 $ident_header_login_var = "AUTH_USER";
-$ident_header_logout_address = "https://server/cas/logout";
+$ident_header_logout_address = "";
 $ident_type = "BDD";
 $CAS_address = "http://localhost/CAS";
 $CAS_port = 443;
@@ -57,7 +59,8 @@ $LDAP = array(
 		"user_attrib" => "uid",
 		"v3" => true,
 		"tls" => false,
-		"groupSupport"=>true,
+		"upn_suffix" => "", //pour Active Directory
+		"groupSupport"=>false,
 		"groupAttrib"=>"supannentiteaffectation",
 		"commonNameAttrib"=>"displayname",
 		"mailAttrib"=>"mail",
@@ -76,13 +79,13 @@ $BDD_schema = "public";
 /*
  * Parametres concernant SMARTY
  */
-$SMARTY_param = array("templates"=> 'display/templates',
-		"templates_c"=>'display/templates_c',
+$display = "display"; // Dossier de base contenant tout l'affichage
+$SMARTY_param = array("templates"=> "$display/templates",
+		"templates_c"=>"$display/templates_c",
 		"cache"=>false,
-		"cache_dir"=>'display/smarty_cache',
+		"cache_dir"=>"$display/smarty_cache",
 		"template_main"=>"main.htm"
 );
-
 
 /*
  * Variables de base de l'application
@@ -90,15 +93,15 @@ $SMARTY_param = array("templates"=> 'display/templates',
 $APPLI_mail = "proto@proto.com";
 $APPLI_nom = "Prototype d'application";
 $APPLI_code = 'proto';
-$APPLI_fds = "display/CSS/blue.css";
+$APPLI_fds = "$display/CSS/blue.css";
 $APPLI_address = "http://localhost/proto";
 $APPLI_modeDeveloppement = false;
 $APPLI_modeDeveloppementDroit = false;
 $APPLI_utf8 = true;
 $APPLI_menufile = "param/menu.xml";
 $APPLI_temp = "temp";
-$APPLI_titre = "Software Name";
-
+$APPLI_assist_address = "https://github.com/Irstea/collec/issues/new";
+$APPLI_isFullDns = false;
 /*
  * Variables systematiques pour SMARTY
  */
@@ -107,8 +110,10 @@ $SMARTY_variables = array(
 		"enpied"=>"enpied.tpl",
 		"corps"=>"main.tpl",
 		"melappli"=>$APPLI_mail,
-        "ident_type"=>$ident_type,
-        "appliAssist"=>$APPLI_assist_address
+		"ident_type"=>$ident_type,
+        "appliAssist"=>$APPLI_assist_address,
+        "display"=>"/$display",
+        "favicon"=>"/favicon.png"
 );
 /*
  * Variables liees a GACL et l'identification via base de donnees
@@ -149,12 +154,7 @@ $pubKey = "/etc/ssl/certs/ssl-cert-snakeoil.pem";
  * Duree de validite du token d'identification
  */
 $tokenIdentityValidity = 36000; // 10 heures
-/*
- * Emplacement du fichier contenant les paramètres spécifiques de l'entree DNS (multiples applications avec 
- * le meme code)
- */
-$paramIniFile = "./param.ini";
-$MAIL_enabled = 0;
+
 /*
  * Nombre maximum d'essais de connexion
  */
@@ -169,4 +169,5 @@ $CONNEXION_blocking_duration = 600;
 $APPLI_mailToAdminPeriod = 7200;
 $APPLI_admin_ttl = 600; // Duree maxi d'inactivite pour acceder a un module d'administration
 $APPLI_lostPassword = 0; // Autorise la recuperation d'un nouveau mot de passe en cas de perte
+
 ?>

@@ -4,10 +4,27 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit06b88de0c3d5f0645c1c68263c6084b4
+class ComposerStaticInitfc06e24141f3a87f90d0d3c71e70b08b
 {
     public static $files = array (
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
+        'b2b3f01361f3aaeab67fde08ae76446f' => __DIR__ . '/..' . '/smarty-gettext/smarty-gettext/block.t.php',
+        'd3114450b53a83020e2822546c24e1ad' => __DIR__ . '/..' . '/smarty-gettext/smarty-gettext/function.locale.php',
         'f084d01b0a599f67676cffef638aa95b' => __DIR__ . '/..' . '/smarty/smarty/libs/bootstrap.php',
+    );
+
+    public static $prefixLengthsPsr4 = array (
+        'R' => 
+        array (
+            'Ramsey\\Uuid\\' => 12,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Ramsey\\Uuid\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ramsey/uuid/src',
+        ),
     );
 
     public static $classMap = array (
@@ -61,7 +78,9 @@ class ComposerStaticInit06b88de0c3d5f0645c1c68263c6084b4
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->classMap = ComposerStaticInit06b88de0c3d5f0645c1c68263c6084b4::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitfc06e24141f3a87f90d0d3c71e70b08b::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitfc06e24141f3a87f90d0d3c71e70b08b::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitfc06e24141f3a87f90d0d3c71e70b08b::$classMap;
 
         }, null, ClassLoader::class);
     }

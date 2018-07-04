@@ -171,7 +171,7 @@ class Import
     /**
      * Retourne le contenu de la ligne courante
      *
-     * @return Ambigous <array, boolean>
+     * @return <array, boolean>
      */
     function getLigneCourante()
     {
@@ -244,7 +244,7 @@ class Import
      */
     function exportCSVinit($nomFichierExport, $separateur = ",")
     {
-        $this->nomFichierExport = $nomFichierExport . "-" . date('d-m-Y') . ".csv";
+        $this->nomFichierExport = $nomFichierExport . "-" . date($_SESSION["MASKDATEEXPORT"]) . ".csv";
         if ($separateur == "tab") {
             $separateur = "\t";
         }

@@ -34,6 +34,20 @@ COMMENT ON COLUMN "dbversion"."dbversion_date" IS 'Date de la version';
 ALTER SEQUENCE "dbversion_dbversion_id_seq" OWNED BY "dbversion"."dbversion_id";
 
 insert into dbversion(dbversion_number, dbversion_date) values ('0.1', '2017-09-01');
+/*
+ * Creation de la table de saisie des parametres locaux aux donnees
+ */
+CREATE TABLE "dbparam" (
+                "dbparam_id" INTEGER NOT NULL,
+                "dbparam_name" VARCHAR NOT NULL,
+                "dbparam_value" VARCHAR,
+                CONSTRAINT "dbparam_pk" PRIMARY KEY ("dbparam_id")
+);
+COMMENT ON TABLE "dbparam" IS 'Table des parametres associes de maniere intrinseque a l''instance';
+COMMENT ON COLUMN "dbparam"."dbparam_name" IS 'Nom du parametre';
+COMMENT ON COLUMN "dbparam"."dbparam_value" IS 'Valeur du paramètre';
+
+insert into dbparam(dbparam_id, dbparam_name) values (1, 'APPLI_title');
 
 /*
  * Creation du schema de gestion des droits
@@ -274,10 +288,6 @@ values
 (2, 4),
 (3, 3),
 (4, 2);
-
-insert into acllogingroup (acllogin_id, aclgroup_id)
-values
-(1, 5);
 
 select setval('seq_logingestion_id', (select max(id) from logingestion));
 select setval('aclappli_aclappli_id_seq', (select max(aclappli_id) from aclappli));

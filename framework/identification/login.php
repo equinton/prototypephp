@@ -54,14 +54,16 @@ switch ($t_module["param"]) {
         if ($log->getLastConnexionType($_SESSION["login"]) == "db") {
             $vue->set("ident/loginChangePassword.tpl", "corps");
         } else {
-            $message->set($LANG["login"][18]);
+            $message->set(_("Le mode d'identification utilisé pour votre compte n'autorise pas la modification du mot de passe depuis cette application"));
             $vue->set("main.tpl");
         }
         break;
     case 'changePasswordExec':
         $ret = $dataClass->changePassword($_REQUEST["oldPassword"], $_REQUEST["pass1"], $_REQUEST["pass2"]);
         $ret < 1 ? $module_coderetour = - 1 : $module_coderetour = 1;
-        $message->set($dataClass->getErrorData(1));
+        foreach ($dataClass->getErrorData(1) as $messageError) {
+            $message->set($messageError);
+        }
         break;
 }
 ?>
