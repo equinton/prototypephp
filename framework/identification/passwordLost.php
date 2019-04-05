@@ -49,15 +49,15 @@ switch ($t_module["param"]) {
                             ":adresse" => $APPLI_address . "/index.php?module=passwordlostReinitchange&token=" . $data["token"]
                         ))) {
                             $log->setLog("unknown", "passwordlostSendmail", "email send to " . $dl["mail"]);
-                            $message->set(_("Un mail vient de vous être envoyé. Veuillez copier le lien transmis dans votre navigateur pour pouvoir créer un nouveau mot de passe"));
+                            $message->set(_("Un mail vient de vous être envoyé. Veuillez copier le lien transmis dans votre navigateur pour pouvoir créer un nouveau mot de passe"), true);
                         } else {
                             $log->setLog("unknown", "passwordlostSendmail-ko", $dl["mail"]);
-                            $message->set(_("Impossible d'envoyer le mail"));
+                            $message->set(_("Impossible d'envoyer le mail"), true);
                             $message->setSyslog('passwordlost : send mail aborted to' . $dl["mail"]);
                         }
                     } else {
                         $log->setLog("unknown", "passwordlostSendmail-ko", "recipient empty");
-                        $message->set(_("Impossible d'envoyer le mail"));
+                        $message->set(_("Impossible d'envoyer le mail"), true);
                     }
                 }
             } catch (Exception $e) {
@@ -110,10 +110,10 @@ switch ($t_module["param"]) {
                         $module_coderetour = 1;
                     }
                 } else {
-                    $message->set(_("Le mode d'identification utilisé pour votre compte n'autorise pas la modification du mot de passe depuis cette application"));
+                    $message->set(_("Le mode d'identification utilisé pour votre compte n'autorise pas la modification du mot de passe depuis cette application"), true);
                 }
             } catch (Exception $e) {
-                $message->set($e->getMessage());
+                $message->set($e->getMessage(), true);
                 $message->setSyslog($e->getMessage());
             }
         } else {

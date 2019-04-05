@@ -25,25 +25,30 @@ class Message
      *
      * @var array
      */
-    private $message = array();
+    private $_message = array();
 
-    private $syslog = array();
+    private $_syslog = array();
 
-    private $displaySyslog = false;
+    private $_displaySyslog = false;
+
+    public $is_error = false;
 
     function __construct($displaySyslog = false)
     {
-        $this->displaySyslog = $displaySyslog;
+        $this->_displaySyslog = $displaySyslog;
     }
 
-    function set($value)
+    function set($value, $is_error = false)
     {
-        $this->message[] = $value;
+        $this->_message[] = $value;
+        if ($is_error) {
+            $this->is_error = true;
+        }
     }
 
     function setSyslog($value)
     {
-        $this->syslog[] = $value;
+        $this->_syslog[] = $value;
     }
 
     /**
@@ -52,10 +57,19 @@ class Message
     function get()
     {
         if ($this->displaySyslog) {
-            return array_merge($this->message, $this->syslog);
+            return array_merge($this->_message, $this->_syslog);
         } else {
-            return $this->message;
+            return $this->_message;
         }
+    }
+
+    /**
+     * Retourne le nombre de messages enregistres
+     *
+     * @return int
+     */
+    function getMessageNumber() {
+        return (count($this->_message));
     }
 
     /**
@@ -69,30 +83,43 @@ class Message
         $data = "";
         $i = 0;
         if ($this->displaySyslog) {
-            $tableau = array_merge($this->message, $this->syslog);
+            $tableau = array_merge($this->_message, $this->_syslog);
         } else {
-            $tableau = $this->message;
+            $tableau = $this->_message;
         }
         foreach ($tableau as $value) {
             if ($i > 0) {
                 $data .= "<br>";
             }
             $data .= htmlentities($value);
-            $i ++;
+            $i++;
         }
         return $data;
     }
 
+    /**
+     * Envoie une trace des messages a Syslog
+     * 
+     * @return mixed 
+     */
     function sendSyslog()
     {
         $dt = new DateTime();
         $date = $dt->format("D M d H:i:s.u Y");
         $pid = getmypid();
-        $code_error = "err";
-        $level = "notice";
-        foreach ($this->syslog as $value) {
-            openlog("[$date] [" . $_SESSION["APPLI_code"] . ":$level] [pid $pid] $code_error", LOG_PERROR, LOG_LOCAL7);
-            syslog(LOG_NOTICE, $value);
+        if ($this->is_error) {
+            $error = "err";
+            $code_error = 4;
+            $level = "warn";
+
+        } else {
+            $error = "info";
+            $code_error = 6;
+            $level = "info";
+        }
+        foreach ($this->_syslog as $value) {
+            openlog("[$date] [" . $_SESSION["APPLI_code"] . ":$level] [pid $pid] $error", LOG_PERROR, LOG_LOCAL7);
+            syslog($code_error, $value);
         }
     }
 }
@@ -134,7 +161,8 @@ class Vue
      * @param string $param
      */
     function send($param = "")
-    {}
+    {
+    }
 
     /**
      * Fonction recursive d'encodage html
@@ -242,7 +270,7 @@ class VueSmarty extends Vue
          * Encodage des donnees avant envoi vers le navigateur
          */
         foreach ($this->smarty->getTemplateVars() as $key => $value) {
-            if (! in_array($key, $this->htmlVars)) {
+            if (!in_array($key, $this->htmlVars)) {
                 $this->smarty->assign($key, $this->encodehtml($value));
             }
         }
@@ -325,9 +353,32 @@ class VueCsv extends Vue
     private $filename = "";
 
     private $delimiter = ";";
-    
+
     private $header = array();
 
+    /**
+     * Reecriture pour traiter le cas où l'info est mono-enregistrement
+     *
+     * @param array $value
+     * @param string $variable
+     * @return void
+     */
+    function set($value, $variable = "")
+    {
+        if (is_array($value[0])) {
+            $this->data = $value;
+        } else {
+            $this->data[] = $value;
+        }
+    }
+
+    /**
+     * Declenche la creation du fichier csv
+     *
+     * @param string $filename
+     * @param string $delimiter
+     * @return void
+     */
     function send($filename = "", $delimiter = "")
     {
         if (count($this->data) > 0) {
@@ -361,17 +412,18 @@ class VueCsv extends Vue
             ob_flush();
         }
     }
-    
+
     /**
      * Fonction parcourant le tableau de donnees, pour extraire l'ensemble des colonnes
      * et recreer un tableau utilisable en export csv avec toutes les colonnes possibles
      */
-    function regenerateHeader() {
+    function regenerateHeader()
+    {
         /*
          * Recherche toutes les entetes de colonnes
          */
         foreach ($this->data as $row) {
-            foreach ($row as $key=>$value) {
+            foreach ($row as $key => $value) {
                 if (!in_array($key, $this->header)) {
                     $this->header[] = $key;
                 }
@@ -415,6 +467,12 @@ class VueCsv extends Vue
     }
 }
 
+/**
+ * Envoi d'un fichier au format PDF vers le navigateur
+ * 
+ * Le fichier doit être fourni soit sous forme de référence 
+ * soit en indiquant son chemin dans l'arborescence du serveur.
+ */
 class VuePdf extends Vue
 {
 
@@ -433,7 +491,7 @@ class VuePdf extends Vue
      */
     function send()
     {
-        if (! is_null($this->reference)) {
+        if (!is_null($this->reference)) {
             header("Content-Type: application/pdf");
             if (strlen($this->filename) > 0) {
                 $filename = $this->filename;
@@ -442,10 +500,10 @@ class VuePdf extends Vue
             }
             header('Content-Disposition: ' . $this->disposition . '; filename="' . $filename . '"');
             echo $this->reference;
-            if (! rewind($this->reference)) {
+            if (!rewind($this->reference)) {
                 throw new VueException('Impossible to rewind resource');
             }
-            if (! fpassthru($this->reference)) {
+            if (!fpassthru($this->reference)) {
                 throw new VueException('Impossible to send file');
             }
         } elseif (file_exists($this->filename)) {
@@ -468,7 +526,7 @@ class VuePdf extends Vue
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
             header('Content-Length: ' . filesize($this->filename));
-            
+
             ob_clean();
             flush();
             if (strlen($this->filename) > 0) {
@@ -518,9 +576,9 @@ class VueBinaire extends Vue
 
     private $param = array(
         "filename" => "", /* nom du fichier tel qu'il apparaitra dans le navigateur */
-			"disposition" => "attachment", /* attachment : le fichier est telecharge, inline : le fichier est affiche */
-			"tmp_name" => "", /* emplacement du fichier dans le serveur */
-			"content_type" => "" /* type mime */
+        "disposition" => "attachment", /* attachment : le fichier est telecharge, inline : le fichier est affiche */
+        "tmp_name" => "", /* emplacement du fichier dans le serveur */
+        "content_type" => "" /* type mime */
     );
 
     /**
