@@ -172,4 +172,6 @@ $APPLI_lostPassword = 1; // Autorise la recuperation d'un nouveau mot de passe e
 $APPLI_hour_duration = 3600; // Duration of an hour for count all calls to a module
 $APPLI_day_duration = 36000; //Duration of a day for count all calls to a module
 $MAIL_enabled = 1; // send mails
+$APPLI_delay_between_call = 1; //delay between call of modules others than ajax
+$APPLI_sleep_duration = 30; // duration of the temporary sleep
 ?>

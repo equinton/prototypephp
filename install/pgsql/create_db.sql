@@ -308,6 +308,8 @@ CREATE INDEX log_commentaire_idx ON log
 	WITH (FILLFACTOR = 90);
 -- ddl-end --
 
+create index log_ip_idx on log using btree (ipaddress) with (fillfactor = 90);
+
 -- object: logingestion_login_idx | type: INDEX --
 -- DROP INDEX IF EXISTS logingestion_login_idx CASCADE;
 CREATE UNIQUE INDEX logingestion_login_idx ON logingestion
