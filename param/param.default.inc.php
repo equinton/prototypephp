@@ -8,8 +8,7 @@
 */
 $APPLI_version = "0.1";
 $APPLI_dbversion = "0.1";
-$APPLI_versiondate = _("4/7/2018");
-//$APPLI_versiondate = "3/7/2018";
+$APPLI_versiondate = _("2/7/2019");
 $language = "fr";
 $DEFAULT_formatdate = "fr";
 /*

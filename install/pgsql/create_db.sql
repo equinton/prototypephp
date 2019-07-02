@@ -26,7 +26,7 @@ COMMENT ON COLUMN "dbversion"."dbversion_date" IS 'Date de la version';
 
 ALTER SEQUENCE "dbversion_dbversion_id_seq" OWNED BY "dbversion"."dbversion_id";
 
-insert into dbversion(dbversion_number, dbversion_date) values ('0.1', '2017-09-01');
+insert into dbversion(dbversion_number, dbversion_date) values ('0.1', '2019-07-02');
 /*
  * Creation de la table de saisie des parametres locaux aux donnees
  */

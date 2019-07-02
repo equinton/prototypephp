@@ -18,8 +18,9 @@ $ident_type = "BDD";
  * Parametres concernant la base de donnees
  */
 $BDD_login = "proto";
-$BDD_passwd = "proto";
-$BDD_dsn = "pgsql:host=localhost;dbname=proto;sslmode=require";
+$BDD_passwd = "protoPassword";
+//$BDD_dsn = "pgsql:host=localhost;dbname=proto;sslmode=require"; //for access to an another server, add sslmode
+BDD_dsn = "pgsql:host=localhost;dbname=proto";
 $BDD_schema = "public";
 
 /*
@@ -28,7 +29,8 @@ $BDD_schema = "public";
 $GACL_dblogin = "proto";
 $GACL_dbpasswd = "proto";
 $GACL_aco = "col";
-$GACL_dsn = "pgsql:host=localhost;dbname=proto;sslmode=require";
+//$GACL_dsn = "pgsql:host=localhost;dbname=proto;sslmode=require"; //for access to an another server, add sslmode
+$GACL_dsn = "pgsql:host=localhost;dbname=proto";
 $GACL_schema = "gacl";
 
 /*
