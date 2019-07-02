@@ -316,7 +316,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="data"/>
 	<role name="prototypephp"/>
 	<comment><![CDATA[Table des versions de la base de donnees]]></comment>
-	<position x="700" y="60"/>
+	<position x="60" y="500"/>
 	<column name="dbversion_id" not-null="true" sequence="data.dbversion_dbversion_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -337,7 +337,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="data"/>
 	<role name="prototypephp"/>
 	<comment><![CDATA[Table des parametres associes de maniere intrinseque a l'instance]]></comment>
-	<position x="880" y="60"/>
+	<position x="240" y="500"/>
 	<column name="dbparam_id" not-null="true">
 		<type name="integer" length="0"/>
 	</column>
