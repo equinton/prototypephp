@@ -47,7 +47,7 @@ COMMENT ON TABLE "dbparam" IS 'Table des parametres associes de maniere intrinse
 COMMENT ON COLUMN "dbparam"."dbparam_name" IS 'Nom du parametre';
 COMMENT ON COLUMN "dbparam"."dbparam_value" IS 'Valeur du paramètre';
 
-insert into dbparam(dbparam_id, dbparam_name) values (1, 'APPLI_title');
+insert into dbparam(dbparam_id, dbparam_name, dbparam_value) values (1, 'APPLI_title', 'Application name');
 
 /*
  * Creation du schema de gestion des droits
@@ -197,7 +197,7 @@ CREATE SEQUENCE seq_logingestion_id
 
 ALTER TABLE logingestion ALTER COLUMN id SET DEFAULT nextval('seq_logingestion_id'::regclass);
 
-insert into logingestion (id, login, password, nom) values (1, 'admin', 'cd916028a2d8a1b901e831246dd5b9b4d3832786ddc63bbf5af4b50d9fc98f50', 'Administrator');
+insert into logingestion (id, login, password, nom) values (1, 'admin', '$2y$13$evOzF08OtKIzqZlIlTQ.i.8JeVT9940H28VdR7ZWOkB.BlPn.4D6u', 'Administrator');
 
 CREATE SEQUENCE login_oldpassword_login_oldpassword_id_seq;
 

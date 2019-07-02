@@ -131,7 +131,6 @@ if (!isset($_REQUEST["module"])) {
 if (strlen($_REQUEST["module"]) == 0) {
     $_REQUEST["module"] = "default";
 }
-
 /**
  * Recuperation du module
  */
@@ -157,6 +156,12 @@ while (isset($module)) {
     if (count($t_module) == 0) {
         // traduction: conserver inchangée la chaîne %s
         $message->set(sprintf(_('Le module demandé n\'existe pas (%s)'), $module), true);
+        $t_module = $navigation->getModule("default");
+    }
+    /**
+     * Si la variable demandee n'existe pas, retour vers la page par defaut
+     */
+    if (isset($t_module["requiredVar"]) && !isset($_REQUEST[$t_module["requiredVar"]])) {
         $t_module = $navigation->getModule("default");
     }
     /*
@@ -209,6 +214,7 @@ while (isset($module)) {
          */
         if ($t_module["type"] == "ws") {
             require_once "framework/identification/identification.class.php";
+            require_once "framework/identification/loginGestion.class.php";
             $lg = new LoginGestion($bdd_gacl, $ObjetBDDParam);
             $dataId = $lg->getLoginFromTokenWS($_REQUEST["login"], $_REQUEST["token"]);
             if (strlen($dataId["login"]) > 0) {
@@ -227,20 +233,21 @@ while (isset($module)) {
             /*
              * Affichage de l'ecran de saisie du login si necessaire
              */
-            if (in_array(
-                $ident_type,
-                array(
-                "BDD",
-                "LDAP",
-                "LDAP-BDD",
-                )
-            ) && !isset($_REQUEST["login"]) && strlen($_SESSION["login"]) == 0 
+            if (
+                in_array(
+                    $ident_type,
+                    array(
+                        "BDD",
+                        "LDAP",
+                        "LDAP-BDD",
+                    )
+                ) && !isset($_REQUEST["login"]) && strlen($_SESSION["login"]) == 0
                 && !isset($_COOKIE["tokenIdentity"])
             ) {
                 /*
                  * Gestion de la saisie du login
                  */
-                $vue->set("ident/login.tpl", "corps");
+                $vue->set("framework/ident/login.tpl", "corps");
                 $vue->set($tokenIdentityValidity, "tokenIdentityValidity");
                 $vue->set($APPLI_lostPassword, "lostPassword");
                 $loginForm = true;
@@ -295,14 +302,27 @@ while (isset($module)) {
                          * Regeneration de l'identifiant de session
                          */
                         session_regenerate_id();
-                        /*
+                        /**
+                         * Recuperation des connexions recentes
+                         */
+                        $connections = $log->getLastConnections($APPLI_absolute_session);
+                        $nbConnection = count($connections);
+                        if ($nbConnection > 1) {
+                            $message->set(_("Connexions précédentes récentes :"));
+                            for ($i = 1; $i < $nbConnection; $i++) {
+                                $connection = $connections[$i];
+                                $message->set($connection["log_date"] . " - IP: " . $connection["ipaddress"]);
+                            }
+                        } else {
+                            /*
                          * Recuperation de la derniere connexion et affichage a l'ecran
                          */
-                        $lastConnect = $log->getLastConnexion();
-                        if (isset($lastConnect["log_date"])) {
-                            // traduction: bien conserver inchangées les chaînes %1$s, %2$s...
-                            $texte = _('Dernière connexion le %1$s depuis l\'adresse IP %2$s. Si ce n\'était pas vous, modifiez votre mot de passe ou contactez l\'administrateur de l\'application.');
-                            $message->set(sprintf($texte, $lastConnect["log_date"], $lastConnect["ipaddress"]));
+                            $lastConnect = $log->getLastConnexion();
+                            if (isset($lastConnect["log_date"])) {
+                                // traduction: bien conserver inchangées les chaînes %1$s, %2$s...
+                                $texte = _('Dernière connexion le %1$s depuis l\'adresse IP %2$s. Si ce n\'était pas vous, modifiez votre mot de passe ou contactez l\'administrateur de l\'application.');
+                                $message->set(sprintf($texte, $lastConnect["log_date"], $lastConnect["ipaddress"]));
+                            }
                         }
                         $message->setSyslog("connexion ok for " . $_SESSION["login"] . " from " . getIPClientAddress());
                         /*
@@ -351,11 +371,11 @@ while (isset($module)) {
                                 $cookieParam["httponly"] = true;
                                 setcookie('tokenIdentity', $token, time() + $tokenIdentityValidity, $cookieParam["path"], $cookieParam["domain"], $cookieParam["secure"], $cookieParam["httponly"]);
                             } catch (Exception $e) {
-                                $message->set($e->getMessage(),true);
+                                $message->set($e->getMessage(), true);
                             }
                         }
                     } else {
-                        $message->set(_("Identification refusée"),true);
+                        $message->set(_("Identification refusée"), true);
                         $message->setSyslog("connexion ko from " . getIPClientAddress());
                     }
                 }
@@ -412,6 +432,22 @@ while (isset($module)) {
         }
     }
 
+    /**
+     * Count all calls to the module
+     */
+    if ($t_module["maxCountByHour"] > 0) {
+        if ($log->getCallsToModule($module, $t_module["maxCountByHour"], $APPLI_hour_duration) == false) {
+            $resident = 0;
+            $motifErreur = "callsReached";
+        }
+    }
+    if ($t_module["maxCountByDay"] > 0) {
+        if ($log->getCallsToModule($module, $t_module["maxCountByDay"], $APPLI_day_duration) == false) {
+            $resident = 0;
+            $motifErreur = "callsReached";
+        }
+    }
+
     /*
      * Verification s'il s'agit d'un module d'administration
      */
@@ -435,7 +471,7 @@ while (isset($module)) {
                 /*
                  * saisie du login en mode admin
                  */
-                $vue->set("ident/loginAdmin.tpl", "corps");
+                $vue->set("framework/ident/loginAdmin.tpl", "corps");
                 $resident = 0;
                 if ($t_module["retourlogin"] == 1) {
                     $vue->set($_REQUEST["module"], "module");
@@ -465,7 +501,7 @@ while (isset($module)) {
         $log->setLog($_SESSION["login"], $module, $motifErreur);
     } catch (Exception $e) {
         if ($OBJETBDD_debugmode > 0) {
-            $message->set($log->getErrorData(1),true);
+            $message->set($log->getErrorData(1), true);
         } else {
             $message->set(_("Erreur d'écriture dans le fichier de traces"));
         }
@@ -527,6 +563,9 @@ while (isset($module)) {
             case "adminko":
                 $module = $APPLI_moduleAdminLogin;
                 break;
+            case "callsReached":
+                $module = "default";
+                break;
             default:
                 unset($module);
         }
@@ -539,7 +578,7 @@ if ($isHtml) {
     /*
      * Affichage du menu
      */
-    $vue->set($_SESSION["title"], "APPLI_title");
+    $vue->set($_SESSION["APPLI_title"], "APPLI_title");
     if (!isset($_SESSION["menu"])) {
         include_once 'framework/navigation/menu.class.php';
         $menu = new Menu($APPLI_menufile);
