@@ -17,6 +17,24 @@ Le blocage est réinitialisé à chaque tentative de connexion : si la durée de
 \subsection{Réinitialisation des mots de passe perdus}
 Si un utilisateur, identifié dans la base de données locale, perd son mot de passe, il peut demander à le réinitialiser. Un mail avec un lien contenant un jeton cryptographique lui est envoyé, et lui permet de réinitialiser son mot de passe. Le lien a une durée de validité limitée et est  usage unique.
 
+\subsection{Mot de passe à usage limité en création de compte}
+Le mot de passe généré par l'administrateur lors de la création d'un compte ne peut être utilisé plus de trois fois (un message est affiché à chaque utilisation). En cas de blocage, l'administrateur doit régénérer un nouveau mot de passe.
+
+\subsection{Protection contre les mots de passe trop simples}
+Un bibliothèque complémentaire (zxcvbn) est utilisée pour interdire les mots de passe trop simples à découvrir, comme \textit{azerty}, \textit{12345}, etc. 
+
+\subsection{Protection contre l'appel trop fréquent à un module}
+Le nombre d'appels possibles à un module en une heure ou une journée peut être défini, pour limiter les risques de récupération inappropriée de données ou de modifications intempestives.
+
+\subsection{Protection contre les appels automatiques}
+Pour éviter le \textit{scrawling}, un délai d'une seconde est nécessaire entre chaque appel d'un module, hors modules ajax. En cas de détection d'un délai trop court, une temporisation de 30" est mise en place.
+
+\subsection{Types de fichiers servis}
+Seuls les types de fichiers suivants peuvent être fournis par l'application : css|gif|png|jp?g|js|php|ico. Il s'agit d'un paramétrage intégré dans le site virtuel Apache.
+
+\subsection{Envoi d'e-mails aux administrateur}
+En cas de tentative d'accès non autorisée à un module, de blocage de compte, d'atteinte du nombre maximum d'appels possibles pour un module dans le créneau horaire considéré, un message est envoyé à l'ensemble des administrateurs (droit \textit{admin}), si leur e-mail a été renseigné.
+
 \subsection{Restreindre l'accès à l'application dans le cas d'une identification HEADER}
 
 Si les utilisateurs sont identifiés par un proxy d'identification (variable \textit{\$ident\_type} positionnée à \textit{HEADER}), l'application n'a aucun moyen de savoir que le login, transmis dans l'entête HTTP, provient bien du proxy.
@@ -90,11 +108,17 @@ getValue($id)
 
 Retourne la clé de la base de données correspondant à la valeur temporaire.
 
+\subsection{getDbkeyFromRow}
+\begin{lstlisting}
+getDbkeyFromRow(array $row)
+\end{lstlisting}
+Remplace la clé temporaire par la clé de la base de données pour la ligne considérée (équivalent à \textit{getValue}, mais pour un tableau mono-occurrence).
+
 \subsection{getFromList}
 \begin{lstlisting}
 getFromList($data)
 \end{lstlisting}
-Retourne le tableau en ayant remplacé toutes les valeurs temporaires par celles de la base de données.
+Retourne le tableau en ayant remplacé toutes les valeurs temporaires par celles de la base de données (équivalent à \textit{getDbkeyFromRow}, mais pour un ensemble de lignes).
 
 
 
@@ -114,31 +138,69 @@ Les redirections vers le mode HTTPS doivent être activées. Le site virtuel doi
 
 En production, l'application ne fonctionnera pas si le mode https n'est pas activé : le cookie de session ne sera transmis qu'en mode \textit{secure}.
 
-Voici un exemple de configuration :
+Le framework est livré avec un exemple de site virtuel (install/apache2/prototypephp.conf), à déplacer dans /etc/apache2/sites-available :
 
 \begin{lstlisting}
-<IfModule mod_ssl.c>
-        <VirtualHost _default_:443>
-                ServerAdmin webmaster@localhost
-
-                DocumentRoot /var/www/html
-                <Directory /var/www/html>
-                        Options FollowSymLinks MultiViews
-                        AllowOverride all
-                        Order allow,deny
-                        allow from all
-                </Directory>
-                SSLEngine on
-                SSLCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
-                SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-        </VirtualHost>
-</IfModule>
-A COMPLETER AVEC LA CHAINE CIPHERS
+<VirtualHost *:80>
+# redirect to https
+    ServerName prototypephp.mysociety.com
+    ServerPath /prototypephp.mysociety.com
+    RewriteEngine On
+    RewriteRule ^ https://prototypephp.mysociety.com%{REQUEST_URI} [R]
+</VirtualHost>
+<VirtualHost *:443>
+    ServerName prototypephp.mysociety.com
+    ServerPath /prototypephp.mysociety.com
+    SSLEngine on
+# configuration SSL 
+# this configuration work for apache2 v. 2.4.25 and openssl 1.1.0f
+# show the adequat configuration for your versions of apache2 and openssl 
+# from the site : https://mozilla.github.io/server-side-tls/ssl-config-generator/
+# to show the versions of apache2 and openssl :
+# apt show apache2
+# apt show openssl
+SSLProtocol all -SSLv3
+SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
+SSLHonorCipherOrder on
+SSLCompression off
+SSLSessionTickets off
+# certificate paths
+    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key  
+# 
+# certification authority (if present)
+#    SSLCACertificateFile /etc/ssl/certs/cacert.crt
+# software path
+    DocumentRoot /var/www/html/prototypephp/prototypephp
+</VirtualHost>
+<Directory /var/www/html/prototypephp>
+Options FollowSymLinks MultiViews
+AllowOverride all
+Order allow,deny
+allow from all
+</directory>
+<Directory /var/www/html/prototypephp/prototypephp>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond "/%{REQUEST_FILENAME}" !-f
+    RewriteCond "/%{REQUEST_FILENAME}" !-d
+    RewriteRule "(.*)" "/index.php?$1" [PT,QSA]
+    Order deny,allow
+    <FilesMatch ".+\..{2,4}$">
+        Deny from all
+    </FilesMatch>
+    <FilesMatch ".*(css|gif|png|jp?g|js|php|ico)$">
+        Allow from all
+    </FilesMatch>
+</Directory>
 \end{lstlisting}
 
-À la racine de l'application, un fichier \textit{.htaccess} contient des commandes essentielles pour gérer la sécurité générale. Il doit être maintenu (ou les commandes insérées dans le fichier de configuration du site virtuel), et il faut s'assurer, au besoin en utilisant ZapProxy (mode écoute) que les entêtes http sont correctement réécrites.
+
+
+À la racine de l'application, un fichier \textit{.htaccess} contient des commandes essentielles pour gérer la sécurité générale. Il doit être maintenu (ou les commandes insérées dans le fichier de configuration du site virtuel), et il faut s'assurer, au besoin en utilisant ZapProxy\footnote{\href{https://www.zaproxy.org/}{https://www.zaproxy.org/}} (mode écoute) que les entêtes http sont correctement réécrites.
 
 Voici le contenu de ce fichier :
+
 \begin{lstlisting}
 <LimitExcept GET POST>
 Deny from all
@@ -149,6 +211,8 @@ php_flag session.cookie_secure on
 php_flag register_globals off
 php_flag magic_quotes_gpc true
 php_flag display_errors Off
+Header unset X-WebKit-CSP
+Header add X-WebKit-CSP "default-src 'self'"
 Header unset ETag
 Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate, private"
 Header set Pragma "no-cache"
@@ -156,7 +220,8 @@ Header set X-Frame-Options SAMEORIGIN
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Content-Type-Options "nosniff"
 Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
-<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+Header set Strict-Transport-Security "max-age=63072000"
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
     Header set Cache-Control "max-age=604800, private"
 </FilesMatch>
 
@@ -170,23 +235,17 @@ Si des fichiers PDF sont générés par l'application, il peut être judicieux d
 
 Avant toute mise en production, il faut passer le code en revue et supprimer les composants qui ne seraient pas utilisés. Le framework intègre plusieurs modules externes, qui ne sont pas forcément nécessaires : les supprimer limitera les risques d'attaque par oubli, et réduira la taille du code, ce qui n'est jamais plus mal.
 
-Vérifiez que vous ne pouvez pas naviguer dans l'arborescence (avec Zaproxy).
-
-Normalement, vous devriez pouvoir supprimer le dossier \textit{database}. Par contre, ne supprimez pas le fichier \textit{install/readme.txt}, qui est utilisé pour afficher les nouveautés de la version...
+Vérifiez que vous ne pouvez pas naviguer dans l'arborescence (avec Zap).
 
 Supprimez également le dossier \textit{test}, qui n'a pas lieu d'être en production.
 
-\subsection{Installation de la base de données des droits}
+\subsection{Installation de la base de données}
 
-Les tables décrivant les droits des utilisateurs sont stockées dans un schéma dédié, qui ne doit jamais être accessible à ceux-ci en mode SQL. Une des tables contient notamment la trace de toutes les actions réalisées, et la divulgation de ce type d'informations n'est pas forcément adéquat. De même, même si les mots de passe sont chiffrés et salés\footnote{le salage consiste à accoler une chaîne variable à chaque mot de passe, pour que des mots de passe identiques saisis par deux personnes différents aient une signature différente dans la base. Le framework ajoute le login au mot de passe avant de procéder au hashage}.
+Deux schémas sont préconisés : le premier contiendra les tables de l'application, le second les tables permettant de gérer les droits.
 
-Le script de génération des tables contenant les droits et les données connexes est stocké dans le fichier \textit{install/gacl\_create\_schema\_version\_20150604\_pgsql.sql}. Le script crée le schéma \textbf{gacl} et insère les tables nécessaires.
+Un script de génération est disponible dans \textit{install/pgsql/create\_db.sql}. Il permet notamment de créer le login admin (mot de passe par défaut : \textit{password}), qui dispose de l'ensemble des droits dans le framework.
 
-Il crée également des entrées minimales, qui permettent de se connecter à l'application en mode BDD : 
-\begin{itemize}
-\item le login \textit{admin}, associé au mot de passe \textit{password} ;
-\item une application appelée \textit{appli}, contenant un groupe \textit{admin}, ce qui permet au login \textit{admin} de pouvoir créer de nouveaux droits.
-\end{itemize}
+Il crée également deux tables dans le schéma des données, l'une dédiée au stockage des numéros des versions, l'autre aux variables qu'il est judicieux de stocker en base de données.
 
 Le framework travaille avec 2 connexions : l'une dédiée à cette base des droits, et l'autre aux données métier. Il est conseillé de créer deux logins différents.
 
@@ -210,11 +269,7 @@ Il est conseillé de stocker le fichier \textit{param.inc.php} dans un dossier e
 Au moment de la mise en production d'une nouvelle version, il suffit de créer un lien vers celui-ci pour que les anciens paramètres soient de nouveau actifs.
 
 \subsection{Droits d'accès spécifiques aux dossiers}
-Si l'ensemble de l'application doit être accessible uniquement en lecture au serveur web (avec Apache, droits de lecture attribués au login \textit{www-data}), vous devez donner les droits de modification pour deux dossiers :
-\begin{itemize}
-\item \textbf{display/templates\_c} : dossier utilisé par Smarty pour générer les fichiers PHP utilisés pour afficher les informations à l'écran ;
-\item \textbf{temp} : dossier temporaire, utilisé pour générer des images, les fichiers PDF... à partir de l'application (durée de vie de 24 heures maximum des fichiers dans ce dossier).
-\end{itemize}
+Si l'ensemble de l'application doit être accessible uniquement en lecture au serveur web (avec Apache, droits de lecture attribués au login \textit{www-data}), vous devez donner les droits de modification pour le dossier \textit{display/templates\_c},  utilisé par Smarty pour générer les fichiers PHP utilisés pour afficher les informations à l'écran et pour le dossier \textit{temp}, que vous pourrez utiliser pour générer des fichiers temporaires (nettoyage au bout de 24 heures).
 
 \subsection{Script de mise en production}
 

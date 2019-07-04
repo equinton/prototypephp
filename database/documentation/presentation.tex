@@ -4,28 +4,27 @@ Au début des années 2000, PHP commençait à être largement utilisé pour cr�
 
 Des outils comme Smarty, un moteur de templates qui permet de séparer le code HTML du code PHP commençaient à se faire une place. On trouvait également des bibliothèques assez élaborées comme PHPGACL pour gérer les droits de manière particulièrement pertinente.
 
-La gestion des bases de données n'était pas des plus optimales, et un souvent un peu trop conceptuelle.
+La gestion des bases de données n'était pas des plus optimales, et souvent un peu trop conceptuelle.
 
 PrototypePHP a été créé pour assembler divers outils disponibles, selon la con-ception qu'en avait l'auteur à l'époque. Il était loin d'être parfait et a évolué de multiples fois, pour intégrer une approche mvc, puis des contraintes de sécurité, etc. Toutefois, les fondements de départ sont restés quasiment identiques, même si certaines évolutions ont été intégrées :
 \begin{itemize}
-\item des actions décrites dans un fichier xml, qui est utilisé pour générer le menu en fonction des droits détenus par l'utilisateur ;
+\item des actions décrites dans un fichier xml, qui était utilisé pour générer le menu en fonction des droits détenus par l'utilisateur (la description du menu est maintenant réalisée dans un fichier XML dédié) ;
 \item une gestion des droits basée sur PHPGACL. Si le produit initial a été abandonné, sa philosophie a été conservée ;
 \item une séparation du code PHP et HTML avec l'utilisation de SMARTY ;
-\item un accès aux tables de la base de données réalisé par l'intermédiaire d'une classe dédiée à cet usage, ObjetBDD, qui contient des fonctions très simples à manipuler, comme ecrire(\$data), lire(\$id), supprimer(\$id). La connexion à la base de données, à l'époque réalisée en utilisant la bibliothèque ADODB, a été remplacée par PDO ;
-\item un support de l'identification selon quatre modalités : base de données, annuaire LDAP, annuaire LDAP puis base de données, et connexion via un serveur CAS ;
+\item un accès aux tables de la base de données réalisé par l'intermédiaire d'une classe dédiée à cet usage, ObjetBDD, qui contient des fonctions très simples à manipuler, comme ecrire(\$data), lire(\$id), supprimer(\$id). La connexion à la base de données était initialement basée sur la bibliothèque ADODB, qui a ensuite été remplacée par PDO quand cette classe a été intégrée à PHP ;
+\item un support de l'identification selon cinq modalités : base de données, annuaire LDAP, annuaire LDAP puis base de données, connexion par l'intermédiaire d'un serveur CAS, et récupération de l'identification fournie par un serveur PROXY  ;
 \item un souci permanent de la performance, lié au passé de son concepteur\footnote{il a commencé sa carrière à une époque où les ressources informatiques étaient rares, chères, et dont la puissance était limitée}.
 \end{itemize}
 
-La première version publiée l'a été en 2008, dans sourceforge \\ (\url{https://sourceforge.net/projects/prototypephp/}). Depuis quelques années, elle est disponible dans github \\(\url{https://github.com/equinton/prototypephp}), la branche active étant la branche \textit{bootstrap}, créée au moment du basculement de l'affichage en utilisant les fonctionnalités de ce produit.
+La première version a été publiée en 2008, dans sourceforge \\ (\url{https://sourceforge.net/projects/prototypephp/}). Depuis quelques années, elle est disponible dans github \\(\url{https://github.com/equinton/prototypephp}).
 
 Si le principe général d'une conception MVC a prévalu depuis plusieurs années, des améliorations récentes, notamment dans la gestion des vues, a été apportée. À partir de septembre 2016, une meilleure gestion des droits a été implémentée pour travailler de manière transparente avec les groupes issus d'un annuaire d'entreprise de type LDAP. 
-Il n'est pas impossible également que le support de Shibboleth puisse être intégré dans le futur, quand des bibliothèques prêtes à l'emploi seront disponibles.
 
 \section{Gestion des versions}
 
 Le framework est mis à jour en parallèle aux développements de logiciels bâtis à partir de celui-ci. Le code disponible reflète donc les retranscriptions des modifications apportées au gré des évolutions envisagées par son concepteur.
 
-Il n'existe ainsi plus depuis plusieurs mois de gestion de version : le plus simple est de se référer à la date du commit, en utilisant la branche \textit{bootstrap}, qui est celle de travail actuel.
+Le numéro de version est consultable dans le fichier \textit{framework/version}. Les consignes de migration d'une version à l'autre sont décrites dans le dossier \textit{framework/upgrade/}.
 
 \section{plugins utilisés}
 Les bibliothèques suivantes sont installées dans le framework :
@@ -48,24 +47,30 @@ Les bibliothèques suivantes sont installées dans le framework :
 \end{itemize}
 \end{itemize}
 
+\subsection{Gestion des mises à jour}
+Les bibliothèques PHP sont mises à jour par l'intermédiaire de \textit{composer}\footnote{\href{https://getcomposer.org/}{https://getcomposer.org/}}, et sont stockées dans le dossier \textit{vendor}. Elles sont chargées automatiquement \textit{via} autoload.php.
+Les bibliothèques Javascript sont mises à jour par l'intermédiaire de \textit{bower}\footnote{\href{https://bower.io/}{https://bower.io/}}, et sont stockées dans \textit{display/bower\_components}.
+
 Elles sont mises à jour régulièrement, mais il est préférable de vérifier si de nouvelles versions sont disponibles avant de procéder à une mise en production.
+
+Des bibliothèques tierces, non gérées par les outils automatiques, peuvent être installées dans le dossier \textit{plugins} (PHP) ou \textit{display/javascript} (Javascript).
 
 \section{Modèle MVC}
 
 Le framework est basé sur un modèle MVC, qui présente les caractéristiques suivantes :
 \begin{itemize}
 \item le contrôleur est unique, les actions et les droits associés sont décrits dans un fichier unique ;
-\item les vues sont héritées d'une classe non instanciable, avec des classes dédiées à l'usage (html via Smarty, ajax, csv, pdf pour le moment) ;
+\item les vues sont héritées d'une classe non instanciable, avec des classes dédiées à l'usage (html via Smarty, ajax, csv, pdf, binaire) ;
 \item le modèle est constitué de deux types d'objets : des classes héritées d'ObjetBDD pour gérer les échanges avec la base de données, et des fichiers de script exécutant les modules (ou actions) demandés.
 \end{itemize}
 
-Le framework n'a pas une philosophie \og tout objet \fg{}, comme peuvent l'être d'autres, pour tirer parti de la souplesse du php. De nombreuses fonctions permettent de faciliter et limiter le code à écrire.
+Le framework n'a pas une philosophie \og tout objet \fg{}, comme peuvent l'être d'autres, pour tirer parti de la souplesse de PHP. De nombreuses fonctions permettent de faciliter l'écriture du code et limiter sa taille.
 
 Quelques classes génériques sont utilisées (une classe Message, par exemple), et l'application recourt fortement aux variables de session. 
 
 \section{Licences}
 
-Le framework est distribué sous licence LGPL v2 et CECILL-C.
+Le framework est distribué depuis juillet 2019 sous licence MIT.
 
 Voici la liste des licences des composants utilisés :
 
@@ -75,15 +80,14 @@ Voici la liste des licences des composants utilisés :
 \textbf{Composant - version} & \textbf{Site web et usage} & \textbf{Langage} & \textbf{Licence} \\
 \hline
 \endhead
-ObjetBDD &  Accès aux tables des bases de données (ORM) - version intégrée dans le framework & PHP & LGPL \\
 \hline
-SMARTY 3.1.31 & \url{http://www.smarty.net} Moteur de templates & PHP & LGPL \\
+SMARTY & \url{http://www.smarty.net} Moteur de templates & PHP & LGPL \\
 \hline
-SMARTY-GETTEXT 1.2.0 & Traduction des libellés dans Smarty & PHP & LGPL \\
+SMARTY-GETTEXT & Traduction des libellés dans Smarty & PHP & LGPL \\
 \hline
 
 
-PHPCAS 1.3.5 & \url{https://wiki.jasig.org/display/CASC/phpCAS} Identification via un serveur CAS & PHP & Apache 2.0\\
+PHPCAS & \url{https://wiki.jasig.org/display/CASC/phpCAS} Identification via un serveur CAS & PHP & Apache 2.0\\
 \hline
 fpdf17 & \url{http://www.fpdf.org/} Génération de fichiers PDF & PHP & Aucune restriction d'usage\\
 \hline
@@ -92,30 +96,31 @@ bootstrap & \url{http://getbootstrap.com} Affichage HTML & CSS et Javascript &  
 \hline
 js-cookie-master & \url{https://github.com/js-cookie/js-cookie} Gestion des cookies dans le navigateur & Javascript & MIT \\
 \hline
-Datatables 1.10.15 & \url{http://www.datatables.net/} Affichage des tables & Javascript & MIT \\
+Datatables & \url{http://www.datatables.net/} Affichage des tables & Javascript & MIT \\
 \hline
 datetime-moment & \url{https://datatables.net/plug-ins/sorting/datetime-moment} Gestion du tri des dates dans Datatables & Javascript & MIT\\
 \hline
 moment & \url{http://momentjs.com} bibliothèque utilisée par le composant précédent pour le tri des dates & Javascript & MIT\\
 \hline
-Jquery 3.3.1 & \url{http://jquery.com/} Fonctions d'encapsulation de Javascript & Javascript & Équivalent BSD \\
+Jquery & \url{http://jquery.com/} Fonctions d'encapsulation de Javascript & Javascript & Équivalent BSD \\
 \hline
 JqueryUI & \url{http://jqueryui.com/} Composants graphiques associés à Jquery & Javascript & Équivalent BSD \\
 \hline
 jquery-timepicker-addon & \url{https://github.com/trentrichardson/jQuery-Timepicker-Addon} saisie de la date/heure & Javascript & MIT\\
 \hline
-magnific-popup 1.1.0 & \url{http://dimsemenov.com/plugins/magnific-popup/} Affichage des images sous forme de pop-up & Javascript & MIT \\
+magnific-popup & \url{http://dimsemenov.com/plugins/magnific-popup/} Affichage des images sous forme de pop-up & Javascript & MIT \\
 \hline
 smartmenus & \url{http://www.smartmenus.org} Affichage des menus dans bootstrap & Javascript & MIT\\
 \hline
-c3js0.4.10 & \url{http://c3js.org/} Création de graphiques & Javascript & MIT \\
+c3js & \url{http://c3js.org/} Création de graphiques & Javascript & MIT \\
 \hline
-openlayers 4.2.0 & \url{http://openlayers.org/} Affichage de cartes & Javascript & BSD\\
+openlayers & \url{http://openlayers.org/} Affichage de cartes & Javascript & BSD\\
 \hline
-alpaca 1.5.23 & \url{http://alpacajs.org/} Gestion de formulaires JSON & Javascript & Apache 2\\
+alpaca & \url{http://alpacajs.org/} Gestion de formulaires JSON & Javascript & Apache 2\\
 \hline
 
 \caption{Liste des licences des composants les plus fréquemment utilisés}
 \end{longtable}
 
-Les composants PHP sont stockés dans le dossier \textit{plugins}, les composants Javascript dans \textit{display/javascript}.
+\section{Sécurité}
+Des contrôles de sécurité sont ajoutés régulièrement, au fur et à mesure de l'évolution des menaces. Le framework est conçu pour répondre intégralement au niveau 1 des recommandations de l'ASVS version 4\footnote{\href{https://github.com/OWASP/ASVS/raw/master/4.0/OWASP Application Security Verification Standard 4.0-en.pdf}{https://github.com/OWASP/ASVS/raw/master/4.0/OWASP Application Security Verification Standard 4.0-en.pdf}} et partiellement au niveau 2 (pas de support de l'identification via des mécanismes externes, comme TOTP ou des tokens physiques, par exemple).

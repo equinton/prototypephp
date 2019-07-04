@@ -19,12 +19,15 @@ L'appel de toute page dans l'application passe nécessairement par l'ensemble de
 \item contrôles de cohérence IP (vérification que, pour une même session, l'adresse IP ne change pas)
 \item lancement des connexions aux bases de données (par défaut, deux connexions : une pour la base des droits, l'autre pour les données applicatives)
 \item décodage des variables HTML encodées (protection contre les attaques de type XSS)
+\item vérification que la base de données soit bien dans la bonne version
+\item vérification que l'appel n'est pas trop rapide (une seconde minimum entre deux appels, sauf requêtes ajax), et temporisation de 30" sinon
 \item traitement du module demandé :
 \begin{itemize}
 \item initialisation, le cas échéant, de la vue associée 
 \item vérification de l'identification, ou déclenchement des procédures d'identification
-\item vérification des droits nécessaires pour accéder au module
+\item vérification des droits nécessaires pour accéder au module, et envoi d'un mail aux administrateurs en cas de problème
 \item vérification, le cas échéant, de la cinématique : les opérations de modification ne devraient être possibles que si l'opération précédente correspond à l'affichage du formulaire de saisie
+\item le cas échéant, vérification du nombre d'appels du module sur la dernière heure ou pour les 10 dernières heures, et blocage si le nombre défini initialement est atteint, avec envoi d'un mail aux administrateurs
 \item exécution du module
 \item analyse du code de retour du module, et enchaînement le cas échéant sur un autre module
 \end{itemize}
@@ -38,6 +41,7 @@ Les fichiers sont organisés selon cette arborescence :
 \item \textbf{database} : dossier de travail contenant la description de la base de données, la documentation pour les développeurs, les scripts. Le dossier doit être supprimé lors de la mise en production
 \item \textbf{display} : le seul dossier accessible. Il contient tous les fichiers nécessaires pour gérer l'affichage :
 \begin{itemize}
+\item \textbf{bower\_components} : les bibliothèques Javascript installées automatiquement
 \item \textbf{CSS} : les feuilles de style
 \item \textbf{images} : les icônes et images utilisées dans l'affichage des pages
 \item \textbf{javascript} : l'ensemble des librairies Javascript utilisées
@@ -47,17 +51,23 @@ Les fichiers sont organisés selon cette arborescence :
 \item \textbf{doc} : ancien dossier, contenant un mécanisme de gestion de la documentation en ligne. N'est plus utilisé actuellement, mais pourrait être employé le cas échéant
 \item \textbf{framework} : le code de base du framework. Il comprend :
 \begin{itemize}
+\item \textbf{dbparam} : dossier permettant de gérer les paramètres stockés en base de données
+\item \textbf{dbversion} : dossier permettant de vérifier la version de la base de données
 \item \textbf{droits} : dossier permettant de gérer les droits 
 \item \textbf{identification} : gestion de la connexion des utilisateurs
 \item \textbf{import/import.class.php} : classe créée il y a quelques années pour gérer les imports (obsolète en grande partie)
 \item \textbf{ldap/ldap.class.php} : connexion à un annuaire LDAP et récupération d'informations
+\item \textbf{log} : gestion des traces enregistrées dans la base de données
 \item \textbf{navigation} : programmes utilisés pour générer le menu et décoder les actions demandées à partir du fichier XML les contenant
+\item \textbf{objetbdd} : dossier contenant la classe d'accès aux données de la base de données
 \item \textbf{translateId/translateId.class.php} : classe permettant de transcoder les identifiants des enregistrements de la base de données, pour éviter les attaques par forçage de clé
+\item \textbf{upgrade} : consignes de mise à jour du framework
+\item \textbf{utils} : utilitaires, permettant notamment d'afficher la structure de la base de données
 \item de nombreux fichiers utilisés par le framework, dont le contrôleur (controller.php), des fonctions génériques (fonctions.php)...
 \item \textbf{vue.class.php} : les classes utilisées pour les vues (cf. \ref{vue} \textit{\nameref{vue}}, page \pageref{vue})
 \end{itemize}
-\item \textbf{install} : contient des scripts d'installation de la base de données (normalement à déplacer dans \textit{database}), et le fichier \textbf{readme.txt}, décrivant les dernières nouveautés
-\item \textbf{locales} : dossier contenant les fichiers de langue (fr.php et en.php)
+\item \textbf{install} : contient des scripts d'installation de la base de données
+\item \textbf{locales} : dossier contenant les fichiers de langue
 \item \textbf{modules} : dossier contenant le code spécifique de l'application. Il est organisé ainsi :
 \begin{itemize}
 \item \textbf{classes} : les classes nécessaires pour l'application
@@ -67,7 +77,7 @@ Les fichiers sont organisés selon cette arborescence :
 \item \textbf{beforesession.inc.php} : fichier appelé systématiquement avant le démarrage de la session. Il permet de déclarer les librairies qui sont nécessaires pour instancier des classes stockées en variables de session
 \item \textbf{common.inc.php} : fichier appelé systématiquement avant le traitement des modules
 \item \textbf{fonctions.php} : fonctions déclarées par le programmeur et disponibles dans toute l'application 
-\item \textbf{postLogin.php} : script exécuté uniquement quand un utilisateur s'est identifié
+\item \textbf{postLogin.php} : script exécuté uniquement après qu'un utilisateur se soit identifié
 \end{itemize}
 \item \textbf{param} : dossier contenant les paramètres de l'application :
 \begin{itemize}
@@ -77,7 +87,7 @@ Les fichiers sont organisés selon cette arborescence :
 \item \textbf{param.inc.php} : paramètres en écrasement, spécifiques de l'implémentation. Ce fichier n'est jamais livré lors des mises à jour, pour éviter la suppression des paramètres de base de données, par exemple
 \item \textbf{param.inc.php.dist} : fichier d'exemple de \textit{param.inc.php}, à renommer et à mettre à jour lors de l'installation d'une nouvelle implémentation
 \end{itemize}
-\item \textbf{plugins} : dossier contenant les bibliothèques tierces, comme Smarty, ObjetBDD (maintenant intégré au framework)...
+\item \textbf{plugins} : dossier contenant les bibliothèques PHP tierces non installées automatiquement par \textit{composer}
 \item \textbf{temp} : dossier de stockage temporaire, qui doit être accessible en écriture au serveur web. Les fichiers présents dans celui-ci ont une durée de vie de 24 heures (suppression lors de la connexion d'un utilisateur)
 \item \textbf{test} : dossier utilisé pour réaliser certains tests. Doit être systématiquement supprimé lors de la mise en production
 \end{itemize}
@@ -103,60 +113,66 @@ Voici la description de l'ensemble des paramètres :
 \hline
 \endhead
 APPLI\_version & Numéro de version de l'application \\ 
-\hline 
+
 APPLI\_versiondate & Date de la version \\ 
-\hline 
+
 language & Langue par défaut \\
-\hline
+
 DEFAULT\_formatdate & Format par défaut d'affichage des dates\\
-\hline
+
 navigationxml & nom du fichier XML contenant la description des modules exécutables\\
-\hline
+
 APPLI\_session\_ttl & durée de la session, en secondes\\
-\hline
+
 APPLI\_cookie\_ttl & durée de vie par défaut des cookies, en secondes\\
-\hline
+
 APPLI\_path\_stockage\_session & obsolète\\
-\hline
+
 LOG\_duree & Durée de conservation des traces des actions réalisées, en jours\\
-\hline
+
 APPLI\_mail & Adresse pour déclarer les incidents (mail ou non)\\
-\hline
+
 APPLI\_titre & Nom de l'application qui sera affiché (cas où le code est utilisé par plusieurs entrées différentes) \\
-\hline
+
 APPLI\_code & Code interne de l'application. Utilisé dans certains cas\\
-\hline
+
 APPLI\_fds & Feuille de style utilisée par défaut (obsolète)\\
-\hline
+
 APPLI\_address & Adresse DNS de l'application. Utilisée en cas d'identification CAS (adresse de retour)\\
-\hline
+
 APPLI\_modeDeveloppement & si à true, certaines opérations sont réalisées dans un contexte de développement (affichage de messages, recalcul systématique du menu...)\\
-\hline
+
 APPLI\_notSSL & utilisé en développement, si l'application ne fonctionne pas en mode SSL (déconseillé) \\
-\hline
+
 APPLI\_utf8 & systématiquement à true (plus de support des autres encodages)\\
-\hline
+
 APPLI\_menufile & nom du fichier XML contenant la description du menu\\
-\hline
+
 APPLI\_temp & nom du dossier utilisé pour stocker les fichiers temporaires\\
-\hline
+
 APPLI\_moduleDroitKO & nom du module appelé en cas de refus d'accès pour un problème de droits \\
-\hline
+
 APPLI\_moduleErrorBefore & nom du module appelé en cas de problème lié à la cinématique de l'application\\
-\hline
+
 APPLI\_moduleNoLogin & nom du module appelé en cas d'échec d'identification \\
-\hline
+
+APPLI\_passwordMinLength  & Longueur minimale du mot de passe \\
+APPLI\_hour\_duration  & Duration of an hour for count all calls to a module\\
+APPLI\_day\_duration  & Duration of a day for count all calls to a module \\
+MAIL\_enabled & Autorise l'envoi de mails \\
+APPLI\_delay\_between\_call & delay between call of modules others than ajax \\
+APPLI\_sleep\_duration  & durée de temporisation si des requêtes sont trop rapprochées (\textit{cf.} APPLI\_delay\_between\_call) \\
+
 paramIniFile & nom du fichier contenant les paramètres spécifiques liés au DNS utilisé (\textit{cf.} \ref{dnsmultiple} \textit{\nameref{dnsmultiple}}, page \pageref{dnsmultiple}) \\
-\hline
+
 SMARTY\_param & Paramètres utilisés par le moteur de templates SMARTY\\
-\hline
+
 SMARTY\_variables & variables systématiquement transmises à SMARTY et utilisées lors de l'affichage général\\
-\hline
+
 ERROR\_display & Affiche les erreurs à l'écran (mode développement)\\
-\hline
+
 OBJETBDD\_debugmode & 0 : pas d'affichage de message d'erreur, 1, affichage des messages d'erreur, 2 : affichage de toutes les commandes SQL générées par ObjetBDD \\
-\hline
-ADODB\_debugmode & obsolète \\
+
 \hline
 \caption{Variables générales de l'application}
 \end{longtable} 
@@ -168,33 +184,30 @@ ADODB\_debugmode & obsolète \\
 \hline
 \endhead
 ident\_type & Type d'identification supporté. L'application peut gérer \textbf{BDD} (uniquement en base de données),\textbf{LDAP} (uniquement à partir d'un annuaire LDAP) \textbf{LDAP-BDD} (d'abord identification en annuaire LDAP, puis en base de données), \textbf{CAS} (serveur d'identification \textit{Common Access Service}), et enfin \textbf{HEADER} (identification derrière un proxy qui fournit le login dans une variable d'entête HTTP)\\
-\hline
 CAS\_plugin & Nom du plugin utilisé pour une connexion CAS \\
-\hline
 CAS\_address & Adresse du serveur CAS\\
-\hline
 CAS\_port & Systématiquement 443 (connexion chiffrée)\\
-\hline
+CAS\_debug & Activation du mode debug \\
+CAS\_CApath & Chemin d'accès au certificat du serveur CAS \\
 LDAP & tableau contenant tous les paramètres nécessaires pour une identification LDAP \\
-\hline
 ident\_header\_login\_var & par défaut, AUTH\_USER. Nom de la variable qui contiendra le login dans le cas d'une identification en mode HEADER (le radical HTTP\_  ne doit pas être indiqué) \\
-\hline
+
 privateKey & clé privée utilisée pour générer les jetons d'identification \\
-\hline
+
 pubKey & clé publique utilisée pour générer les jetons d'identification \\
-\hline
+
 tokenIdentityValidity & durée de validité, en secondes, des jetons d'identification\\
-\hline
+
 MAIL\_enabled & si à 1, l'envoi de mail est géré par l'application \\
-\hline
+
 CONNEXION\_max\_attemps & nombre maximum d'essais de connexion avant blocage du compte \\
-\hline
-CONNEXION\_blocking\_duration & durée de blocage du compte \\
-\hline
+
+CONNEXION\_blocking\_ duration & durée de blocage du compte \\
+
 APPLI\_mailToAdminPeriod & durée minimale d'envoi d'un mail de signalement d'un blocage de compte aux administrateurs (pour éviter une saturation de boite) \\
-\hline
+
 APPLI\_admin\_ttl & durée, en secondes, de la durée de vie de la session d'administration (accès aux modules de droit admin). Au delà, l'administrateur doit se ré-authentifier \\
-\hline
+
 APPLI\_lostPassword & Si à 1, autorise la récupération du mot de passe perdu (nécessite également que le paramètre MAIL\_enabled soit positionné à 1) \\
 \hline
 
@@ -208,31 +221,31 @@ Voici le contenu des variables du tableau LDAP :
 \hline
 \endhead
 address &  adresse de l'annuaire\\
-\hline
+
 port & 389 en mode non chiffré, 636 en mode chiffré\\
-\hline
+
 rdn & compte de connexion, si nécessaire \\
-\hline
+
 basedn & base de recherche des utilisateurs\\
-\hline
+
 user\_attrib & nom du champ contenant le login à tester\\
-\hline
+
 v3 & toujours à \textit{true}\\
-\hline
+
 tls & \textit{true} en mode chiffré\\
-\hline
+
 groupSupport & \textbf{true} si l'application recherche les groupes d'appartenance du login dans l'annuaire\\
-\hline
+
 groupAttrib & Nom de l'attribut contenant la liste des groupes d'appartenance\\
-\hline
+
 commonNameAttrib & Nom de l'attribut contenant le nom de l'utilisateur\\
 \hline
 mailAttrib & Nom de l'attribut contenant l'adresse mail de l'utilisateur\\
-\hline
+
 attributgroupname & Attribut contenant le nom du groupe lors de la recherche des groupes (cn par défaut)\\
-\hline
+
 attributloginname & attribut contenant les membres d'un groupe\\
-\hline
+
 basedngroup & base de recherche des groupes \\
 \hline
 \caption{Variables utilisées pour paramétrer l'accès à l'annuaire LDAP}
@@ -246,15 +259,15 @@ Variables transmises systématiquement à Smarty pour affichage dans toutes les 
 \hline
 \endhead
 entete & nom du template contenant le haut de la page et le menu \\
-\hline
+
 enpied & nom du template contenant le pied de page \\
-\hline
+
 corps & nom du template contenant le corps de la page (mis à jour dans chaque module d'affichage)\\
-\hline
+
 melappli & mail générique de l'application, utilisé lors de l'envoi de messages \\
-\hline
+
 ident\_type & mode d'identification utilisé \\
-\hline
+
 appliAssist & adresse du site d'assistance ou de dépôt de ticket \\
 \hline
 \caption{Variables transmises en tableau à Smarty systématiquement pour l'affichage dans toutes les pages}
@@ -270,25 +283,23 @@ Deux connexions sont systématiquement implémentées : l'une à la base de donn
 \hline
 \endhead
 BDD\_login & compte de connexion à la base de données \\
-\hline
+
 BDD\_passwd & mot de passe associé\\
-\hline
+
 BDD\_dsn & adresse de la base de données sous forme normalisée\\
-\hline
+
 BDD\_schema & schéma utilisé (plusieurs schémas peuvent être décrits, en les séparant par une virgule - fonctionnement propre à Postgresql)\\
-\hline
+
 GACL\_dblogin & compte de connexion à la base de données des droits\\
-\hline
+
 GACL\_dbpasswd & mot de passe associé\\
-\hline
+
 GACL\_dsn & adresse normalisée \\
-\hline
+
 GACL\_schema & schéma utilisé\\
-\hline
+
 GACL\_aco & nom du code de l'application utilisé dans la gestion des droits (\textit{cf.} \ref{droits} \textit{\nameref{droits}}, page \pageref{droits} )\\
 \hline
-
-
 \caption{Variables utilisées pour paramétrer les connexions}
 \end{longtable}
 
@@ -311,15 +322,15 @@ La classe dispose des fonctions suivantes :
 \hline
 \endhead
 \_\_construct(\$displaySyslog = false) & Constructeur de la classe. La variable permet d'indiquer si les messages destinés à Syslog sont également affichés à l'écran (mode par défaut en développement) \\
-\hline
-set(\$value) & Ajoute un nouveau libellé utilisateur \\
-\hline
+
+set(\$value) & Ajoute un nouveau libellé pour utilisateur \\
+
 setSyslog(\$value) & Ajout un nouveau message système \\
-\hline
+
 get() & Retourne le tableau contenant l'ensemble des messages, avec ou sans les messages systèmes, selon le mode indiqué dans le constructeur \\
-\hline
+
 getAsHtml() & Formate les messages pour les envoyer au navigateur. Chaque message est séparé par un retour à la ligne. Les libellés sont encodés en HTML avant d'être envoyés \\
-\hline
+
 sendSyslog() & Génère un message dans Syslog. Actuellement, le message est toujours de type NOTICE. \\
 \hline
 
@@ -343,22 +354,25 @@ Voici la liste des attributs disponibles pour un module (ou une action) :
 \hline
 \endhead
 action & X & nom de la page PHP à exécuter (accès relatif depuis la racine de l'application) \\
- \hline
+
 param &  & paramètre analysé dans la page, pour savoir quelle action doit être réalisée. Par convention, les actions possibles sont les suivantes : list, read, change, write, delete, ou autre action \\
- \hline
+
 droits &  & Liste des droits nécessaires pour exécuter l'action. Si plusieurs droits sont possibles, ils doivent être séparés par une virgule\\
- \hline
+
 loginrequis & & Indique, en l'absence de droits spécifiques, si l'action nécessite d'être connecté. Vaut 1 si la connexion est requise\\
- \hline
+
 modulebefore & & Pour les opérations d'écriture, permet d'indiquer le nom du module qui doit impérativement être exécuté avant. Cela limite les risques d'attaques de type CSRF et les rafraîchissements intempestifs dans les formulaires. Plusieurs modules peuvent être indiqués, en les séparant par une virgule\\
- \hline
+
 retourok & & indique le nom du module qui sera exécuté si le code de retour (variable \$module\_coderetour) vaut 1 \\
- \hline
+
 retourko & & indique le nom du module qui sera exécuté si le code de retour (variable \$module\_coderetour) vaut -1 (échec d'exécution) \\
- \hline
+
 type & (X) & pour les modules envoyant des données au navigateur, indique le type de la vue qui sera utilisée. Les valeurs possibles sont smarty ou html (même vue), ajax, pdf, csv, binaire (pour les images)  \\
- \hline
+
 droitko & & nom du module appelé si les droits ne sont pas suffisants pour exécuter l'action demandée \\
+
+maxCountBy Hour & & nombre d'appels au module possibles par heure (login/ip) \\
+maxCountBy Day & & nombre d'appels au module possibles par jour (login/ip) \\
 \hline 
  
  \caption{Liste des attributs utilisables pour décrire une action}\label{actions}
@@ -398,18 +412,18 @@ L'identification retenue est déclarée dans les paramètres généraux (\textit
 
 Si l'identification à partir d'un annuaire LDAP ou d'un serveur CAS ne nécessite guère d'autres informations que celles décrites dans les paramètres, l'identification par base de données comprend des mécanismes particuliers pour protéger les mots de passe et limiter les risques associés. Voici les règles imposées lors de la création d'un mot de passe : 
 \begin{itemize}
-\item il doit avoir une longueur minimale de 8 caractères ;
+\item il doit avoir une longueur minimale de 12 caractères (paramétrable) ;
 \item il doit comporter 3 jeux de caractères différents (minuscules, majuscules, chiffres et autres caractères) ;
-\item il n'est pas possible de réutiliser un mot de passe pour le même compte.
+\item il ne doit pas être trop commun (contrôle de complexité avec une bibliothèque externe)
 \end{itemize}
 
-Les mots de passe sont salés (utilisation du login) et chiffrés (chiffrement SHA-256).
+Les mots de passe sont stockés au format bcrypt depuis juillet 2019. Les anciens mots de passe (chiffrement AES256 avec sel) sont toujours reconnus.
 
-L'écran de création propose un bouton de génération automatique d'un mot de passe, qui devra être transmis à l'utilisateur, en lui demandant d'en changer (il peut modifier son mot de passe une fois connecté).
+L'écran de création propose un bouton de génération automatique d'un mot de passe, qui devra être transmis à l'utilisateur, en lui demandant d'en changer (il peut modifier son mot de passe une fois connecté). Il ne pourra se connecter que 3 fois avec ce mot de passe : il devra le modifier rapidement.
 
-Dans sa version actuelle, le framework ne dispose pas d'un mécanisme de récupération par envoi de mails.
+Le framework dispose d'un mécanisme de récupération par envoi de mails, avec génération d'un jeton à usage unique.
 
-Les mots de passe n'expirent pas.
+Hormis pour les mots de passe générés par l'administrateur, les mots de passe n'expirent pas.
 
 \subsection{Identification par HEADER}
 
@@ -437,7 +451,7 @@ Pour que ce mécanisme fonctionne, il faut :
 \item que les clés privée et publique, utilisées pour le chiffrement du jeton, soient accessibles au serveur web (variables \textit{privateKey} et \textit{publicKey}).
 \end{itemize}
 
-Le jeton est chiffré avec la clé privée, ce qui lui permet d'être lu, le cas échéant, par l'application. Il contient le login et la date d'expiration. 
+Le jeton est chiffré avec la clé privée, ce qui lui permet d'être lu, le cas échéant, par l'application. Il contient le login, la date d'expiration et l'IP du poste de l'utilisateur. 
 
 Si l'utilisateur déclenche une déconnexion, le jeton est supprimé.
 
@@ -598,4 +612,12 @@ Un utilisateur s'identifie auprès de l'annuaire LDAP, mais dispose de droits pa
 \begin{itemize}
 \item créez son login dans la gestion des droits ;
 \item rajoutez-le dans le groupe d'utilisateurs adéquat.
+\end{itemize}
+
+\subsection{Pour mieux comprendre la gestion des droits}
+
+Des vidéos ont été créées dans le cadre du logiciel Collec-Science\footnote{\href{https://www.collec-science.org}{https://www.collec-science.org}}) :
+\begin{itemize}
+\item \href{https://youtu.be/7NCNQuHoI8s}{https://youtu.be/7NCNQuHoI8s}
+\item \href{https://youtu.be/j_iI8_g-u7w}{https://youtu.be/j\_iI8\_g-u7w}
 \end{itemize}

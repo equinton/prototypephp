@@ -13,9 +13,9 @@ Les vues sont toutes héritées d'une classe de base, \textbf{Vue}, qui ne devra
 \endhead
 
 set(\$value, \$variable = "") & stocke une valeur dans la vue. Le nom de la variable n'est fourni que pour certains types de vues. Si une seule valeur est stockée sans indiquer de nom, elle peut être utilisée telle qu'elle \\
-\hline
+
 send(\$param = "") & déclenche l'envoi du contenu. Elle doit être systématiquement réécrite (vide par défaut). \\
-\hline
+
 encodehtml(\$data) & encode la variable fournie avant un envoi vers le navigateur. C'est une fonction récursive capable de traiter les tableaux imbriqués \\
 \hline
 
@@ -37,9 +37,9 @@ Les templates de Smarty comprennent le code HTML et le code spécifique qui sera
 \_\_construct(\$param, \$var) & Constructeur de la classe. Il nécessite deux tableaux : \\
  & \textit{param} : contient l'ensemble des paramètres nécessaires au bon fonctionnement de Smarty (\textit{cf.} \ref{param} \textit{\nameref{param}}, page \pageref{param})\\
  & \textit{var} : variables pré-assignées à Smarty. Ce sont principalement le nom des sous-templates utilisés pour le menu, le pied de page...\\
- \hline
+
  set(\$contenu, \$variable) & assigne une valeur à Smarty. \textit{contenu} peut être tout type de contenu, comme un tableau associatif \\
- \hline
+
  send() & Déclenche l'affichage \\
 \hline
 \caption{Fonctions déclarées dans la classe VueSmarty}
@@ -88,7 +88,7 @@ Fonctions disponibles :
 \hline
 \endhead
 setFilename(\$filename) & indique le nom à utiliser pour générer le fichier\\
-\hline
+
 send(\$param = "") & Déclenche l'envoi du tableau vers le navigateur, au format CSV. \textit{param} peut contenir le nom du fichier souhaité. S'il est vide, le nom du fichier transmis par la fonction précédente est utilisé. Sinon, un nom de fichier, contenant la date, est généré.\\
 \hline
 \caption{Fonctions déclarées dans la classe VueCsv}
@@ -115,7 +115,7 @@ setParam(array \$param) & transmet un tableau contenant l'ensemble des paramètr
 & \textit{disposition} : \textit{attachment} (fichier joint) ou \textit{inline} (affichage direct dans le navigateur) \\
 & \textit{tmp\_name} : nom du fichier dans le serveur \\
 & \textit{content\_type} : type mime. S'il n'est pas indiqué, le programme essaiera de le déterminer à partir du contenu du fichier \\
-\hline
+
 send() & Envoie le fichier au navigateur, en fonction des paramètres indiqués \\
 \hline
 \caption{Fonctions déclarées dans la classe VueBinaire}
@@ -135,11 +135,11 @@ Fonctions disponibles :
 \endhead
 
 setFileReference(\$ref)& indique la référence du fichier à traiter (résultat de fopen() ou d'une lecture PDO)\\
-\hline
+
 setFilename(\$filename)& Nom du fichier tel qu'il sera transmis au navigateur. S'il n'est pas précisé, il sera généré (en cas d'attachement) \\
-\hline
+
 setDisposition(\$disp = "attachment")& Indique la manière d'envoyer le fichier au navigateur. Valeurs acceptées : \textit{attachment} ou \textit{inline}\\
-\hline
+
 send() & Envoie le fichier au navigateur, en fonction des paramètres indiqués \\
 \hline
 \caption{Fonctions déclarées dans la classe VuePdf}
@@ -181,15 +181,15 @@ Les entrées du menu sont déclarées dans des balises \textbf{item}. Voici les 
 \hline
 \endhead
 module & X & Nom du module à exécuter, tel que décrit dans le fichier actions.xml (\textit{cf.} \ref{actions} \textit{\nameref{actions}}, page \pageref{actions})\\
- \hline
+
 droits & & Droit nécessaire pour afficher l'entrée du menu. Il est possible d'indiquer plusieurs droits, en les séparant par une virgule\\
- \hline
+
 loginrequis & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur est connecté \\
- \hline
+
 onlynoconnect & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur n'est pas connecté\\
- \hline
+
 label & X & Texte affiché\\
- \hline
+
 tooltip & X & libellé affiché au survol de la souris (attribut HTML \textit{title})\\
  \hline
 

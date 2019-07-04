@@ -34,14 +34,14 @@ Ces variables sont toutes publiques.
 \hline
 \endhead
 connection & PDO & instance PDO. Peut être utilisée pour instancier une nouvelle classe basée sur ObjetBDD à l'intérieur d'une fonction \\
-\hline
+
 id\_auto & entier & Si à 1, la classe gère la création automatique des identifiants. Si à 2, l'identifiant est généré manuellement, avec une requête de type \textit{max(id)} \\
-\hline
+
 formatDate & entier & 0 : amj, 1 : jma (défaut), 2 : mja \\
 \hline
 debug\_mode & entier & 0 : pas de mode de débogage, 1 : affichage des messages d'erreur, 2 : affichage de toutes les commandes SQL générées
 \\
-\hline
+
 error\_data & tableau & liste de toutes les erreurs détectées lors de la vérification des données.  \\
  & & \$errorData[]["code"] : code d'erreur : \\
 	& & 0 : non précisé \\
@@ -51,11 +51,11 @@ error\_data & tableau & liste de toutes les erreurs détectées lors de la véri
 	& & 4 : champ obligatoire vide \\
 	& & \$errorData[]["colonne"] : champ concerne \\
 	& & \$errorData[]["valeur"] : valeur initiale \\
-\hline
+
 srid & numérique & Valeur du srid pour les variables de type Postgis \\
-\hline
+
 quoteIdentifier & caractère & caractère utilisé pour encadrer les noms des colonnes dans les requêtes (pour les colonnes contenant une majuscule ou un accent) \\
-\hline
+
 transformComma & entier & Si à 1 (défaut), les virgules sont transformées en points pour les nombres décimaux \\
 \hline
 
@@ -122,20 +122,20 @@ type & 0 : varchar \\
 & 2 : date \\
 & 3 : datetime \\
 & 4 : champ Postgis \\
-\hline
+
 requis & Si à 1, le contenu doit être fourni pour réaliser l'écriture \\
-\hline
+
 key & Si à 1, l'attribut est utilisé comme clé primaire (en principe, n'utiliser que des clés mono-attributs, même si la classe devrait être capable de gérer des clés multiples) \\
-\hline
+
 defaultValue & valeur par défaut. Il est possible d'indiquer le nom d'une fonction (entre guillemets). Parmi celles-ci, il est possible d'utiliser :\\
 & getDateJour : retourne la date du jour \\
 & getDateHeure : retourne la date et l'heure courante \\
 & getLogin : retourne la valeur de la variable \$\_SESSION["login"]\\
-\hline
+
 parentAttrib & si vaut 1, la valeur est utilisée comme clé étrangère principale de l'enregistrement \\
-\hline
+
 longueur & pour les champs de type varchar, indique la longueur maximale autorisée (attention au codage UTF-8, les caractères accentués étant comptés pour 2) \\
-\hline
+
 pattern & pattern traité par expression régulière, pour tester la correspondance de l'information fournie au modèle décrit \\
 \hline
 
@@ -157,9 +157,9 @@ Fonction permettant de récupérer un enregistrement. Elle accepte les paramètr
 \hline
 \endhead
 id & clé de l'enregistrement \\
-\hline
+
 getDefault & si à \textit{true}, récupère les valeurs par défaut si l'enregistrement n'existe pas dans la base (initialisation d'une saisie, par exemple)\\
-\hline
+
 parentValue & clé de l'enregistrement parent. Si \textit{getDefault} vaut \textit{true}, pré-remplit l'attribut qui contient la valeur \textit{parentAttrib} avec la clé fournie dans \textit{parentValue} \\
 \hline
 
@@ -258,13 +258,13 @@ Les arguments à indiquer sont les suivants :
 \hline
 \endhead
 nomTable & Nom de la table NN (table\_nn dans notre exemple) \\
-\hline
+
 nomCle1 & nom de l'attribut contenant la clé de la table principale \\
-\hline
+
 nomCle2 & nom de l'attribut contenant les clés de la table secondaire \\
-\hline
+
 id & valeur de la clé de la table principale \\
-\hline
+
 lignes & tableau contenant les valeurs de la table secondaire à conserver ou à rajouter \\
 \hline
 
@@ -288,7 +288,7 @@ Arguments :
 \hline
 \endhead
 id & Clé de l'enregistrement \\
-\hline
+
 fieldName & nom de la colonne contenant l'information binaire \\
 \hline
 \caption{Liste des paramètres de la fonction getBlobReference}
