@@ -27,7 +27,17 @@ How to upgrade to release 3.0.0
 
 - add this folder: display/images/framework
 
-- in param/menu.xml, add this entry:
+- in param/menu.xml, add these entry:
+<item module="administration" label="Administration" tooltip="Administration de l'application" droits="admin">
+(...)
+		<item module="dbparamList" droits="admin" label="Paramètres de l'application" tooltip="Liste des paramètres pérennes de l'application" />
++		<item divider='1'/>
++		<item module="dbstructureSchema" droits="admin" label="Schéma de la base de données" tooltip="Schéma de la base de données"/>
++		<item module="dbstructureHtml" droits='admin' label="Structure de la base de données (HTML)" tooltip="Liste des tables et des colonnes"/>
++		<item module="dbstructureLatex" droits='admin' label="Structure de la base de données (Latex)" tooltip="Liste des tables et des colonnes sous forme de tableaux Latex"/>
++		<item module="dbstructureGacl" droits="admin" label="Structure de la base de données des droits (HTML)" tooltip="Liste des tables et des colonnes de la base de données de gestion des droits"/>
++		<item module="phpinfo" droits="admin" label="PHP info" tooltip="configuration générale du serveur PHP"/>
++	</item>
 <item module="disconnect" label="Déconnexion" tooltip="Déconnexion de l'application" loginrequis="1">
 +		<item module="getLastConnections" label="Dernières connexions" tooltip="Liste des dernières connexions réalisées" loginrequis="1"/>
  		<item module="loginChangePassword" loginrequis="1" label="Modifier le mot de passe" tooltip="Modifiez votre mot de passe (identification locale uniquement)" />
@@ -37,9 +47,15 @@ How to upgrade to release 3.0.0
 
 - in param/action.xml, replace this entry:
 	<model action="index.php" param="list|display|change|write|delete|..." droits="gestion" retourko="model" retourlogin="1" retourok="model" loginrequis="1" type="html|smarty|ajax|pdf|csv|binaire" droitko="droitko" modulebefore="module1,module2" requiredVar="table_id" maxCountByHour="60" maxCountByDay="600"/>
-- add this entry:
+- add these entry:
 <loginChangePasswordExec action="framework/identification/login.php" param="changePasswordExec" loginrequis="1" retourko="loginChangePassword" retourok="default" modulebefore="loginChangePassword" />
 +	<getLastConnections action="framework/log/log.php" param="getLastConnections" loginrequis="1" type="smarty"/>
++	<dbstructureHtml action="framework/utils/structure.php" param="html" retourlogin="1" type="smarty" droits="admin" maxCountByHour="60" maxCountByDay="600"/>
++	<dbstructureGacl action="framework/utils/structure.php" param="gacl" retourlogin="1" type="smarty" droits="admin" maxCountByHour="60" maxCountByDay="600"/>
++	<dbstructureLatex action="framework/utils/structure.php" param="latex" retourlogin="1" type="smarty" droits="admin" maxCountByHour="60" maxCountByDay="600"/>
++	<!-- must be in database folder (attr filename):-->
++	<dbstructureSchema action="framework/utils/structure.php" param="schema" retourlogin="1" type="binaire" droits="param" maxCountByHour="60" maxCountByDay="600" filename="prototypephp-schema.png" />
+
 new attributes: maxCountByDay: number of calls allowed per day, maxCountByHour: number of calls allowed per hour. these attributes can be added in all modules, except when the type is ajax.
 
 - replace composer.json

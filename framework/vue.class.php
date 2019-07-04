@@ -615,9 +615,7 @@ class VueBinaire extends Vue
      */
     function send()
     {
-        printr($this->param);
-
-        if (strlen($this->param["tmp_name"]) > 0) {
+         if (strlen($this->param["tmp_name"]) > 0) {
             /*
              * Recuperation du content-type s'il n'a pas ete fourni
              */
