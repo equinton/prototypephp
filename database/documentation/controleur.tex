@@ -1,6 +1,6 @@
 \chapter{Fonctionnement général}
 \begin{figure}[H]
-\includegraphics[width=1.2\linewidth]{dessin/synopsis}
+\includegraphics[width=\linewidth]{dessin/synopsis}
 \caption{Synopsis général de fonctionnement du contrôleur}
 \end{figure}
 
@@ -92,7 +92,7 @@ Les fichiers sont organisés selon cette arborescence :
 \item \textbf{test} : dossier utilisé pour réaliser certains tests. Doit être systématiquement supprimé lors de la mise en production
 \end{itemize}
 
-Seuls le fichier index.php, à la racine, les dossiers display et test sont accessibles directement. Les autres dossiers sont protégés par des fichiers .htaccess.
+Seuls le fichier \textit{index.php}, à la racine, les dossiers \textit{display} et \textit{test} sont accessibles directement. Les autres dossiers sont protégés par des fichiers \textit{.htaccess}.
 
 \section{Paramètres}\label{param}
 
@@ -112,6 +112,8 @@ Voici la description de l'ensemble des paramètres :
 \textbf{Variable} & \textbf{Signification} \\
 \hline
 \endhead
+\hline
+\endfoot\endlastfoot
 APPLI\_version & Numéro de version de l'application \\ 
 
 APPLI\_versiondate & Date de la version \\ 
@@ -125,8 +127,6 @@ navigationxml & nom du fichier XML contenant la description des modules exécuta
 APPLI\_session\_ttl & durée de la session, en secondes\\
 
 APPLI\_cookie\_ttl & durée de vie par défaut des cookies, en secondes\\
-
-APPLI\_path\_stockage\_session & obsolète\\
 
 LOG\_duree & Durée de conservation des traces des actions réalisées, en jours\\
 
@@ -172,8 +172,8 @@ SMARTY\_variables & variables systématiquement transmises à SMARTY et utilisé
 ERROR\_display & Affiche les erreurs à l'écran (mode développement)\\
 
 OBJETBDD\_debugmode & 0 : pas d'affichage de message d'erreur, 1, affichage des messages d'erreur, 2 : affichage de toutes les commandes SQL générées par ObjetBDD \\
-
 \hline
+
 \caption{Variables générales de l'application}
 \end{longtable} 
 
@@ -183,6 +183,9 @@ OBJETBDD\_debugmode & 0 : pas d'affichage de message d'erreur, 1, affichage des 
 \textbf{Variable} & \textbf{Signification} \\
 \hline
 \endhead
+\hline
+\endfoot
+\endlastfoot
 ident\_type & Type d'identification supporté. L'application peut gérer \textbf{BDD} (uniquement en base de données),\textbf{LDAP} (uniquement à partir d'un annuaire LDAP) \textbf{LDAP-BDD} (d'abord identification en annuaire LDAP, puis en base de données), \textbf{CAS} (serveur d'identification \textit{Common Access Service}), et enfin \textbf{HEADER} (identification derrière un proxy qui fournit le login dans une variable d'entête HTTP)\\
 CAS\_plugin & Nom du plugin utilisé pour une connexion CAS \\
 CAS\_address & Adresse du serveur CAS\\
@@ -204,7 +207,7 @@ CONNEXION\_max\_attemps & nombre maximum d'essais de connexion avant blocage du 
 
 CONNEXION\_blocking\_ duration & durée de blocage du compte \\
 
-APPLI\_mailToAdminPeriod & durée minimale d'envoi d'un mail de signalement d'un blocage de compte aux administrateurs (pour éviter une saturation de boite) \\
+APPLI\_mailToAdminPeriod & durée minimale d'envoi d'un mail de signalement d'un problème aux administrateurs (pour éviter une saturation de boite) \\
 
 APPLI\_admin\_ttl & durée, en secondes, de la durée de vie de la session d'administration (accès aux modules de droit admin). Au delà, l'administrateur doit se ré-authentifier \\
 
@@ -234,7 +237,7 @@ v3 & toujours à \textit{true}\\
 
 tls & \textit{true} en mode chiffré\\
 
-groupSupport & \textbf{true} si l'application recherche les groupes d'appartenance du login dans l'annuaire\\
+groupSupport & \textit{true} si l'application recherche les groupes d'appartenance du login dans l'annuaire\\
 
 groupAttrib & Nom de l'attribut contenant la liste des groupes d'appartenance\\
 
@@ -282,6 +285,7 @@ Deux connexions sont systématiquement implémentées : l'une à la base de donn
 \textbf{Variable} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 BDD\_login & compte de connexion à la base de données \\
 
 BDD\_passwd & mot de passe associé\\
@@ -321,6 +325,7 @@ La classe dispose des fonctions suivantes :
 \textbf{fonction} & \textbf{Objectif} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 \_\_construct(\$displaySyslog = false) & Constructeur de la classe. La variable permet d'indiquer si les messages destinés à Syslog sont également affichés à l'écran (mode par défaut en développement) \\
 
 set(\$value) & Ajoute un nouveau libellé pour utilisateur \\
@@ -353,6 +358,7 @@ Voici la liste des attributs disponibles pour un module (ou une action) :
 \textbf{Attribut} & \textbf{Requis} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 action & X & nom de la page PHP à exécuter (accès relatif depuis la racine de l'application) \\
 
 param &  & paramètre analysé dans la page, pour savoir quelle action doit être réalisée. Par convention, les actions possibles sont les suivantes : list, read, change, write, delete, ou autre action \\
@@ -431,7 +437,7 @@ Dans ce mode d'identification, le serveur web est placé derrière un serveur d'
 
 Le proxy gère la connexion de l'utilisateur, et fournit à l'application le login dans une variable configurable. Cette variable est accessible dans le tableau \$\_SERVER, par exemple \$\_SERVER["HTTP\_AUTH\_USER"].
 
-Pour activer ce mécanisme, il faut modifier les paramètres suivants dans le fichier \textit{param.ini.php} (\textit{cf.} \ref{paramident} \textit{\nameref{paramident}}, page \pageref{paramident}) :
+Pour activer ce mécanisme, il faut modifier les paramètres suivants dans le fichier \textit{param.ini.php} (\textit{cf.} \ref{paramident} \textit{\nameref{paramident}}, page \pageref{paramident})\footnote{Le mode HEADER n'a encore jamais été testé (version 3.0.0 du \textit{framework})} :
 \begin{lstlisting}
 $ident_type = "HEADER";
 $ident_header_login_var = "AUTH_USER";
@@ -468,11 +474,11 @@ Si le paramètre \textit{\$LDAP["groupSupport"]} est positionné à \textit{true
 Voici le schéma des tables utilisées pour gérer les droits :
 
 \begin{figure}[H]
-\includegraphics[width=\linewidth]{dessin/acl_only}
-\caption{Schéma des tables utilisées pour gérer les droits}
+\includegraphics[width=\linewidth]{dessin/gacl}
+\caption{Schéma des tables utilisées pour gérer les droits (schéma GACL complet)}
 \end{figure}
 
-Voici la description des tables :
+Voici la description des tables utilisées spécifiquement pour gérer les droits :
 \begin{description}
 \item[acllogin] Liste des logins utilisés. Si un compte est créé dans la base locale d'identification, un enregistrement est également créé dans cette table. Pour les identifications LDAP ou CAS, ils doivent être identiques. Si seuls les groupes LDAP sont utilisés pour un compte, il n'a pas besoin d'être décrit ici
 \item[aclappli] Liste des applications gérées. Il est ainsi possible de gérer, à partir de la même base de données, plusieurs ensembles de droits, qui utilisent les mêmes logins
@@ -495,7 +501,7 @@ Pour créer un nouvel utilisateur dans la base locale :
 \end{itemize}
 
 \begin{figure}[H]
-\includegraphics[width=\linewidth]{dessin/user_create}
+\includegraphics[width=\linewidth]{dessin/creation-login}
 \caption{Écran de saisie d'un login de connexion}
 \end{figure}
 
@@ -503,10 +509,9 @@ Pour créer le mot de passe, vous pouvez cliquer sur le bouton \textit{Générez
 
 Les mots de passe doivent respecter les règles suivantes :
 \begin{itemize}
-\item ils doivent avoir une longueur minimale de 8 caractères ;
+\item ils doivent avoir une longueur minimale de 12 caractères (paramétrable) ;
 \item ils doivent comprendre trois types de caractères différents parmi les minuscules, majuscules, chiffres et caractères de ponctuation ;
-\item ils ne peuvent pas être réutilisés pour le même login ;
-\item les mots de passe n'expirent pas.
+\item les mots de passe n'expirent pas, sauf ceux générés par l'interface : dans ce cas de figure, ils ne peuvent être utilisés que trois fois.
 \end{itemize}
 
 Les mots de passe sont stockés sous forme d'empreinte, calculée en rajoutant un sel\footnote{chaîne de caractère rajoutée au mot de passe -- en général le login ou un identifiant -- qui permet d'éviter que deux mots de passe identiques, associés à deux logins différents, aient la même empreinte} et encodés en SHA256 : ils ne peuvent pas être retrouvés en cas de perte.

@@ -30,7 +30,7 @@ Le nombre d'appels possibles à un module en une heure ou une journée peut êtr
 Pour éviter le \textit{scrawling}, un délai d'une seconde est nécessaire entre chaque appel d'un module, hors modules ajax. En cas de détection d'un délai trop court, une temporisation de 30" est mise en place.
 
 \subsection{Types de fichiers servis}
-Seuls les types de fichiers suivants peuvent être fournis par l'application : css|gif|png|jp?g|js|php|ico. Il s'agit d'un paramétrage intégré dans le site virtuel Apache.
+Seuls les types de fichiers suivants peuvent être fournis par l'application : css, gif, png, jp?g, js, php, ico. Il s'agit d'un paramétrage intégré dans le site virtuel Apache.
 
 \subsection{Envoi d'e-mails aux administrateur}
 En cas de tentative d'accès non autorisée à un module, de blocage de compte, d'atteinte du nombre maximum d'appels possibles pour un module dans le créneau horaire considéré, un message est envoyé à l'ensemble des administrateurs (droit \textit{admin}), si leur e-mail a été renseigné.
@@ -315,8 +315,8 @@ Voici le principe général (\textit{cf.} schéma \ref{dnsmultipleschema})  :
 \caption{Schéma général d'implémentation pour utiliser le même code avec des noms d'application et des jeux de données différents}
 \end{figure}
 
-Dans le paramétrage de l'alias DNS (en principe, dans \textbf{/etc/apache2/sites-available}), l'application pointe vers le dossier \textbf{/var/www/appliApp/appli1/bin}. 
-\textit{/var/www} correspond à la racine du site web, \textit{appliApp} au dossier racine de l'application, \textit{appli1} au dossier spécifique de l'alias DNS.
+Dans le paramétrage de l'alias DNS (en principe, dans \textit{/etc/apache2 /sites-available}), l'application pointe vers le dossier \textit{/var/www/appliApp/appli1/bin}. 
+\textit{/var /www} correspond à la racine du site web, \textit{appliApp} au dossier racine de l'application, \textit{appli1} au dossier spécifique de l'alias DNS.
 
 Ce dossier \textit{appli1} ne contient que deux fichiers : \textbf{param.ini}, qui contient les paramètres spécifiques, et \textbf{bin}, qui est un lien symbolique vers le dossier \textbf{../bin}. 
 

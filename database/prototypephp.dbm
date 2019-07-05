@@ -4,7 +4,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
 <dbmodel pgmodeler-ver="0.9.2-beta" author="Eric Quinton" last-position="0,0" last-zoom="1" max-obj-count="13"
-	 default-schema="public" default-owner="postgres">
+	 default-schema="public" default-owner="postgres"
+	 layers="data" active-layers="0;1">
 <role name="prototypephp"
       inherit="true"
       login="true"
@@ -303,7 +304,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<schema name="data" layer="0" rect-visible="true" fill-color="#ca43d3">
+<schema name="data" layer="1" rect-visible="true" fill-color="#ca43d3">
 	<role name="prototypephp"/>
 </schema>
 
@@ -312,7 +313,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="prototypephp"/>
 </sequence>
 
-<table name="dbversion" layer="0" collapse-mode="2" max-obj-count="3">
+<table name="dbversion" layer="1" collapse-mode="2" max-obj-count="3">
 	<schema name="data"/>
 	<role name="prototypephp"/>
 	<comment><![CDATA[Table des versions de la base de donnees]]></comment>
@@ -333,7 +334,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="dbparam" layer="0" collapse-mode="2" max-obj-count="3">
+<table name="dbparam" layer="1" collapse-mode="2" max-obj-count="3">
 	<schema name="data"/>
 	<role name="prototypephp"/>
 	<comment><![CDATA[Table des parametres associes de maniere intrinseque a l'instance]]></comment>

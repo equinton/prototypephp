@@ -11,6 +11,7 @@ Les vues sont toutes héritées d'une classe de base, \textbf{Vue}, qui ne devra
 \textbf{fonction} & \textbf{Objectif} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 
 set(\$value, \$variable = "") & stocke une valeur dans la vue. Le nom de la variable n'est fourni que pour certains types de vues. Si une seule valeur est stockée sans indiquer de nom, elle peut être utilisée telle qu'elle \\
 
@@ -34,6 +35,7 @@ Les templates de Smarty comprennent le code HTML et le code spécifique qui sera
 \textbf{fonction} & \textbf{Objectif} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 \_\_construct(\$param, \$var) & Constructeur de la classe. Il nécessite deux tableaux : \\
  & \textit{param} : contient l'ensemble des paramètres nécessaires au bon fonctionnement de Smarty (\textit{cf.} \ref{param} \textit{\nameref{param}}, page \pageref{param})\\
  & \textit{var} : variables pré-assignées à Smarty. Ce sont principalement le nom des sous-templates utilisés pour le menu, le pied de page...\\
@@ -87,6 +89,7 @@ Fonctions disponibles :
 \textbf{fonction} & \textbf{Objectif} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 setFilename(\$filename) & indique le nom à utiliser pour générer le fichier\\
 
 send(\$param = "") & Déclenche l'envoi du tableau vers le navigateur, au format CSV. \textit{param} peut contenir le nom du fichier souhaité. S'il est vide, le nom du fichier transmis par la fonction précédente est utilisé. Sinon, un nom de fichier, contenant la date, est généré.\\
@@ -110,6 +113,7 @@ Fonctions disponibles :
 \textbf{fonction} & \textbf{Objectif} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 setParam(array \$param) & transmet un tableau contenant l'ensemble des paramètres à utiliser pour générer le fichier. Les paramètres sont les suivants : \\
 & \textit{filename} : nom du fichier tel qu'il apparaîtra dans le navigateur \\
 & \textit{disposition} : \textit{attachment} (fichier joint) ou \textit{inline} (affichage direct dans le navigateur) \\
@@ -133,7 +137,7 @@ Fonctions disponibles :
 \textbf{fonction} & \textbf{Objectif} \\
 \hline
 \endhead
-
+\hline\endfoot\endlastfoot
 setFileReference(\$ref)& indique la référence du fichier à traiter (résultat de fopen() ou d'une lecture PDO)\\
 
 setFilename(\$filename)& Nom du fichier tel qu'il sera transmis au navigateur. S'il n'est pas précisé, il sera généré (en cas d'attachement) \\
@@ -180,6 +184,7 @@ Les entrées du menu sont déclarées dans des balises \textbf{item}. Voici les 
 \textbf{Attribut} & \textbf{Requis} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 module & X & Nom du module à exécuter, tel que décrit dans le fichier actions.xml (\textit{cf.} \ref{actions} \textit{\nameref{actions}}, page \pageref{actions})\\
 
 droits & & Droit nécessaire pour afficher l'entrée du menu. Il est possible d'indiquer plusieurs droits, en les séparant par une virgule\\

@@ -25,12 +25,7 @@ $APPLI_session_ttl = 14400;
 $APPLI_cookie_ttl = 7776000; 
 // 10 heures
 $APPLI_absolute_session = 36000;
-/*
- * 
- * Nom du chemin de stockage des sessions
- * @var unknown_type
- */
-$APPLI_path_stockage_session = "prototypephp";
+
 /*
  * Duree de conservation des traces (en jours) dans la table log
  */

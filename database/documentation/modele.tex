@@ -33,12 +33,13 @@ Ces variables sont toutes publiques.
 \textbf{Variable} & \textbf{Type} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 connection & PDO & instance PDO. Peut être utilisée pour instancier une nouvelle classe basée sur ObjetBDD à l'intérieur d'une fonction \\
 
 id\_auto & entier & Si à 1, la classe gère la création automatique des identifiants. Si à 2, l'identifiant est généré manuellement, avec une requête de type \textit{max(id)} \\
 
 formatDate & entier & 0 : amj, 1 : jma (défaut), 2 : mja \\
-\hline
+
 debug\_mode & entier & 0 : pas de mode de débogage, 1 : affichage des messages d'erreur, 2 : affichage de toutes les commandes SQL générées
 \\
 
@@ -117,6 +118,7 @@ function __construct($bdd, $param = array()) {
 \textbf{Variable} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 type & 0 : varchar \\
 & 1 : numérique (y compris décimaux) \\
 & 2 : date \\
@@ -156,6 +158,7 @@ Fonction permettant de récupérer un enregistrement. Elle accepte les paramètr
 \textbf{Variable} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 id & clé de l'enregistrement \\
 
 getDefault & si à \textit{true}, récupère les valeurs par défaut si l'enregistrement n'existe pas dans la base (initialisation d'une saisie, par exemple)\\
@@ -257,6 +260,7 @@ Les arguments à indiquer sont les suivants :
 \textbf{Variable} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 nomTable & Nom de la table NN (table\_nn dans notre exemple) \\
 
 nomCle1 & nom de l'attribut contenant la clé de la table principale \\
@@ -287,6 +291,7 @@ Arguments :
 \textbf{Variable} & \textbf{Signification} \\
 \hline
 \endhead
+\hline\endfoot\endlastfoot
 id & Clé de l'enregistrement \\
 
 fieldName & nom de la colonne contenant l'information binaire \\
