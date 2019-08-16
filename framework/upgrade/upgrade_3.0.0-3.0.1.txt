@@ -5,7 +5,7 @@ How to upgrade from version 3.0.0 to version 3.0.1
 
 - in framework folder, replace controller.php and vue.php
 
--in framework/droits folder, replace appli.php
+- in framework/droits folder, replace appli.php
 
 - in display/templates/framework/droits folder, replace appliDisplay.tpl
 

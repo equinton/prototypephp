@@ -8,6 +8,8 @@ How to upgrade to release 3.0.0
 
 - replace display/CSS/bootstrap-prototypephp.css
 
+- replace display/javascript/bootstrap folder
+
 - add or replace theses variables in param/param.default.inc.php:
 +$APPLI_passwordMinLength = 12;
 +$APPLI_lostPassword = 1; // Autorise la recuperation d'un nouveau mot de passe en cas de perte
