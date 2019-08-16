@@ -116,6 +116,8 @@ $GACL_aco = "appli";
 $GACL_dsn = "pgsql:host=localhost;dbname=proto";
 $GACL_schema = "gacl";
 
+$GACL_disable_new_right = 0; // set 1 to disable the creation of a new right
+
 /*
  * Gestion des erreurs
  */
