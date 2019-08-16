@@ -303,6 +303,7 @@ GACL\_dsn & adresse normalisée \\
 GACL\_schema & schéma utilisé\\
 
 GACL\_aco & nom du code de l'application utilisé dans la gestion des droits (\textit{cf.} \ref{droits} \textit{\nameref{droits}}, page \pageref{droits} )\\
+
 \hline
 \caption{Variables utilisées pour paramétrer les connexions}
 \end{longtable}
@@ -595,6 +596,10 @@ Le nom de l'application doit impérativement correspondre à la valeur \textit{\
 Le nom du droit doit être celui défini dans le corps de l'application (les droits sont positionnés dans les fichiers \textit{param/actions.xml}, qui contient la liste des modules utilisables, et \textit{param/menu.xml}, qui sert à générer le menu).
 
 Indiquez les groupes d'utilisateurs qui seront associés au droit courant.
+
+\subsection{Désactiver la création de nouveaux droits}
+
+En production, il peut être opportun de désactiver la création de nouveaux droits. Pour cela, il faut positionner à 1 la variable \textbf{GACL\_disable\_new\_right} dans le fichier \textit{param.default.inc.php} (ou \textit{param.inc.php}).
 
 \subsection{Cas particulier des groupes et des logins issus d'un annuaire LDAP}
 

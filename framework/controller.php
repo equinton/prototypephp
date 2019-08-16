@@ -168,7 +168,7 @@ while (isset($module)) {
     /**
      * Verification du delai entre deux appels, et mise en sommeil
      */
-    if ($moduleRequested == $module && !in_array($t_module["type"], array("ajax", "json", "ws")) && isset($_SESSION["login"])) {
+    if ($moduleRequested == $module && (!in_array($t_module["type"], array("ajax", "json", "ws")) && isset($_SESSION["login"])) && !$t_module["noDelayBeforeCall"] == 1) {
         $delay = $log->getTimestampFromLastCall($_SESSION["login"]);
         if ($delay < $APPLI_delay_between_call) {
             $log->setLog($login, $module, "sleep because too fast");
@@ -207,6 +207,10 @@ while (isset($module)) {
                 break;
             case "binaire":
                 $vue = new VueBinaire();
+                $isAjax = true;
+                break;
+            case "file":
+                $vue = new VueFile();
                 $isAjax = true;
                 break;
             case "smarty":
@@ -582,12 +586,6 @@ while (isset($module)) {
                 $module = $APPLI_moduleAdminLogin;
                 break;
             case "callsReached":
-                /**
-                 * Send mail to administrators
-                 */
-                $subject = "SECURITY REPORTING - " . $GACL_aco . " - The user " . $_SESSION["login"] . " the user has reached the maximum number of operations allowed";
-                $contents = "<html><body>" . "The account <b>$login<b> has reached at $date the maximum number of operations allowed fot the module $module" . '<br>Software : <a href="' . $APPLI_address . '">' . $APPLI_address . "</a>" . '</body></html>';
-                $log->sendMailToAdmin($subject, $contents, $module, $_SESSION["login"]);
                 $module = "default";
                 break;
             default:

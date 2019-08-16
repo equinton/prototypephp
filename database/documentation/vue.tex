@@ -151,6 +151,29 @@ send() & Envoie le fichier au navigateur, en fonction des paramètres indiqués 
 
 La classe peut générer des exceptions en cas de problème.
 
+\section{La vue File}
+Nom de la classe : \textbf{VueFile}.
+
+Il s'agit d'une vue qui permet de générer un fichier dont le contenu est quelconque, pour être envoyé au navigateur. les paramètres à indiquer sont décrits dans le tableau \ref{tab:vuefile}.
+
+\begin{longtable}{|p{5cm}|p{8cm}|}
+\hline
+\textbf{fonction} & \textbf{Objectif} \\
+\hline
+\endhead
+\hline\endfoot\endlastfoot
+setParam(array \$param)& Tableau de paramètres, qui peut contenir :\\
+ & filename: nom du fichier d'export (par défaut, export.txt)\\
+ & disposition: attachment/inline (attachment par défaut)\\
+ & content\_type: type mime (text/plain par défaut) \\
+
+send() & Envoie le fichier au navigateur, en fonction des paramètres indiqués \\
+\hline
+\caption{Fonctions déclarées dans la classe VueFile}\label{tab:vuefile}
+\end{longtable}
+
+
+
 \chapter{Génération du menu}
 Pour les pages web, le menu est généré de manière dynamique :
 \begin{itemize}
