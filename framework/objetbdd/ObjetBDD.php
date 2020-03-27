@@ -676,7 +676,7 @@ class ObjetBDD
         }
         if ($id > 0) {
             if (strlen(preg_replace("#[^A-Z]+#", "", $champ) > 0)) {
-                $cle = $this->quoteIdentifier . $key . $this->quoteIdentifier;
+                $cle = $this->quoteIdentifier . $champ . $this->quoteIdentifier;
             } else {
                 $cle = $champ;
             }
@@ -1896,6 +1896,17 @@ class ObjetBDD
                 throw new ObjetBDDException($pe->getMessage());
             }
         }
+    }
+
+    /**
+     * Get an UUID generate by the database
+     *
+     * @return string
+     */
+    function getUUID() {
+        $sql = "select gen_random_uuid() as uuid";
+        $data = $this->lireParam($sql);
+        return $data["uuid"];
     }
 }
 ?>
