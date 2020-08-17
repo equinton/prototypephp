@@ -101,8 +101,8 @@
 		},
 		"buttons": {
 			"pageLength": {
-					_: "{t}Afficher %d éléments{/t}",
-					'-1': "{t}Tout afficher{/t}"
+				_: "{t}Afficher %d éléments{/t}",
+				'-1': "{t}Tout afficher{/t}"
 			}
 		}
 	};
@@ -122,7 +122,7 @@
 			dom: 'Bfrtip',
 			"pageLength": pageLength,
 			"lengthMenu": [ [ 10, 25, 50, 100, 500, -1 ], [ 10, 25, 50, 100, 500, "All" ] ],
-			buttons : [
+			buttons: [
 				"pageLength"
 			]
 		} );
@@ -130,7 +130,7 @@
 			"language": dataTableLanguage,
 			"searching": false,
 			"paging": false
-		});
+		} );
 		$( '.datatable-searching' ).DataTable( {
 			"language": dataTableLanguage,
 			"searching": true,
@@ -190,7 +190,10 @@
 				'pageLength',
 				'copyHtml5',
 				'excelHtml5',
-				'csvHtml5',
+				{
+					extend: 'csvHtml5',
+					filename: 'export_' + new Date().toISOString()
+				},
 				/* {
 					 extend: 'pdfHtml5',
 					 orientation: 'landscape'
@@ -224,6 +227,9 @@
 			$( ".date" ).datepicker( $.datepicker.regional[ '{$LANG["date"]["locale"]}' ] );
 			$( ".datepicker" ).datepicker( $.datepicker.regional[ '{$LANG["date"]["locale"]}' ] );
 			$.datepicker.setDefaults( $.datepicker.regional[ '{$LANG["date"]["locale"]}' ] );
+			$( ".timepicker" ).timepicker( {
+				timeFormat: 'HH:mm:ss'
+			} );
 			$( '.timepicker' ).attr( 'pattern', '[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]' );
 			$.timepicker.setDefaults( $.timepicker.regional[ '{$LANG["date"]["locale"]}' ] );
 			$( '.datetimepicker' ).datetimepicker( {
@@ -256,15 +262,65 @@
 
 		});
 	function encodeHtml( rawStr ) {
-		if ( rawStr && rawStr.length > 0) {
+		if ( rawStr && rawStr.length > 0 ) {
 			try {
 				var encodedStr = rawStr.replace( /[\u00A0-\u9999<>\&]/gim, function ( i ) {
 					return '&#' + i.charCodeAt( 0 ) + ';';
 				} );
-			} catch (Exception) {}
+			} catch ( Exception ) { }
 			return encodedStr;
 		} else {
 			return "";
 		}
 	}
+	/**
+	 * Generate a popup for lexical entries, when mouse is over a question icon
+	 * the field must have a class lexical and the attribute data-lexical with
+	 * the value to found
+	 */
+	$( document ).ready( function () {
+		var lexicalDelay = 1000, lexicalTimer, tooltipContent;
+		$( ".lexical" ).mouseenter( function () {
+			var objet = $( this );
+			lexicalTimer = setTimeout( function () {
+				var entry = objet.data( "lexical" );
+				if ( entry.length > 0 ) {
+					var url = "index.php";
+					var data = {
+						"module": "lexicalGet",
+						"lexical": entry
+					}
+					$.ajax( { url: url, data: data } )
+						.done( function ( d ) {
+							if ( d ) {
+								d = JSON.parse( d );
+								if ( d.lexical ) {
+									var content = d.lexical.split( " " );
+									var length = 0;
+									tooltipContent = "";
+									content.forEach( function ( word ) {
+										if ( length > 40 ) {
+											tooltipContent += "<br>";
+											length = 0;
+										}
+										tooltipContent += word + " ";
+										length += word.length + 1;
+									} );
+									tooltipDisplay( objet );
+								}
+							}
+						} );
+				}
+			}, lexicalDelay );
+		} ).mouseleave( function () {
+			clearTimeout( lexicalTimer );
+		} );
+		function tooltipDisplay( object ) {
+			object.tooltip( {
+				content: tooltipContent
+			} );
+			object.attr( "title", tooltipContent );
+			object.tooltip( "open" );
+		}
+	} );
 </script>

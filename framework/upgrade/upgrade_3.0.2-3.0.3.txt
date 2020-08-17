@@ -1,0 +1,15 @@
+How to upgrade from version 3.0.1 to version 3.0.2
+==================================================
+- replace the file .htaccess at the root of application
+- replace the folder framework
+- replace the folder display/templates/framework
+- replace the folder display/CSS
+- add the file display/javascript/jquery-3.3.1.min.js
+
+Update param/actions.xml:
+- add these entries:
+	<lexicalGet action="framework/utils/lexical.php" type="ajax"/>
+
+	<backupDisplay  action="framework/utils/backup.php" param="display" retourlogin="1" droits="admin" type="smarty"/>
+	<backupExec action="framework/utils/backup.php" param="exec" modulebefore="backupDisplay,backupExec" droits="admin" retourok="backupSend" retourko="backupDisplay"/>
+	<backupSend action="framework/utils/backup.php" param="send" modulebefore="backupExec" droits="admin" type="binaire" retourko="backupDisplay"/>

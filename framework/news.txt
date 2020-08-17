@@ -25,9 +25,16 @@ Operations to upgrade:
 - add /install/apache2/mellon_create_metadata.sh
 - in /param/param.default.inc.php, add these entries:
 
-- in /param/actions.xml, add these entries:
+- in /param/actions.xml, add these entries: dbstructure*, logList, request*
+
 
 -in param/menu.xml, add these entries:
+<item module="requestList" label="Requêtes SQL" tooltip="Exécution de requêtes SQL dans la base de données" droits="param"/>
+<item module="logList" droits="admin" label="Logs" tooltip="Consultation des logs enregistrées"/>
+<item module="dbstructureSchema" droits="collection" label="Schéma de la base de données" tooltip="Schéma de la base de données">
+	<item module="dbstructureHtml" droits='collection' label="Structure de la base de données (HTML)" tooltip="Liste des tables et des colonnes"/>
+	<item module="dbstructureLatex" droits='collection' label="Structure de la base de données (Latex)" tooltip="Liste des tables et des colonnes sous forme de tableaux Latex"/>
+
 
 
 Release v3.0.1 - august 2019
