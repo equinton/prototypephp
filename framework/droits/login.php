@@ -5,7 +5,7 @@
  * @license http://www.cecill.info/licences/Licence_CeCILL-C_V1-fr.html LICENCE DE LOGICIEL LIBRE CeCILL-C
  *  Creation 3 juin 2015
  */
-include_once 'framework/droits/droits.class.php';
+include_once 'framework/droits/acllogin.class.php';
 $dataClass = new Acllogin($bdd_gacl, $ObjetBDDParam);
 $keyName = "acllogin_id";
 $id = $_REQUEST[$keyName];
@@ -15,7 +15,7 @@ switch ($t_module["param"]) {
 		/*
 		 * Display the list of all records of the table
 		 */
-		$vue->set($dataClass->getListe(3), "data");
+		$vue->set($dataClass->getListLogins(), "data");
         $vue->set("framework/droits/loginList.tpl", "corps");
         break;
     case "change":

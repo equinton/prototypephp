@@ -8,6 +8,8 @@
 	<item module="gestion" label="Gestion" tooltip="Modules de l'application">
 		<item module="gestion" label="Gestion" tooltip="Modules de l'application"/>
 		<item module="exampleList" droits="consult" label="Exemple" tooltip="Exemple de module" />
+        <item divider="1"/>
+        <item module="requestList" label="Requêtes SQL" tooltip="Exécution de requêtes SQL dans la base de données" droits="param"/>
 	</item>
 
 	<item module="administration" label="Administration" tooltip="Administration de l'application" droits="admin">
@@ -22,6 +24,7 @@
 		<item module="dbstructureLatex" droits='admin' label="Structure de la base de données (Latex)" tooltip="Liste des tables et des colonnes sous forme de tableaux Latex"/>
 		<item module="dbstructureGacl" droits="admin" label="Structure de la base de données des droits (HTML)" tooltip="Liste des tables et des colonnes de la base de données de gestion des droits"/>
 		<item module="phpinfo" droits="admin" label="PHP info" tooltip="configuration générale du serveur PHP"/>
+        <item module="backupDisplay" droits="admin" label="Backup" tooltip="Sauvegarde de la base de données"/>
 	</item>
 	<item module="connexion" label="Connexion" tooltip="S'identifier dans l'application" onlynoconnect="1"/>
 	<item module="disconnect" label="Déconnexion" tooltip="Déconnexion de l'application" loginrequis="1">

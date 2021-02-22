@@ -5,8 +5,9 @@
  * @license http://www.cecill.info/licences/Licence_CeCILL-C_V1-fr.html LICENCE DE LOGICIEL LIBRE CeCILL-C
  *  Creation 4 juin 2015
  */
- 
+
 include_once 'framework/droits/droits.class.php';
+require_once "framework/droits/aclgroup.class.php";
 $dataClass = new Aclgroup($bdd_gacl,$ObjetBDDParam);
 $keyName = "aclgroup_id";
 $id = $_REQUEST[$keyName];
@@ -36,8 +37,13 @@ switch ($t_module["param"]) {
 		/*
 		 * Recuperation des logins associes
 		 */
+		include_once "framework/droits/acllogin.class.php";
 		$acllogin = new Acllogin($bdd_gacl, $ObjetBDDParam);
 		$vue->set($acllogin->getAllFromGroup($id) , "logins");
+		/**
+		 * Get the list of the groups
+		 */
+		$vue->set($dataClass->getGroups(), "groups");
 		break;
 	case "write":
 		/*
