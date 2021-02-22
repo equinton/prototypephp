@@ -209,16 +209,12 @@ Les entrées du menu sont déclarées dans des balises \textbf{item}. Voici les 
 \endhead
 \hline\endfoot\endlastfoot
 module & X & Nom du module à exécuter, tel que décrit dans le fichier actions.xml (\textit{cf.} \ref{actions} \textit{\nameref{actions}}, page \pageref{actions})\\
-
 droits & & Droit nécessaire pour afficher l'entrée du menu. Il est possible d'indiquer plusieurs droits, en les séparant par une virgule\\
-
 loginrequis & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur est connecté \\
-
 onlynoconnect & & Si vaut 1, l'entrée ne sera affichée que si l'utilisateur n'est pas connecté\\
-
 label & X & Texte affiché\\
-
 tooltip & X & libellé affiché au survol de la souris (attribut HTML \textit{title})\\
+language & & si indiqué, l'entrée de menu ne sera générée que si la langue courante correspond (en|fr)\\
  \hline
 
 \caption{Liste des attributs utilisables pour décrire les entrées du menu}
@@ -414,9 +410,9 @@ Montant total : {$variable}
 
 \section{Affichage des libellés en fonction de la langue}
 
-Comme nous l'avons vu précédemment (\textit{cf.} \ref{langue} \textit{\nameref{langue}}, page \pageref{langue}), les libellés sont stockés dans la variable \$LANG. Il est alors assez facile de les afficher dans le template. Voici un exemple correspondant à l'affichage du libellé \textit{Rechercher} :
+Le logiciel utilise maintenant le module standard ln18i. Dans Smarty, pour que les libellés soient traduits, ils doivent être encadrés par la balise \{t\} \{/t\}, par exemple :
 \begin{lstlisting}
-<button name="{$LANG[message].21}>
+<button>{t}Valider{/t}</button>
 \end{lstlisting}
 
 
@@ -435,9 +431,9 @@ Voici un exemple de formulaire implémentant ce fonctionnement :
 <input type="hidden" name="action" value="Write">
 
 <div class="form-group center">
-      <button type="submit" class="btn btn-primary button-valid">{$LANG["message"].19}</button>
+      <button type="submit" class="btn btn-primary button-valid">{t}Valider{/t}</button>
       {if $data.example_id > 0 }
-      <button class="btn btn-danger button-delete">{$LANG["message"].20}</button>
+      <button class="btn btn-danger button-delete">{t}Supprimer{/t}</button>
       {/if}
  </div>
 </form>
@@ -446,3 +442,48 @@ Voici un exemple de formulaire implémentant ce fonctionnement :
 Le formulaire doit comprendre la classe \textit{protoform}, et deux champs cachés : \textit{moduleBase} et \textit{action}. Les boutons doivent être des classes \textit{button-valid} ou \textit{button-delete}, pour respectivement déclencher l'écriture ou la suppression de l'enregistrement.
 
 Le code Javascript associé (déjà déclaré dans le framework) va permettre de modifier le contenu du champ \textit{action} si le bouton \textit{Supprimer} est actionné. Le contrôleur reconstituera le module demandé en associant les deux champs.
+
+\chapter{Utilisation avancée}
+
+\section{Afficher des documents markdown}
+
+Il est possible de créer des documents au format markdown, par exemple pour de la documentation, et de les afficher en HTML à l'écran. La transformation est réalisée par une bibliothèque Javascript.
+
+Pour afficher le document, il suffit de décrire une action dans le fichier \textit{param/actions.xml} :
+
+\begin{lstlisting}
+<doctotp_fr action="framework/utils/markdown.php" param="framework/documentation/totp_fr.md" type="smarty" retourko="default"/>
+\end{lstlisting}
+
+L'attribut \textit{param} contient le chemin d'accès au fichier markdown.
+
+\section{Gérer un lexique contextuel}
+
+Il est possible d'associer un lexique à des termes affichés à l'écran. Au passage de la souris, une popup sera affichée contenant le texte d'explication.
+
+\subsection{Créer le lexique}
+
+Dans le dossier \textit{param}, créez deux fichiers : \textit{lexical-fr.ini} et \textit{lexical-en.ini} si vous souhaitez gérer la traduction en anglais.
+
+Les fichiers doivent être de la forme : 
+\begin{lstlisting}
+filetype="définit les types de fichiers que l'on peut importer dans les différents menus du logiciel. Pour connaitre les types MIME importants dans le cadre du WEB, vous pouvez consulter cette page :  https://developer.mozilla.org/fr/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types"
+
+uuid="identifiant stocké sur 36 caractères, qui est généré avec des fonctions cryptographiques qui le rendent unique, quel que soit le système qui l'a produit. Exemple : a95d8731-3501-4cc7-a71d-50ebd839b035."
+\end{lstlisting}
+
+où \textit{filetype} et \textit{uuid} correspondent au entrées du lexique. 
+
+\subsection{Ajouter les références dans les écrans}
+
+Pour activer l'affichage du lexique, il faut associer une classe et ajouter un attribut à n'importe quel composant de la page (balise div par exemple) :
+
+\begin{lstlisting}
+<div class="lexical" data-lexical="uuid">
+...
+</div>
+\end{lstlisting}
+
+La classe \textit{lexical} doit être positionnée systématiquement. C'est l'attribut \textit{data-lexical} qui permet de rattacher l'entrée du lexique à l'objet courant dans l'écran.
+
+Un petit point d'interrogation sera positionné à la fin de l'objet, pour indiquer la présence de l'entrée du lexique.

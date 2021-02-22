@@ -25,6 +25,12 @@ Operations to upgrade:
 - in param/menu.xml, add these entries:
 <item module="requestList" label="Requêtes SQL" tooltip="Exécution de requêtes SQL dans la base de données" droits="param"/>
 <item module="backupDisplay" droits="admin" label="Backup" tooltip="Sauvegarde de la base de données"/>
+    <item module="documentation_fr" label="documentation" tooltip="Documentations en ligne en français" language="fr">
+        <item module="doctotp_fr" label="Comprendre la double authentification" tooltip="Comprendre le mécanisme de double authentification" language="fr"/>
+    </item>
+    <item module="documentation_en" label="documentation" tooltip="Documentations en ligne en anglais" language="en">
+        <item module="doctotp_en" label="Comprendre la double authentification" tooltip="Comprendre le mécanisme de double authentification" language="en"/>
+    </item>
 - run these scripts into the database:
 install/pgsql/gacl_totp.sql
 install/pgsql/request.sql
