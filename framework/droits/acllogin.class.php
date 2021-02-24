@@ -92,7 +92,7 @@ class Acllogin extends ObjetBDD
       /**
        * Recherche d'un login correspondant
        */
-      $sql = "select acllogin_id, login, logindetail from gacllogin where login = :login";
+      $sql = "select acllogin_id, login, logindetail from acllogin where login = :login";
       $data = $this->lireParamAsPrepared($sql, array("login" => $login));
       if (!$data["acllogin_id"] > 0) {
         $data["acllogin_id"] = 0;

@@ -67,11 +67,6 @@
 	<dbparamList action="framework/dbparam/dbparam.php" param="list" droits="admin" retourlogin="1" type="smarty" />
 	<dbparamWriteGlobal action="framework/dbparam/dbparam.php" param="writeGlobal" droits="admin" retourok="dbparamList" retourko="dbparamList" />
 
-	<dbstructureHtml action="framework/utils/structure.php" param="html" retourlogin="1" type="smarty" schemas="metabo,gacl" droits="project" maxCountByHour="60" maxCountByDay="600" />
-	<dbstructureGacl action="framework/utils/structure.php" param="gacl" retourlogin="1" type="smarty" droits="admin" schemas="gacl" maxCountByHour="60" maxCountByDay="600" />
-	<dbstructureLatex action="framework/utils/structure.php" param="latex" retourlogin="1" type="file" droits="project" schemas="metabo,gacl" maxCountByHour="60" maxCountByDay="600" />
-	<dbstructureSchema action="framework/utils/structure.php" param="schema" realfilename="documentation/metabo_database.png" generatedfilename="metabo-database.png" retourlogin="1" type="binaire" droits="project" maxCountByHour="60" maxCountByDay="600" />
-
 	<logList action="framework/log/log.php" param="list" retourlogin="1" type="smarty" droits="admin" />
 
 	<requestList action="framework/request/request.php" param="list" retourlogin="1" droits="param" type="smarty" />

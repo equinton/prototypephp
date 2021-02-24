@@ -48,7 +48,7 @@ switch ($t_module["param"]) {
       try {
         include_once "framework/droits/acllogin.class.php";
         $acllogin = new Acllogin($bdd_gacl, $ObjetBDDParam);
-        if (strlen($_REQUEST["nom"]) > 0) {
+        if (!empty($_REQUEST["nom"])) {
           $nom = $_REQUEST["nom"] . " " . $_REQUEST["prenom"];
         } else {
           $nom = $_REQUEST["login"];
