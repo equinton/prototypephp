@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3aecc0a695de2a5b018d3c9e61587b80",
+    "content-hash": "de771457ed6c471b74bd5611442a0209",
     "packages": [
         {
             "name": "beberlei/assert",
-            "version": "v3.2.7",
+            "version": "v3.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/assert.git",
-                "reference": "d63a6943fc4fd1a2aedb65994e3548715105abcf"
+                "reference": "cb70015c04be1baee6f5f5c953703347c0ac1655"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/assert/zipball/d63a6943fc4fd1a2aedb65994e3548715105abcf",
-                "reference": "d63a6943fc4fd1a2aedb65994e3548715105abcf",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/cb70015c04be1baee6f5f5c953703347c0ac1655",
+                "reference": "cb70015c04be1baee6f5f5c953703347c0ac1655",
                 "shasum": ""
             },
             "require": {
@@ -25,24 +25,25 @@
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "ext-simplexml": "*",
-                "php": "^7"
+                "php": "^7.0 || ^8.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "*",
-                "phpstan/phpstan-shim": "*",
-                "phpunit/phpunit": ">=6.0.0 <8"
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": ">=6.0.0",
+                "yoast/phpunit-polyfills": "^0.1.0"
             },
             "suggest": {
                 "ext-intl": "Needed to allow Assertion::count(), Assertion::isCountable(), Assertion::minCount(), and Assertion::maxCount() to operate on ResourceBundles"
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Assert\\": "lib/Assert"
-                },
                 "files": [
                     "lib/Assert/functions.php"
-                ]
+                ],
+                "psr-4": {
+                    "Assert\\": "lib/Assert"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -66,28 +67,38 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2019-12-19T17:51:41+00:00"
+            "support": {
+                "issues": "https://github.com/beberlei/assert/issues",
+                "source": "https://github.com/beberlei/assert/tree/v3.3.2"
+            },
+            "time": "2021-12-16T21:41:27+00:00"
         },
         {
             "name": "bjeavons/zxcvbn-php",
-            "version": "0.4.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bjeavons/zxcvbn-php.git",
-                "reference": "7a7e1130c74c715e84c60c27384f657e9574a933"
+                "reference": "994928ae5b17ecff8baa2406832d37bdf01116c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bjeavons/zxcvbn-php/zipball/7a7e1130c74c715e84c60c27384f657e9574a933",
-                "reference": "7a7e1130c74c715e84c60c27384f657e9574a933",
+                "url": "https://api.github.com/repos/bjeavons/zxcvbn-php/zipball/994928ae5b17ecff8baa2406832d37bdf01116c0",
+                "reference": "994928ae5b17ecff8baa2406832d37bdf01116c0",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0"
+                "ext-json": "*",
+                "php": "^7.2 | ^8.0 | ^8.1",
+                "symfony/polyfill-mbstring": ">=1.3.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "*",
-                "satooshi/php-coveralls": "*"
+                "php-coveralls/php-coveralls": "*",
+                "phpunit/phpunit": "^8.5",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "suggest": {
+                "ext-gmp": "Required for optimized binomial calculations (also requires PHP >= 7.3)"
             },
             "type": "library",
             "autoload": {
@@ -111,28 +122,36 @@
                 "password",
                 "zxcvbn"
             ],
-            "time": "2018-07-23T05:05:36+00:00"
+            "support": {
+                "issues": "https://github.com/bjeavons/zxcvbn-php/issues",
+                "source": "https://github.com/bjeavons/zxcvbn-php/tree/1.3.1"
+            },
+            "time": "2021-12-21T18:37:02+00:00"
         },
         {
             "name": "jasig/phpcas",
-            "version": "1.3.7",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apereo/phpCAS.git",
-                "reference": "b5b29102c3a42f570c4a3e852f3cf67cae6d6082"
+                "reference": "d6f5797fb568726f34c8e48741776d81e4a2646b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apereo/phpCAS/zipball/b5b29102c3a42f570c4a3e852f3cf67cae6d6082",
-                "reference": "b5b29102c3a42f570c4a3e852f3cf67cae6d6082",
+                "url": "https://api.github.com/repos/apereo/phpCAS/zipball/d6f5797fb568726f34c8e48741776d81e4a2646b",
+                "reference": "d6f5797fb568726f34c8e48741776d81e4a2646b",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "php": ">=5.4.0"
+                "ext-dom": "*",
+                "php": ">=7.1.0",
+                "psr/log": "^1.0 || ^2.0 || ^3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~3.7.10"
+                "monolog/monolog": "^1.0.0 || ^2.0.0",
+                "phpstan/phpstan": "^1.5",
+                "phpunit/phpunit": ">=7.5"
             },
             "type": "library",
             "extra": {
@@ -152,11 +171,16 @@
             "authors": [
                 {
                     "name": "Joachim Fritschi",
-                    "homepage": "https://wiki.jasig.org/display/~fritschi"
+                    "email": "jfritschi@freenet.de",
+                    "homepage": "https://github.com/jfritschi"
                 },
                 {
                     "name": "Adam Franco",
-                    "homepage": "https://wiki.jasig.org/display/~adamfranco"
+                    "homepage": "https://github.com/adamfranco"
+                },
+                {
+                    "name": "Henry Pan",
+                    "homepage": "https://github.com/phy25"
                 }
             ],
             "description": "Provides a simple API for authenticating users against a CAS server",
@@ -166,20 +190,24 @@
                 "cas",
                 "jasig"
             ],
-            "time": "2019-04-22T19:48:16+00:00"
+            "support": {
+                "issues": "https://github.com/apereo/phpCAS/issues",
+                "source": "https://github.com/apereo/phpCAS/tree/1.5.0"
+            },
+            "time": "2022-05-03T21:12:54+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
-            "version": "v2.4.0",
+            "version": "v2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/constant_time_encoding.git",
-                "reference": "f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c"
+                "reference": "58c3f47f650c94ec05a151692652a868995d2938"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c",
-                "reference": "f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/58c3f47f650c94ec05a151692652a868995d2938",
+                "reference": "58c3f47f650c94ec05a151692652a868995d2938",
                 "shasum": ""
             },
             "require": {
@@ -228,95 +256,29 @@
                 "hex2bin",
                 "rfc4648"
             ],
-            "time": "2020-12-06T15:14:20+00:00"
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/constant_time_encoding/issues",
+                "source": "https://github.com/paragonie/constant_time_encoding"
+            },
+            "time": "2022-06-14T06:56:20+00:00"
         },
         {
-            "name": "paragonie/random_compat",
-            "version": "v9.99.99",
+            "name": "psr/log",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95"
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
-                "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/fe5ea303b0887d5caefd3d431c3e61ad47037001",
+                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001",
                 "shasum": ""
             },
             "require": {
-                "php": "^7"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*|5.*",
-                "vimeo/psalm": "^1"
-            },
-            "suggest": {
-                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Paragon Initiative Enterprises",
-                    "email": "security@paragonie.com",
-                    "homepage": "https://paragonie.com"
-                }
-            ],
-            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-            "keywords": [
-                "csprng",
-                "polyfill",
-                "pseudorandom",
-                "random"
-            ],
-            "time": "2018-07-02T15:55:56+00:00"
-        },
-        {
-            "name": "ramsey/uuid",
-            "version": "3.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ramsey/uuid.git",
-                "reference": "d09ea80159c1929d75b3f9c60504d613aeb4a1e3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/d09ea80159c1929d75b3f9c60504d613aeb4a1e3",
-                "reference": "d09ea80159c1929d75b3f9c60504d613aeb4a1e3",
-                "shasum": ""
-            },
-            "require": {
-                "paragonie/random_compat": "^1.0|^2.0|9.99.99",
-                "php": "^5.4 || ^7.0",
-                "symfony/polyfill-ctype": "^1.8"
-            },
-            "replace": {
-                "rhumsaa/uuid": "self.version"
-            },
-            "require-dev": {
-                "codeception/aspect-mock": "^1.0 | ~2.0.0",
-                "doctrine/annotations": "~1.2.0",
-                "goaop/framework": "1.0.0-alpha.2 | ^1.0 | ~2.1.0",
-                "ircmaxell/random-lib": "^1.1",
-                "jakub-onderka/php-parallel-lint": "^0.9.0",
-                "mockery/mockery": "^0.9.9",
-                "moontoast/math": "^1.1",
-                "php-mock/php-mock-phpunit": "^0.3|^1.1",
-                "phpunit/phpunit": "^4.7|^5.0|^6.5",
-                "squizlabs/php_codesniffer": "^2.3"
-            },
-            "suggest": {
-                "ext-ctype": "Provides support for PHP Ctype functions",
-                "ext-libsodium": "Provides the PECL libsodium extension for use with the SodiumRandomGenerator",
-                "ext-uuid": "Provides the PECL UUID extension for use with the PeclUuidTimeGenerator and PeclUuidRandomGenerator",
-                "ircmaxell/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
-                "moontoast/math": "Provides support for converting UUID to 128-bit integer (in string form).",
-                "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid",
-                "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
+                "php": ">=8.0.0"
             },
             "type": "library",
             "extra": {
@@ -326,7 +288,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Ramsey\\Uuid\\": "src/"
+                    "Psr\\Log\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -335,46 +297,40 @@
             ],
             "authors": [
                 {
-                    "name": "Marijn Huizendveld",
-                    "email": "marijn.huizendveld@gmail.com"
-                },
-                {
-                    "name": "Thibaud Fabre",
-                    "email": "thibaud@aztech.io"
-                },
-                {
-                    "name": "Ben Ramsey",
-                    "email": "ben@benramsey.com",
-                    "homepage": "https://benramsey.com"
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
-            "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
-            "homepage": "https://github.com/ramsey/uuid",
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
             "keywords": [
-                "guid",
-                "identifier",
-                "uuid"
+                "log",
+                "psr",
+                "psr-3"
             ],
-            "time": "2018-07-19T23:38:55+00:00"
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/3.0.0"
+            },
+            "time": "2021-07-14T16:46:02+00:00"
         },
         {
             "name": "smarty-gettext/smarty-gettext",
-            "version": "1.6.1",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-gettext/smarty-gettext.git",
-                "reference": "9a7d9284b5374caeae5eb226cf486efb4bc748b4"
+                "reference": "22e5b91b642cd643f9acdd8d04ab0e05647b98a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-gettext/smarty-gettext/zipball/9a7d9284b5374caeae5eb226cf486efb4bc748b4",
-                "reference": "9a7d9284b5374caeae5eb226cf486efb4bc748b4",
+                "url": "https://api.github.com/repos/smarty-gettext/smarty-gettext/zipball/22e5b91b642cd643f9acdd8d04ab0e05647b98a7",
+                "reference": "22e5b91b642cd643f9acdd8d04ab0e05647b98a7",
                 "shasum": ""
             },
             "require": {
                 "ext-gettext": "*",
                 "ext-pcre": "*",
-                "php": "~5.3|~7.0"
+                "php": "~5.3|~7.0|~8.0"
             },
             "require-dev": {
                 "azatoth/php-pgettext": "~1.0",
@@ -410,34 +366,42 @@
             ],
             "description": "Gettext plugin enabling internationalization in Smarty Package files",
             "homepage": "https://github.com/smarty-gettext/smarty-gettext",
-            "time": "2019-01-17T23:06:53+00:00"
+            "support": {
+                "issues": "https://github.com/smarty-gettext/smarty-gettext/issues",
+                "source": "https://github.com/smarty-gettext/smarty-gettext/tree/1.6.2"
+            },
+            "time": "2021-02-23T22:00:29+00:00"
         },
         {
             "name": "smarty/smarty",
-            "version": "v3.1.33",
+            "version": "v4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "dd55b23121e55a3b4f1af90a707a6c4e5969530f"
+                "reference": "ffa2b81a8e354a49fd8a2f24742dc9dc399e8007"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/dd55b23121e55a3b4f1af90a707a6c4e5969530f",
-                "reference": "dd55b23121e55a3b4f1af90a707a6c4e5969530f",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/ffa2b81a8e354a49fd8a2f24742dc9dc399e8007",
+                "reference": "ffa2b81a8e354a49fd8a2f24742dc9dc399e8007",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2"
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5 || ^7.5",
+                "smarty/smarty-lexer": "^3.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.1.x-dev"
+                    "dev-master": "4.0.x-dev"
                 }
             },
             "autoload": {
-                "files": [
-                    "libs/bootstrap.php"
+                "classmap": [
+                    "libs/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -456,27 +420,36 @@
                 {
                     "name": "Rodney Rehm",
                     "email": "rodney.rehm@medialize.de"
+                },
+                {
+                    "name": "Simon Wisselink",
+                    "homepage": "https://www.iwink.nl/"
                 }
             ],
             "description": "Smarty - the compiling PHP template engine",
-            "homepage": "http://www.smarty.net",
+            "homepage": "https://smarty-php.github.io/smarty/",
             "keywords": [
                 "templating"
             ],
-            "time": "2018-09-12T20:54:16+00:00"
+            "support": {
+                "forum": "https://github.com/smarty-php/smarty/discussions",
+                "issues": "https://github.com/smarty-php/smarty/issues",
+                "source": "https://github.com/smarty-php/smarty/tree/v4.2.1"
+            },
+            "time": "2022-09-14T10:59:01+00:00"
         },
         {
             "name": "spomky-labs/otphp",
-            "version": "v10.0.1",
+            "version": "v10.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/otphp.git",
-                "reference": "f44cce5a9db4b8da410215d992110482c931232f"
+                "reference": "9784d9f7c790eed26e102d6c78f12c754036c366"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/otphp/zipball/f44cce5a9db4b8da410215d992110482c931232f",
-                "reference": "f44cce5a9db4b8da410215d992110482c931232f",
+                "url": "https://api.github.com/repos/Spomky-Labs/otphp/zipball/9784d9f7c790eed26e102d6c78f12c754036c366",
+                "reference": "9784d9f7c790eed26e102d6c78f12c754036c366",
                 "shasum": ""
             },
             "require": {
@@ -484,7 +457,7 @@
                 "ext-mbstring": "*",
                 "paragonie/constant_time_encoding": "^2.0",
                 "php": "^7.2|^8.0",
-                "thecodingmachine/safe": "^0.1.14|^1.0"
+                "thecodingmachine/safe": "^0.1.14|^1.0|^2.0"
             },
             "require-dev": {
                 "php-coveralls/php-coveralls": "^2.0",
@@ -494,7 +467,7 @@
                 "phpstan/phpstan-phpunit": "^0.12",
                 "phpstan/phpstan-strict-rules": "^0.12",
                 "phpunit/phpunit": "^8.0",
-                "thecodingmachine/phpstan-safe-rule": "^1.0"
+                "thecodingmachine/phpstan-safe-rule": "^1.0 || ^2.0"
             },
             "type": "library",
             "extra": {
@@ -534,41 +507,52 @@
                 "otp",
                 "totp"
             ],
-            "time": "2020-01-28T09:24:19+00:00"
+            "support": {
+                "issues": "https://github.com/Spomky-Labs/otphp/issues",
+                "source": "https://github.com/Spomky-Labs/otphp/tree/v10.0.3"
+            },
+            "time": "2022-03-17T08:00:35+00:00"
         },
         {
-            "name": "symfony/polyfill-ctype",
-            "version": "v1.11.0",
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.26.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "82ebae02209c21113908c229e9883c419720738a"
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "9344f9cb97f3b19424af1a21a3b0e75b0a7d8d7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/82ebae02209c21113908c229e9883c419720738a",
-                "reference": "82ebae02209c21113908c229e9883c419720738a",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/9344f9cb97f3b19424af1a21a3b0e75b0a7d8d7e",
+                "reference": "9344f9cb97f3b19424af1a21a3b0e75b0a7d8d7e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=7.1"
+            },
+            "provide": {
+                "ext-mbstring": "*"
             },
             "suggest": {
-                "ext-ctype": "For best performance"
+                "ext-mbstring": "For best performance"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.11-dev"
+                    "dev-main": "1.26-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Ctype\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -576,23 +560,41 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
                 },
                 {
-                    "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony polyfill for ctype functions",
+            "description": "Symfony polyfill for the Mbstring extension",
             "homepage": "https://symfony.com",
             "keywords": [
                 "compatibility",
-                "ctype",
+                "mbstring",
                 "polyfill",
-                "portable"
+                "portable",
+                "shim"
             ],
-            "time": "2019-02-06T07:57:58+00:00"
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.26.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-24T11:49:31+00:00"
         },
         {
             "name": "thecodingmachine/safe",
@@ -623,13 +625,6 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Safe\\": [
-                        "lib/",
-                        "deprecated/",
-                        "generated/"
-                    ]
-                },
                 "files": [
                     "deprecated/apc.php",
                     "deprecated/libevent.php",
@@ -720,13 +715,24 @@
                     "generated/yaz.php",
                     "generated/zip.php",
                     "generated/zlib.php"
-                ]
+                ],
+                "psr-4": {
+                    "Safe\\": [
+                        "lib/",
+                        "deprecated/",
+                        "generated/"
+                    ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "PHP core functions that throw exceptions instead of returning FALSE on error",
+            "support": {
+                "issues": "https://github.com/thecodingmachine/safe/issues",
+                "source": "https://github.com/thecodingmachine/safe/tree/v1.3.3"
+            },
             "time": "2020-10-28T17:51:34+00:00"
         }
     ],
@@ -740,5 +746,5 @@
         "ext-gettext": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.2.0"
 }

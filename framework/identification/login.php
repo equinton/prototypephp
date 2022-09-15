@@ -7,6 +7,7 @@
  */
 require_once 'framework/identification/loginGestion.class.php';
 $dataClass = new LoginGestion($bdd_gacl, $ObjetBDDParam);
+$dataClass->setKeys($privateKey, $pubKey);
 $id = $_REQUEST["id"];
 if (!$APPLI_passwordMinLength > 0) {
   $APPLI_passwordMinLength = 12;
@@ -20,21 +21,22 @@ switch ($t_module["param"]) {
     $vue->set("framework/ident/loginliste.tpl", "corps");
     break;
   case "change":
-    /*
-         * open the form to modify the record
-         * If is a new record, generate a new record with default value :
-         * $_REQUEST["idParent"] contains the identifiant of the parent record
-         */
-    $data = dataRead($dataClass, $id, "framework/ident/loginsaisie.tpl", 0);
-    $vue->set($APPLI_passwordMinLength, "passwordMinLength");
-    unset($data["password"]);
-    /**
-     * Add dbconnect_provisional_nb
-     */
-    if (strlen($data["login"]) > 0) {
-      $data["dbconnect_provisional_nb"] = $dataClass->getDbconnectProvisionalNb($data["login"]);
+    try {
+      $data = $dataClass->lire($id);
+      $vue->set("framework/ident/loginsaisie.tpl", "corps");
+      $vue->set($APPLI_passwordMinLength, "passwordMinLength");
+      unset($data["password"]);
+      /**
+       * Add dbconnect_provisional_nb
+       */
+      if (!empty($data["login"])) {
+        $data["dbconnect_provisional_nb"] = $dataClass->getDbconnectProvisionalNb($data["login"]);
+      }
+      $vue->set($data, "data");
+    } catch (FrameworkException | ObjetBDDException | PDOException $e) {
+      $message->set($e->getMessage(), true);
+      $module_coderetour = -1;
     }
-    $vue->set($data, "data");
     break;
   case "write":
     /*
@@ -54,7 +56,7 @@ switch ($t_module["param"]) {
           $nom = $_REQUEST["login"];
         }
         $acllogin->addLoginByLoginAndName($_REQUEST["login"], $nom);
-      } catch (Exception $e) {
+      } catch (FrameworkException | ObjetBDDException | PDOException $e) {
         $message->set(_("Problème rencontré lors de l'écriture du login pour la gestion des droits"), true);
         $message->setSyslog($e->getMessage());
       }

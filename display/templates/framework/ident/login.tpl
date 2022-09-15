@@ -13,11 +13,17 @@
 					$(this).attr("src","display/images/framework/invisible-24.png");
 				}
 			});
+			$("#cas").click(function() {
+				$("#cas_required").val(1);
+				$("#login").removeAttr("required");
+				$("#password").removeAttr("required");
+				$("#loginForm").submit();
+			});
 		});
 	</script>
 
 	<div class="col-sm-12 col-md-6">
-			<form id="login" method="POST" action="index.php">
+			<form id="loginForm" method="POST" action="index.php">
 			<input type="hidden" name="module" value="loginExec">
 					<input type="hidden" name="moduleCalled" value={$moduleCalled}>
 	<div class="form-horizontal protoform">
@@ -40,9 +46,7 @@
 		<img src="display/images/framework/visible-24.png" height="16" id="passVisible" class="passwordVisible" >
 	</div>
 	</div>
-
-
-  {if $tokenIdentityValidity > 0}
+	  {if $tokenIdentityValidity > 0}
   	<div class="form-group center checkbox col-sm-12 input-lg">
   	<label>
   {$duration = $tokenIdentityValidity / 3600}
@@ -59,7 +63,15 @@
   <div class="form-group center">
 	<button type="submit" class="btn btn-primary button-valid input-lg">{t}Se connecter{/t}</button>
 	</div>
+	{if $CAS_enabled == 1}
+	<input id="cas_required" name="cas_required" value="0" type="hidden">
+	<div class="form-group">
+		<label for="cas" class="control-label col-sm-4">{t}ou :{/t}</label>
+		<div class="col-sm-8">
+			<button id="cas" class="btn btn-info">{t}Se connecter avec l'identification centralisée{/t}</button>
+		</div>
+	</div>
+	{/if}
 	</form>
-
 	</div>
 </div>

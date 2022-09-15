@@ -1,14 +1,16 @@
 <!-- Jquery -->
-<!--<script src="display/node_modules/jquery/dist/jquery.min.js"></script>-->
-<script src="display/javascript/jquery-3.3.1.min.js"></script>
-<script src="display/node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
-<script src="display/node_modules/jquery-ui/ui/widgets/tooltip.js"></script>
+<script src="display/node_modules/jquery/dist/jquery.min.js"></script>
+<!--script src="display/javascript/jquery-3.6.0.min.js"></script-->
 
-<link rel="stylesheet" href="display/node_modules/jquery-ui-dist/jquery-ui.min.css">
 <!-- Bootstrap -->
 <link rel="stylesheet" href="display/javascript/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="display/javascript/bootstrap/css/bootstrap-theme.min.css">
 <script src="display/javascript/bootstrap/js/bootstrap.min.js"></script>
+
+<!--JqueryUI-->
+<script src="display/node_modules/jquery-ui/dist/jquery-ui.min.js"></script>
+<script src="display/node_modules/jquery-ui/ui/widgets/tooltip.js"></script>
+<link rel="stylesheet" href="display/node_modules/jquery-ui/dist/themes/base/jquery-ui.min.css">
 
 <!--alpaca -->
 <script type="text/javascript" src="display/node_modules/handlebars/dist/handlebars.runtime.min.js"></script>
@@ -17,13 +19,6 @@
 <!--<script type="text/javascript" src="display/javascript/alpaca/js/alpaca-1.5.23.min.js"></script>
 <link rel="stylesheet" href="display/javascript/alpaca/css/alpaca-1.5.23.min.css" >-->
 
-<!-- leaflet -->
-<link rel="stylesheet" href="display/node_modules/leaflet/dist/leaflet.css">
-<script src="display/node_modules/leaflet/dist/leaflet.js"></script>
-<script src="display/node_modules/pouchdb/dist/pouchdb.min.js"></script>
-<script src="display/node_modules/leaflet.tilelayer.pouchdbcached/L.TileLayer.PouchDBCached.js"></script>
-<script src="display/node_modules/leaflet.polyline.snakeanim/L.Polyline.SnakeAnim.js"></script>
-<script src="display/node_modules/leaflet-mouse-position/src/L.Control.MousePosition.js"></script>
 <!-- extension pour le menu -->
 <script src="display/node_modules/smartmenus/dist/jquery.smartmenus.min.js" type="text/javascript"></script>
 <link type="text/css" href="display/node_modules/smartmenus/dist/addons/bootstrap/jquery.smartmenus.bootstrap.css"
@@ -38,10 +33,12 @@
 <script src="display/javascript/intl.js"></script>
 
 <!-- Boutons d'export associes aux datatables - classe datatable-export -->
+<script src="display/node_modules/jszip/dist/jszip.min.js"></script>
 <script src="display/node_modules/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
 <script src="display/node_modules/datatables.net-buttons/js/buttons.print.min.js"></script>
 <script src="display/node_modules/datatables.net-buttons/js/buttons.html5.min.js"></script>
 <script src="display/node_modules/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="display/node_modules/datatables.net-buttons/js/buttons.colVis.min.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="display/node_modules/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" />
 
@@ -50,7 +47,7 @@
 <script type="text/javascript" src="display/node_modules/datetime-moment/datetime-moment.js"></script>
 
 <!-- composant date/heure -->
-<script type="text/javascript" charset="utf-8" src="display/node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
+
 <script type="text/javascript" charset="utf-8"
 	src="display/node_modules/jquery-ui/ui/i18n/datepicker-en-GB.js"></script>
 <script type="text/javascript" charset="utf-8" src="display/node_modules/jquery-ui/ui/i18n/datepicker-fr.js"></script>
@@ -62,6 +59,7 @@
 <link rel="stylesheet" type="text/css" href="display/node_modules/jquery-ui-dist/jquery-ui.theme.min.css" />
 <link rel="stylesheet" type="text/css"
 	href="display/javascript/jquery-timepicker-addon/jquery-ui-timepicker-addon.min.css" />
+	<link rel="stylesheet" type="text/css" href="display/CSS/bootstrap-prototypephp.css">
 <script type="text/javascript" charset="utf-8" src="display/javascript/jquery-ui-custom/combobox.js"></script>
 
 <!-- Affichage des photos -->
@@ -72,7 +70,6 @@
 <script src="display/javascript/js-cookie-master/src/js.cookie.js"></script>
 
 <!-- Code specifique -->
-<link rel="stylesheet" type="text/css" href="display/CSS/bootstrap-prototypephp.css">
 <script type="text/javascript" src="display/javascript/bootstrap-prototypephp.js"></script>
 
 
@@ -194,10 +191,6 @@
 					extend: 'csvHtml5',
 					filename: 'export_' + new Date().toISOString()
 				},
-				/* {
-					 extend: 'pdfHtml5',
-					 orientation: 'landscape'
-				 },*/
 				'print'
 			]
 		} );
@@ -259,7 +252,25 @@
 			 * Initialisation des combobox
 			 */
 			$( ".combobox" ).combobox();
-
+			/**
+			 * Get a confirmation
+			 */
+			 $(".confirm").on("click keydown", function(event) {
+				 if (confirm("{t}Confirmez-vous l'opération ?{/t}") == false) {
+					 event.preventDefault();
+				 }
+			 });
+			/**
+			 * Add support of tabulation in textarea
+			 */
+			 $(".textarea-edit").keydown(function(event) {
+				if(event.keyCode===9){
+					var v=this.value,s=this.selectionStart,e=this.selectionEnd;
+					this.value=v.substring(0, s)+'\t'+v.substring(e);
+					this.selectionStart=this.selectionEnd=s+1;
+					return false;
+					}
+			 });
 		});
 	function encodeHtml( rawStr ) {
 		if ( rawStr && rawStr.length > 0 ) {
@@ -314,13 +325,17 @@
 			}, lexicalDelay );
 		} ).mouseleave( function () {
 			clearTimeout( lexicalTimer );
+			if($(this).is(':ui-tooltip')) {
+				$(this).tooltip("close");
+			}
 		} );
 		function tooltipDisplay( object ) {
-			object.tooltip( {
+			$(object).tooltip( {
 				content: tooltipContent
 			} );
-			object.attr( "title", tooltipContent );
-			object.tooltip( "open" );
+			//object.tooltip("option", "content", tooltipContent);
+			$(object).attr( "title", tooltipContent );
+			$(object).tooltip( "open" );
 		}
 	} );
 </script>

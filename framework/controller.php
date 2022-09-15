@@ -5,6 +5,10 @@
  * Fichier modifie le 21 mars 2013 par Eric Quinton
  *
  */
+class FrameworkException extends Exception
+{
+}
+
 try {
   /**
    * Lecture des parametres
@@ -47,6 +51,7 @@ try {
       $message->setSyslog($e->getMessage());
     }
   }
+
   /**
    * purge des logs
    */
@@ -102,7 +107,7 @@ try {
         /**
          * On recherche si le quatrieme element existe
          */
-        if (strlen($uri[4]) == 0) {
+        if (empty($uri[4])) {
           $_REQUEST["module"] .= "List";
         } else {
           $uri4 = explode("?", $uri[4]);
@@ -137,7 +142,7 @@ try {
   /**
    * page par defaut
    */
-  if (strlen($_REQUEST["module"]) == 0) {
+  if (empty($_REQUEST["module"]) ) {
     $_REQUEST["module"] = "default";
   }
   /**
@@ -228,24 +233,37 @@ try {
           $vue = new VueSmarty($SMARTY_param, $SMARTY_variables);
       }
     }
+
     /**
      * Verification si le login est requis
      */
-    if ((!empty($t_module["droits"]) || $t_module["loginrequis"] == 1) && !$_SESSION["is_authenticated"]) {
+    if ($_SESSION["cas_required"] == 1) {
+      $t_module["loginrequis"] = 1;
+      $_REQUEST["cas_required"] = 1;
+    }
+    if ((!empty($_REQUEST["login"]) || !empty($t_module["droits"]) || $t_module["loginrequis"] == 1) && !$_SESSION["is_authenticated"]) {
       /**
        * Affichage de l'ecran de saisie du login si necessaire
        */
       if (
-        in_array($ident_type, array("BDD", "LDAP", "LDAP-BDD",))
-        && !isset($_REQUEST["login"]) && empty($_SESSION["login"])
-        && !isset($_COOKIE["tokenIdentity"])
+        in_array($ident_type, array("BDD", "LDAP", "LDAP-BDD", "CAS-BDD"))
+        && empty($_REQUEST["login"])
+        && empty($_SESSION["login"])
+        && empty($_COOKIE["tokenIdentity"])
+        && empty($_REQUEST["cas_required"])
       ) {
         /**
          * Gestion de la saisie du login
          */
+        if (!$vue) {
+          throw new FrameworkException(_("Message technique : la vue n'a pas été initialisée lors de la création de la page de login"));
+        }
         $vue->set("framework/ident/login.tpl", "corps");
         $vue->set($tokenIdentityValidity, "tokenIdentityValidity");
         $vue->set($APPLI_lostPassword, "lostPassword");
+        if ($ident_type == "CAS-BDD") {
+          $vue->set(1, "CAS_enabled");
+        }
         $loginForm = true;
         if ($t_module["retourlogin"] == 1) {
           $vue->set($_REQUEST["module"], "moduleCalled");
@@ -258,9 +276,20 @@ try {
         if (empty($_SESSION["login"])) {
           require_once "framework/identification/login.class.php";
           $login = new Login($bdd_gacl, $ObjetBDDParam);
-          $_SESSION["login"] = $login->getLogin($ident_type, false);
+          if (!empty($_REQUEST["token"]) && !empty($_REQUEST["login"])) {
+            $ident_type = "ws";
+          }
+          /**
+           * For CAS-BDD
+           */
+          if ($_REQUEST["cas_required"] == 1 || !empty($_REQUEST["ticket"])) {
+            $ident_type = "CAS";
+            $_SESSION["cas_required"] = 1;
+          }
+          $_SESSION["login"] = strtolower($login->getLogin($ident_type, false));
         }
         if (!empty($_SESSION["login"])) {
+          unset($_SESSION["cas_required"]);
           /**
            * Verify if the double authentication is mandatory
            */
@@ -270,8 +299,6 @@ try {
             if (isset($_POST["otpcode"])) {
               include_once "framework/identification/totp.class.php";
               $totp = new Gacltotp($privateKey, $pubKey);
-              include_once "framework/droits/acllogin.class.php";
-              $acllogin = new Acllogin($bdd_gacl, $ObjetBDDParam);
               try {
                 if ($totp->verifyOtp($totp->decodeTotpKey($acllogin->getTotpKey($_SESSION["login"])), $_POST["otpcode"])) {
                   $_SESSION["is_authenticated"] = true;
@@ -312,13 +339,21 @@ try {
             }
           }
         } else {
-          if (!isset($vue)) {
-            $isHtml = true;
-            $vue = new VueSmarty($SMARTY_param, $SMARTY_variables);
+          if ($ident_type == "ws") {
+            http_response_code(401);
+            $vue->set(array("error_code" => 401, "error_message" => _("Identification refusée")));
+          } else {
+            if (!isset($vue)) {
+              $isHtml = true;
+              $vue = new VueSmarty($SMARTY_param, $SMARTY_variables);
+            }
+            $vue->set("framework/ident/login.tpl", "corps");
+            $vue->set($tokenIdentityValidity, "tokenIdentityValidity");
+            $vue->set($APPLI_lostPassword, "lostPassword");
+            if ($ident_type == "CAS-BDD") {
+              $vue->set(1, "CAS_enabled");
+            }
           }
-          $vue->set("framework/ident/login.tpl", "corps");
-          $vue->set($tokenIdentityValidity, "tokenIdentityValidity");
-          $vue->set($APPLI_lostPassword, "lostPassword");
         }
       }
       if ($_SESSION["is_authenticated"]) {
@@ -326,17 +361,15 @@ try {
          * Treatment of all operations after authentication
          */
         $_SESSION["last_activity_admin"] = time();
-        if ($t_module["type"] == "ws") {
-          if (file_exists("modules/postLoginWS.php")) {
-            include 'modules/postLoginWS.php';
-          }
+        if ($t_module["type"] == "ws" && file_exists("modules/postLoginWS.php")) {
+          include 'modules/postLoginWS.php';
         }
         unset($_SESSION["menu"]);
         $message->set(_("Identification réussie !"));
         /**
          * Regeneration de l'identifiant de session
          */
-        session_regenerate_id();
+        //session_regenerate_id(true);
         /**
          * Recuperation des connexions recentes
          */
@@ -380,7 +413,7 @@ try {
         /**
          * Preparation de l'identification par token
          */
-        if ($_POST["loginByTokenRequested"] == 1) {
+        if ($_POST["loginByTokenRequested"] == 1 ) {
           include_once 'framework/identification/token.class.php';
           $tokenClass = new Token($privateKey, $pubKey);
           try {
@@ -390,9 +423,7 @@ try {
              */
             $cookieParam = session_get_cookie_params();
             $cookieParam["lifetime"] = $tokenIdentityValidity;
-            if (!$APPLI_modeDeveloppement) {
-              $cookieParam["secure"] = true;
-            }
+            $cookieParam["secure"] = true;
             $cookieParam["httponly"] = true;
             setcookie('tokenIdentity', $token, time() + $tokenIdentityValidity, $cookieParam["path"], $cookieParam["domain"], $cookieParam["secure"], $cookieParam["httponly"]);
           } catch (Exception $e) {
@@ -413,7 +444,7 @@ try {
     /**
      * Verification des droits
      */
-    if (strlen($t_module["droits"]) > 1) {
+    if (!empty($t_module["droits"]) ) {
       if (!isset($_SESSION["login"])) {
         $resident = 0;
         $motifErreur = "nologin";
@@ -455,17 +486,19 @@ try {
     /**
      * Count all calls to the module
      */
-    if ($t_module["maxCountByHour"] > 0) {
-      if (!$log->getCallsToModule($module, $t_module["maxCountByHour"], $APPLI_hour_duration)) {
-        $resident = 0;
-        $motifErreur = "callsReached";
-      }
+    if (
+      $t_module["maxCountByHour"] > 0
+      && !$log->getCallsToModule($module, $t_module["maxCountByHour"], $APPLI_hour_duration)
+    ) {
+      $resident = 0;
+      $motifErreur = "callsReached";
     }
-    if ($t_module["maxCountByDay"] > 0) {
-      if (!$log->getCallsToModule($module, $t_module["maxCountByDay"], $APPLI_day_duration)) {
-        $resident = 0;
-        $motifErreur = "callsReached";
-      }
+    if (
+      $t_module["maxCountByDay"] > 0
+      && !$log->getCallsToModule($module, $t_module["maxCountByDay"], $APPLI_day_duration)
+    ) {
+      $resident = 0;
+      $motifErreur = "callsReached";
     }
 
     /**
@@ -518,12 +551,11 @@ try {
     /**
      * fin d'analyse du module
      */
-
     /**
      * Enregistrement de l'acces au module
      */
     try {
-      isset( $_SESSION["login"]) ? $logLogin = $_SESSION["login"] : $logLogin = "";
+      isset($_SESSION["login"]) ? $logLogin = $_SESSION["login"] : $logLogin = "";
       $log->setLog($logLogin, $module, $motifErreur);
     } catch (Exception $e) {
       if ($OBJETBDD_debugmode > 0) {
@@ -545,7 +577,9 @@ try {
       if (!$isAjax && $module != "default") {
         $_SESSION["moduleBefore"] = $module;
       }
-      include $t_module["action"];
+      if (!empty($t_module["action"])) {
+        include $t_module["action"];
+      }
 
       if ($module == "loginExec" || $module == "totpVerifyExec") {
         if ($_SESSION["is_authenticated"]) {
@@ -583,17 +617,17 @@ try {
        */
       switch ($motifErreur) {
         case "droitko":
-          if (strlen($t_module["droitko"]) > 1) {
-            $module = $t_module["droitko"];
-          } else {
-            $module = $APPLI_moduleDroitKO;
-          }
           /**
            * Send mail to administrators
            */
           $subject = "SECURITY REPORTING - " . $GACL_aco . " - The user " . $_SESSION["login"] . "  has attempted to access an unauthorized module";
           $contents = "<html><body>" . "The account <b>" . $_SESSION["login"] . "<b> has attempted at $date the user has tried to access at the module $module without having the necessary rights" . '<br>Software : <a href="' . $APPLI_address . '">' . $APPLI_address . "</a>" . '</body></html>';
           $log->sendMailToAdmin($subject, $contents, $module, $_SESSION["login"]);
+          if (!empty($t_module["droitko"])) {
+            $module = $t_module["droitko"];
+          } else {
+            $module = $APPLI_moduleDroitKO;
+          }
           break;
         case "nologin":
           $module = $APPLI_moduleErrorLogin;
@@ -672,11 +706,15 @@ try {
    */
   if (isset($vue)) {
     try {
+      if (!isset ($paramSend)) {
+        $paramSend = array();
+      }
       $vue->send($paramSend);
     } catch (Exception $e) {
       $message->setSyslog($e->getMessage());
     }
   }
+
   /**
    * Generation des messages d'erreur pour Syslog
    */

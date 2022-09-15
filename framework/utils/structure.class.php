@@ -195,7 +195,7 @@ class Structure extends ObjetBDD
           }
           $val .= '</td>
                 <td class="center">';
-          if (strlen($column["key"]) > 0) {
+          if (!empty($column["key"]) ) {
             $val .= "X";
           }
           $val .= '</td>
@@ -292,7 +292,7 @@ class Structure extends ObjetBDD
           $val .= $this->el($column["field"]) . " & "
             . $this->el($column["type"]) . " & ";
           ($column["notnull"] == 1) ? $val .= "X & " : $val .= " & ";
-          strlen($column["key"]) > 0 ? $val .= "X & " : $val .= " & ";
+          !empty($column["key"])  ? $val .= "X & " : $val .= " & ";
           $val .= $this->el($column["comment"])
             . "\\\\" . PHP_EOL;
           if ($hline) {
@@ -426,10 +426,8 @@ class Structure extends ObjetBDD
   {
     if ($referencedBy) {
       $type = 'y';
-      $schemaType = 'x';
     } else {
       $type = 'x';
-      $schemaType = 'y';
     }
     $sql = "
         select distinct c.constraint_name

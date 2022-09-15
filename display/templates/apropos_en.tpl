@@ -5,7 +5,7 @@ Version {$version} du {$versiondate}.
 </p>
 
 
-    <h3>Copyright © 2006-2019 - Eric Quinton</h3>
+    <h3>Copyright © 2006-2022 - Eric Quinton</h3>
 <p>
 
 <br>

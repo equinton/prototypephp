@@ -8,7 +8,7 @@
  */
 class Log extends ObjetBDD
 {
-
+    var $currentDate;
     /**
      * Constructeur
      *
@@ -43,6 +43,7 @@ class Log extends ObjetBDD
                 "type" => 0,
             ),
         );
+        $this->currentDate = date($_SESSION["MASKDATELONG"]);
         parent::__construct($bdd, $param);
     }
 
@@ -74,7 +75,7 @@ class Log extends ObjetBDD
             $module = "unknown";
         }
         $data["nom_module"] = $GACL_aco . "-" . $module;
-        $data["log_date"] = date($_SESSION["MASKDATELONG"]);
+        $data["log_date"] = $this->currentDate;
         $data["ipaddress"] = $this->getIPClientAddress();
         return $this->ecrire($data);
     }
@@ -144,7 +145,7 @@ class Log extends ObjetBDD
      * Get the list of all connexions during max duration of session
      *
      * @param integer $duration
-     * @return void
+     * @return array
      */
     public function getLastConnections($duration = 36000)
     {
@@ -179,9 +180,11 @@ class Log extends ObjetBDD
      */
     public function getLastConnexionType($login)
     {
-        if (strlen($login) > 0) {
+        if (!empty($login)) {
+            global $GACL_aco;
+            $like = " like '".$GACL_aco."-connection%'";
             $sql = "select nom_module from log";
-            $sql .= " where login = :login and nom_module like 'connection%' and commentaire = 'ok' and nom_module <> 'connection-token'";
+            $sql .= " where login = :login and nom_module $like and commentaire = 'ok' and nom_module <> 'connection-token'";
             $sql .= "order by log_id desc limit 1";
             $data = $this->lireParamAsPrepared(
                 $sql,
@@ -190,7 +193,7 @@ class Log extends ObjetBDD
                 )
             );
             $connectionType = explode("-", $data["nom_module"]);
-            return $connectionType[0];
+            return $connectionType[2];
         }
     }
 
@@ -217,7 +220,7 @@ class Log extends ObjetBDD
         $date = new DateTime("now");
         $date->sub(new DateInterval("PT" . $maxtime . "S"));
         $nom_module = $GACL_aco."-connectionBlocking";
-        $sql = "select log_id from log where login = :login and nom_module = '$nom_module' and log_date > :blockingdate order by log_id desc limit 1";
+        $sql = "select log_id from log where lower(login) = lower(:login) and nom_module = '$nom_module' and log_date > :blockingdate order by log_id desc limit 1";
         $data = $this->lireParamAsPrepared(
             $sql,
             array(
@@ -230,7 +233,7 @@ class Log extends ObjetBDD
         }
         if (!$accountBlocking) {
             $nom_module = $GACL_aco."-connection%";
-            $sql = "select log_date, commentaire from log where login = :login
+            $sql = "select log_date, commentaire from log where lower(login) = lower(:login)
                     and nom_module like '$nom_module'
                     and log_date > :blockingdate
                 order by log_id desc limit :nbmax";
@@ -275,6 +278,7 @@ class Log extends ObjetBDD
     public function blockingAccount($login)
     {
         global $message, $APPLI_address, $GACL_aco;
+        $login = strtolower($login);
         $this->setLog($login, "connectionBlocking");
         $message->setSyslog("connectionBlocking for login $login");
         $date = date("Y-m-d H:i:s");
@@ -296,7 +300,7 @@ class Log extends ObjetBDD
         global $APPLI_address, $GACL_aco, $message;
         $sql = "select count(*) as nombre from log
                 where nom_module = :moduleName
-                and login = :login
+                and lower(login) = lower(:login)
                 and log_date > :dateref
                 ";
         $dateRef = date('Y-m-d H:i:s', time() - $duration);
@@ -358,7 +362,7 @@ class Log extends ObjetBDD
             foreach ($logins as $value) {
                 $admin = $value["login"];
                 $dataLogin = $loginGestion->lireByLogin($admin);
-                if (strlen($dataLogin["mail"]) > 0) {
+                if (!empty($dataLogin["mail"])) {
                     /**
                      * search if a mail has been send to this admin for the same event and the same user recently
                      */
@@ -394,6 +398,7 @@ class Log extends ObjetBDD
      */
     function countNbExpiredConnectionsFromDate($login, $date)
     {
+        $login = strtolower($login);
         $sql = "select count(*) as nombre from log
                 where login = :login
                 and log_date::date > :date
@@ -409,12 +414,13 @@ class Log extends ObjetBDD
      */
     function getTimestampFromLastCall($login)
     {
+        $login = strtolower($login);
         $ip = getIPClientAddress();
         $sql = "select extract (epoch from now() - log_date) as ts from log
                 where login = :login and ipaddress = :ip
                 order by log_date desc limit 1";
         $data = $this->lireParamAsPrepared($sql, array("login" => $login, "ip" => $ip));
-        if (strlen($data["ts"]) == 0) {
+        if (empty($data["ts"])) {
             $data["ts"] = 10000;
         }
         return ($data["ts"]);
@@ -445,11 +451,11 @@ class Log extends ObjetBDD
             "date_from" => $this->formatDateLocaleVersDB($param["date_from"]),
             "date_to" => $this->formatDateLocaleVersDB($param["date_to"])
         );
-        if (strlen($param["loglogin"]) > 0) {
-            $sql .= " and login = :login";
+        if (!empty($param["loglogin"])) {
+            $sql .= " and lower(login) = lower(:login)";
             $sqlParam["login"] = $param["loglogin"];
         }
-        if (strlen($param["logmodule"]) > 0) {
+        if (!empty($param["logmodule"])) {
             $sql .= " and nom_module = :module";
             $sqlParam["module"] = $param["logmodule"];
         }

@@ -1,6 +1,23 @@
-Framework prototypephp © Eric Quinton, 2006-2021
+Framework prototypephp © Eric Quinton, 2006-2022
 News
 ============
+Release v3.4.0 - September 2022
+-------------------------------
+New features:
+- support the identification CAS-BDD: in the connection page, a button can call the CAS server to authenticate the user
+- support PHP 8.1
+
+Operations to upgrade:
+- replace framework folder
+- replace /display/templates/framework folder
+- replace display/templates/entete.tpl
+- replace /display/templates/main_js.tpl (compare with your actual version before)
+- replace /dislay/CSS/bootstrap-prototypephp.css
+- add images from /display/images/framework/
+- edit composer.json, and verify the components and the versions of each. Run after that: composer upgrade
+- in display/, run npm upgrade && npm install markdown-it-attrs && npm install jszip
+
+
 Release v3.3.0 - February 2021
 ------------------------------
 New features:
@@ -16,6 +33,7 @@ New features:
 - in development, adding the function printA to display the content of arrays or objects
 
 Operations to upgrade:
+- replace framework folder
 - replace /display/templates/framework folder
 - replace display/templates/entete.tpl
 - replace /display/templates/main_js.tpl (compare with your actual version before)
@@ -37,6 +55,12 @@ install/pgsql/request.sql
 - upgrade php version to 7.3 or later
 - copy plugins/phpqrcode
 - add or replace the content of display/javascript
+- add or modify these lines in param/param.default.inc.php:
+$navigationxml = array("framework/actions.xml","param/actions.xml");
+$LDAP = array (...,
+"timeout"=>2
+)
+delete the variable $display
 - in a terminal, in display folder, run: npm list and verify the content of the list:
 ├── alpaca@1.5.27
 ├── combobox@1.0.1

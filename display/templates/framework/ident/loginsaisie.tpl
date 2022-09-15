@@ -34,7 +34,7 @@ $(document).ready(function() {
 		getPassword('pass1', 'pass2', 'motdepasse', minLength);
 	});
 
-	$("#password_copy").click(function() { 
+	$("#password_copy").click(function() {
 		 var temp = $("<input>");
 		  $("body").append(temp);
 		temp.val($("#motdepasse").val()).select();
@@ -44,10 +44,10 @@ $(document).ready(function() {
 	/*
 	 * Ajouts pour gestion des services web
 	 */
-	$("#tokenws_reset").click(function() { 
+	$("#tokenws_reset").click(function() {
 		$("#tokenws").val("");
 	});
-	$("#tokenws_copy").click(function() { 
+	$("#tokenws_copy").click(function() {
 		 var temp = $("<input>");
 		  $("body").append(temp);
 		temp.val($("#tokenws").val()).select();
@@ -64,14 +64,13 @@ $(document).ready(function() {
 		if (visible[fieldnumber]) {
 			$(fieldname).prop("type", "password");
 			visible[fieldnumber] = false;
-			$(this).attr("src","display/images/framework/visible-24.png");
+			$(this).attr("src","display/images/framework/eye-open.png");
 		} else {
 			$(fieldname).prop("type", "text");
 			visible[fieldnumber] = true;
-			$(this).attr("src","display/images/framework/invisible-24.png");
+			$(this).attr("src","display/images/framework/eye-close.png");
 		}
 	});
-
 });
 
 </script>
@@ -85,7 +84,7 @@ $(document).ready(function() {
 <input type="hidden" name="moduleBase" value="login">
 <input type="hidden" name="action" value="Write">
 <input type="hidden" name="id" value="{$data.id}">
-	
+
 
 <div class="form-group">
 <label for="login" class="control-label col-md-4"><span class="red">*</span> {t}Login :{/t}</label>
@@ -108,7 +107,7 @@ $(document).ready(function() {
 <div class="form-group">
 <label for="mail" class="col-md-4 control-label">{t}Adresse e-mail :{/t} </label>
 <div class="col-md-8">
-<input type="email" id="mail" class="form-control" name="mail" value="{$data.mail}"> 
+<input type="email" id="mail" class="form-control" name="mail" value="{$data.mail}">
 </div>
 </div>
 <div class="form-group">
@@ -139,7 +138,6 @@ $(document).ready(function() {
 	<button class="btn btn-info" id="tokenws_copy" type="button">{t}Copier dans le presse-papier{/t}</button>
     <button class="btn btn-info" id="tokenws_reset" type="button">{t}Réinitialiser...{/t}</button>
   </div>
-
 </div>
 </div>
 {if $data.dbconnect_provisional_nb > 3}
@@ -155,20 +153,20 @@ $(document).ready(function() {
 <input class="form-control" type="password" autocomplete="off" id="pass1" name="pass1" >
 </div>
 <div class="col-md-1">
-	<img src="display/images/framework/visible-24.png" height="16" id="passVisible" class="passwordVisible" data-fieldnumber="0">
+	<img src="display/images/framework/eye-open.png" height="16" id="passVisible" class="passwordVisible" data-fieldnumber="0">
 </div>
 </div>
 <div class="form-group">
-<label for="pass2" class="col-md-4 control-label"><span class="red">*</span> {t}Répétez le mot de passe :{/t} </label> 
+<label for="pass2" class="col-md-4 control-label"><span class="red">*</span> {t}Répétez le mot de passe :{/t} </label>
 <div class="col-md-7">
 <input type="password" class="form-control" id="pass2" autocomplete="off" name="pass2">
 </div>
 <div class="col-md-1">
-	<img src="display/images/framework/visible-24.png" height="16" id="passVisible2" class="passwordVisible" data-fieldnumber="1">
+	<img src="display/images/framework/eye-open.png" height="16" id="passVisible2" class="passwordVisible" data-fieldnumber="1">
 </div>
 </div>
 <div class="form-group">
-<label for="generate" class="col-md-4 control-label">{t}Générez un mot de passe aléatoire{/t}</label> 
+<label for="generate" class="col-md-4 control-label">{t}Générez un mot de passe aléatoire{/t}</label>
 <div class="col-md-2">
 <input id="generate" type="button" class="btn btn-info" name="generate" value="{t}Générez{/t}" >
 </div>
@@ -205,6 +203,19 @@ $(document).ready(function() {
 </label>
 </span>
 </div>
+<div class="form-group">
+	<label for="attempts" class="col-md-4 control-label">{t}Essais de connexion infructueux et date du dernier essai :{/t}</label>
+	<div class="col-md-2">
+		<input class="form-control" id="nbattempts" name="nbattempts" value="{$data.nbattempts}" readonly>
+	</div>
+	<div class="col-md-4">
+		<input class="form-control" id="lastattempt" name="lastattempts" value="{$data.lastattempt}" readonly>
+	</div>
+	<div class="col-md-2">
+		<input type="checkbox" class="form-control" id="resetattempts" name="resetattempts" value="1">
+		<label class="control-label">{t}Réinitialiser...{/t}</label>
+	</div>
+</div>
 <div class="form-group center">
       <button type="submit" class="btn btn-primary button-valid">{t}Valider{/t}</button>
       {if $data.id > 0 }
@@ -220,4 +231,3 @@ $(document).ready(function() {
 </div>
 </div>
 <span class="red">*</span><span class="messagebas">{t}Donnée obligatoire{/t}</span>
-

@@ -7,7 +7,8 @@
  * Classe maîtrisant les aspects identification.
  */
 class IdentificationException extends Exception
-{ }
+{
+}
 
 /**
  * @class Identification
@@ -30,22 +31,6 @@ class Identification
     public $CAS_debug = false;
 
     public $CAS_CApath;
-
-    public $LDAP_address;
-
-    public $LDAP_port;
-
-    public $LDAP_rdn;
-
-    public $LDAP_basedn;
-
-    public $LDAP_user_attrib;
-
-    public $LDAP_v3;
-
-    public $LDAP_tls;
-
-    public $LDAP_upn_suffix; // User Principal Name (UPN) Suffix pour Active Directory
 
     public $password;
 
@@ -95,23 +80,11 @@ class Identification
     /**
      * Initialisation du test de connexion ldap
      *
-     * @param String $LDAP_address
-     * @param String $LDAP_port
-     * @param String $LDAP_basedn
-     * @param String $LDAP_user_attrib
-     * @param String $LDAP_v3
-     * @param String $LDAP_tls
-     * @param String $LDAP_upn_suffix
+     * @param array $LDAP: all parameters
      */
-    public function init_LDAP($LDAP_address, $LDAP_port, $LDAP_basedn, $LDAP_user_attrib, $LDAP_v3, $LDAP_tls, $LDAP_upn_suffix = "")
+    public function init_LDAP($LDAP)
     {
-        $this->LDAP_address = $LDAP_address;
-        $this->LDAP_port = $LDAP_port;
-        $this->LDAP_basedn = $LDAP_basedn;
-        $this->LDAP_user_attrib = $LDAP_user_attrib;
-        $this->LDAP_v3 = $LDAP_v3;
-        $this->LDAP_tls = $LDAP_tls;
-        $this->LDAP_upn_suffix = $LDAP_upn_suffix;
+        $this->LDAP = $LDAP;
     }
 
     /**
@@ -124,7 +97,7 @@ class Identification
             phpCAS::setVerbose(true);
         }
         phpCAS::client(CAS_VERSION_2_0, $this->CAS_address, $this->CAS_port, $this->CAS_uri);
-        if (strlen($this->CAS_CApath) > 0) {
+        if (!empty($this->CAS_CApath)) {
             phpCAS::setCasServerCACert($this->CAS_CApath);
         } else {
             phpCAS::setNoCasServerValidation();
@@ -149,8 +122,8 @@ class Identification
     public function testLoginLdap($login, $password)
     {
         $loginOk = "";
-        global $log, $LOG_duree, $message;
-        if (strlen($login) > 0 && strlen($password) > 0) {
+        global $log;
+        if (!empty($login)  && !empty($password) ) {
             $login = str_replace(
                 array(
                     '\\',
@@ -176,16 +149,23 @@ class Identification
                     $login = str_replace($char, '\\' . $hex, $login);
                 }
             }
-            $ldap = @ldap_connect($this->LDAP_address, $this->LDAP_port);
+            $ldap = @ldap_connect($this->LDAP["address"], $this->LDAP["port"]);
+            /**
+             * Set options
+             */
+            ldap_set_option($ldap, LDAP_OPT_NETWORK_TIMEOUT, $this->LDAP["timeout"]);
+            ldap_set_option($ldap, LDAP_OPT_TIMELIMIT, $this->LDAP["timeout"]);
+            ldap_set_option($ldap, LDAP_OPT_TIMEOUT, $this->LDAP["timeout"]);
             if (!$ldap) {
                 throw new LdapException("Impossible de se connecter au serveur LDAP.");
             }
-            if ($this->LDAP_v3) {
+            if ($this->LDAP["v3"]) {
                 ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
             }
-            if ($this->LDAP_tls) {
+            if ($this->LDAP["tls"]) {
                 ldap_start_tls($ldap);
             }
+
             /*
              * Pour OpenLDAP et Active Directory, "bind rdn" de la forme : user_attrib=login,basedn
              *     avec généralement user_attrib=uid pour OpenLDAP,
@@ -194,9 +174,9 @@ class Identification
              * D'où un "bind rdn" de la forme générique suivante :
              *     (user_attrib=)login(@upn_suffix)(,basedn)
              */
-            $user_attrib_part = !empty($this->LDAP_user_attrib) ? $this->LDAP_user_attrib . "=" : "";
-            $upn_suffix_part = !empty($this->LDAP_upn_suffix) ? "@" . $this->LDAP_upn_suffix : "";
-            $basedn_part = !empty($this->LDAP_basedn) ? "," . $this->LDAP_basedn : "";
+            $user_attrib_part = !empty($this->LDAP["user_attrib"]) ? $this->LDAP["user_attrib"] . "=" : "";
+            $upn_suffix_part = !empty($this->LDAP["upn_suffix"]) ? "@" . $this->LDAP["upn_suffix"] : "";
+            $basedn_part = !empty($this->LDAP["basedn"]) ? "," . $this->LDAP["basedn"] : "";
             //     (user_attrib=)login(@upn_suffix)(,basedn)
             $dn = $user_attrib_part . $login . $upn_suffix_part . $basedn_part;
             $rep = ldap_bind($ldap, $dn, $password);
@@ -242,13 +222,13 @@ class Identification
         session_destroy();
         if ($this->ident_type == "CAS") {
             phpCAS::client(CAS_VERSION_2_0, $this->CAS_address, $this->CAS_port, $this->CAS_uri);
-            if (strlen($this->CAS_CApath) > 0) {
+            if (!empty($this->CAS_CApath) ) {
                 phpCAS::setCasServerCACert($this->CAS_CApath);
             } else {
                 phpCAS::setNoCasServerValidation();
             }
-            if (strlen($adresse_retour) > 0) {
-                phpCAS::logoutWithUrl($adresse_retour);
+            if (!empty($adresse_retour)) {
+                phpCAS::logout(array("url" => $adresse_retour));
             } else {
                 phpCAS::logout();
             }
@@ -259,7 +239,7 @@ class Identification
              * En principe, l'url de deconnexion du CAS
              */
             global $ident_header_logout_address;
-            if (strlen($ident_header_logout_address) > 0) {
+            if (!empty($ident_header_logout_address) ) {
                 header('Location: ' . $ident_header_logout_address);
                 flush();
             }
@@ -267,41 +247,6 @@ class Identification
         return 1;
     }
 
-    /**
-     * Initialisation de la classe gacl
-     *
-     * @param $gacl :
-     *            instance
-     *            gacl
-     * @param string $aco
-     *            : nom
-     *            de la catégorie de base contenant les objets à tester
-     * @param string $aro
-     *            : nom
-     *            de la catégorie contenant les logins à tester
-     */
-    public function setgacl(&$gacl, $aco, $aro)
-    {
-        $this->gacl = $gacl;
-        $this->aco = $aco;
-        $this->aro = $aro;
-    }
-
-    /**
-     * Teste les droits
-     *
-     * @param string $aco
-     *            : Categorie a tester
-     * @return int : 0 | 1
-     */
-    public function getgacl($aco)
-    {
-        $login = $this->getLogin();
-        if ($login == -1) {
-            return -1;
-        }
-        return $this->gacl->acl_check($this->aco, $aco, $this->aro, $login);
-    }
 
     /**
      * Verifie l'identification
@@ -323,16 +268,11 @@ class Identification
             $tokenClass = new Token();
             try {
                 $login = $tokenClass->openTokenFromJson($_COOKIE["tokenIdentity"]);
-                if (strlen($login) > 0) {
-                    /*
-                     * Verification si le nombre de tentatives de connexion n'a pas ete atteint
-                     */
-                    if (!$log->isAccountBlocked($login, $CONNEXION_blocking_duration, $CONNEXION_max_attempts)) {
-                        $verify = true;
-                        $log->setLog($login, $module . "-connexion", "token-ok");
-                    }
+                if (!empty($login)  && !$log->isAccountBlocked($login, $CONNEXION_blocking_duration, $CONNEXION_max_attempts)) {
+                    $verify = true;
+                    $log->setLog($login, $module . "-connexion", "token-ok");
                 }
-            } catch (Exception $e) {
+            } catch (FrameworkException $e) {
                 $log->setLog($login, $module . "-connexion", "token-ko");
                 $message->set($e->getMessage(), true);
             }
@@ -343,8 +283,8 @@ class Identification
              */
             global $ident_header_vars;
             $headers = getHeaders($ident_header_vars["radical"]);
-            $login = $headers[$ident_header_vars["login"]];
-            if (strlen($login) > 0 && count($headers) > 0) {
+            $login = strtolower($headers[$ident_header_vars["login"]]);
+            if (!empty($login) && !empty($headers)) {
                 /**
                  * Verify if the login exists
                  */
@@ -368,16 +308,16 @@ class Identification
                          * Verify if the structure is authorized
                          */
                         $createUser = true;
-                        if (count($ident_header_vars["organizationGranted"]) > 0 && !in_array($headers[$ident_header_vars["organization"]], $ident_header_vars["organizationGranted"])) {
+                        if (!empty($ident_header_vars["organizationGranted"]) && !in_array($headers[$ident_header_vars["organization"]], $ident_header_vars["organizationGranted"])) {
                             $createUser = false;
-                            $log->setLog($login, "connexion", "HEADER-ko. The ".$headers[$ident_header_vars["organization"]]. " is not authorized to connect to this application");
+                            $log->setLog($login, "connexion", "HEADER-ko. The " . $headers[$ident_header_vars["organization"]] . " is not authorized to connect to this application");
                         }
                         if ($createUser) {
-                            $dlogin = array (
-                            "login"=>$login,
-                            "nom"=>$headers[$ident_header_vars["cn"]],
-                            "mail"=>$headers[$ident_header_vars["mail"]],
-                            "actif"=>0
+                            $dlogin = array(
+                                "login" => $login,
+                                "nom" => $headers[$ident_header_vars["cn"]],
+                                "mail" => $headers[$ident_header_vars["mail"]],
+                                "actif" => 0
                             );
                             $login_id = $loginGestion->ecrire($dlogin);
                             if ($login_id > 0) {
@@ -391,16 +331,16 @@ class Identification
                                  * Send mail to administrators
                                  */
                                 global $APPLI_nom, $APPLI_mail;
-                                $subject = $APPLI_nom." "._("Nouvel utilisateur");
-                                $contents = "<html><body>".sprintf(_("%1$s a créé son compte avec le login %2$s dans l'application %3$s.
+                                $subject = $APPLI_nom . " " . _("Nouvel utilisateur");
+                                $contents = "<html><body>" . sprintf(_("%1$s a créé son compte avec le login %2$s dans l'application %3$s.
                                 <br>Il est rattaché à l'organisation %5$s.
                                 <br>Le compte est inactif jusqu'à ce que vous l'activiez.
                                 <br>Pour activer le compte, connectez-vous à l'application
                                     <a href='%4$s'>%4$s</a>
-                                <br>Ne répondez pas à ce mail, qui est généré automatiquement")."</body></html>",$login,$headers[$ident_header_vars["cn"]],$APPLI_nom, $APPLI_mail, $headers[$ident_header_vars["organization"]]);
+                                <br>Ne répondez pas à ce mail, qui est généré automatiquement") . "</body></html>", $login, $headers[$ident_header_vars["cn"]], $APPLI_nom, $APPLI_mail, $headers[$ident_header_vars["organization"]]);
 
-                                $log->sendMailToAdmin($subject,$contents,"loginCreateByHeader",$login);
-                                $message->set(_("Votre compte a été créé, mais est inactif. Un mail a été adressé aux administrateurs pour son activation") );
+                                $log->sendMailToAdmin($subject, $contents, "loginCreateByHeader", $login);
+                                $message->set(_("Votre compte a été créé, mais est inactif. Un mail a été adressé aux administrateurs pour son activation"));
                             }
                         }
                     }
@@ -424,7 +364,7 @@ class Identification
                  * Verification du login aupres du serveur CAS
                  */
                 $login = $this->getLoginCas($modeAdmin);
-                if (strlen($login) > 0) {
+                if (!empty($login) ) {
                     $verify = true;
                 }
             }
@@ -432,35 +372,30 @@ class Identification
             /*
              * On verifie si on est en retour de validation du login
              */
-            if (strlen($loginEntered) > 0) {
+            if (!empty($loginEntered)  && !$log->isAccountBlocked($loginEntered, $CONNEXION_blocking_duration, $CONNEXION_max_attempts)) {
+                $verify = true;
                 /*
-                 * Verification si le nombre de tentatives de connexion n'est pas atteint
-                 */
-                if (!$log->isAccountBlocked($loginEntered, $CONNEXION_blocking_duration, $CONNEXION_max_attempts)) {
-                    $verify = true;
-                    /*
                      * Verification de l'identification aupres du serveur LDAP, ou LDAP puis BDD
                      */
-                    if ($ident_type == "LDAP" || $ident_type == "LDAP-BDD") {
+                if ($ident_type == "LDAP" || $ident_type == "LDAP-BDD") {
 
-                        try {
-                            $login = $this->testLoginLdap($loginEntered, $password);
-                            if (strlen($login) == 0 && $ident_type == "LDAP-BDD") {
-                                /*
+                    try {
+                        $login = $this->testLoginLdap($loginEntered, $password);
+                        if (empty($login) && $ident_type == "LDAP-BDD") {
+                            /*
                                  * L'identification en annuaire LDAP a echoue : verification en base de donnees
                                  */
-                                $login = $this->testBdd($loginEntered, $password);
-                            }
-                        } catch (Exception $e) {
-                            $message->setSyslog($e->getMessage());
+                            $login = $this->testBdd($loginEntered, $password);
                         }
-                    } elseif ($ident_type == "BDD") {
-                        /*
+                    } catch (Exception $e) {
+                        $message->setSyslog($e->getMessage());
+                    }
+                } elseif ($ident_type == "BDD") {
+                    /*
                          * Verification de l'identification uniquement en base de donnees
                          */
 
-                        $login = $this->testBdd($loginEntered, $password);
-                    }
+                    $login = $this->testBdd($loginEntered, $password);
                 }
             }
         }
@@ -471,7 +406,7 @@ class Identification
         if (!$verify) {
             $login = "";
         }
-        return $login;
+        return strtolower($login);
     }
 
     /**
@@ -494,7 +429,3 @@ class Identification
         return $login;
     }
 }
-
-
-
-

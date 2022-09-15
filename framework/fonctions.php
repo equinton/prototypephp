@@ -1,5 +1,6 @@
 <?php
 
+class FileException extends Exception {}
 /**
  * Ensemble de fonctions utilisees pour la gestion des fiches
  */
@@ -34,7 +35,7 @@ function dataRead($dataClass, $id, $smartyPage, $idParent = null)
 
       try {
         $data = $dataClass->lire($id, true, $idParent);
-      } catch (Exception $e) {
+      } catch (FrameworkException | ObjetBDDException | PDOException $e) {
         if ($OBJETBDD_debugmode > 0) {
           foreach ($dataClass->getErrorData(1) as $messageError) {
             $message->set($messageError, true);
@@ -83,9 +84,11 @@ function dataWrite($dataClass, $data, $isPartOfTransaction = false)
       $message->setSyslog(_("La clé n'a pas été retournée lors de l'enregistrement dans ") . get_class($dataClass));
       $module_coderetour = -1;
     }
-  } catch (PDOException |ObjetBDDException $e) {
+  } catch (PDOException | ObjetBDDException $e) {
     if (strpos($e->getMessage(), "nique violation") !== false) {
       $message->set(_("Un enregistrement portant déjà ce nom existe déjà dans la base de données."), true);
+    } else {
+      $message->set($e->getMessage(), true);
     }
     if ($OBJETBDD_debugmode > 0) {
       foreach ($dataClass->getErrorData(1) as $messageError) {
@@ -132,28 +135,26 @@ function dataDelete($dataClass, $id, $isPartOfTransaction = false)
         $module_coderetour = 1;
       }
       $log->setLog($_SESSION["login"], get_class($dataClass) . "-delete", $id);
-    } catch (PDOException | ObjetBDDException $e) {
-
+    }
+    catch (ObjetBDDException $eo) {
+      $message->set($eo->getMessage(), true);
+    }
+    catch (PDOException $e) {
       foreach ($dataClass->getErrorData(1) as $messageError) {
         $message->setSyslog($messageError);
       }
-      /*
-             * recherche des erreurs liees a une violation de cle etrangere
-             */
-      if (strpos($e->getMessage(), "key violation") !== false) {
+      /**
+       * recherche des erreurs liees a une violation de cle etrangere
+       */
+      if (strpos($e->getMessage(), "[23503]") !== false) {
         $message->set(_("La suppression n'est pas possible : des informations sont référencées par cet enregistrement"), true);
-      }
-      if ($OBJETBDD_debugmode > 0) {
-        $message->set($e->getMessage(), true);
       }
       if ($message->getMessageNumber() == 0) {
         $message->set(_("Problème lors de la suppression"), true);
-      } else {
-        $message->set(_("Suppression non réalisée"));
       }
       $message->setSyslog($e->getMessage());
       if ($isPartOfTransaction) {
-        throw new Exception(sprintf("Suppression impossible de l'enregistrement %s"), $id);
+        throw new FrameworkException(sprintf("Suppression impossible de l'enregistrement %s"), $id);
       }
       $ret = -1;
     }
@@ -288,10 +289,8 @@ function check_encoding($data)
       }
     }
   } else {
-    if (strlen($data) > 0) {
-      if (!mb_check_encoding($data, "UTF-8")) {
-        $result = false;
-      }
+    if (!empty($data) && !mb_check_encoding($data, "UTF-8")) {
+      $result = false;
     }
   }
   return $result;
@@ -336,80 +335,6 @@ function htmlDecode($data)
     $data = htmlspecialchars_decode($data, ENT_QUOTES);
   }
   return $data;
-}
-
-/**
- * Fonction d'analyse des virus avec clamav
- *
- * @author quinton
- *
- *         Exemple d'usage :
- *
- *         $nomfiletest = "/tmp/eicar.com.txt";
- *         try {
- *         echo "analyse antivirale de $nomfiletest";
- *         testScan ( $nomfiletest );
- *         echo "Fichier sans virus reconnu par Clamav<br>";
- *         } catch ( FileException $f ) {
- *         echo $f->getMessage () . "<br>";
- *         } catch ( VirusException $v ) {
- *         echo $v->getMessage () . "<br>";
- *         } finally {
- *         echo "Fin du test";
- *         }
- */
-class VirusException extends Exception
-{ }
-
-/**
- * Gestion des exceptions pour les manipulations de fichiers
- *
- * @var mixed
- */
-class FileException extends Exception
-{ }
-
-/**
- * Test antiviral d'un fichier
- *
- * @param mixed $file
- *
- * @return mixed
- */
-function testScan($file)
-{
-  global $APPLI_virusScan;
-  if ($APPLI_virusScan) {
-    if (file_exists($file)) {
-      if (extension_loaded('clamav')) {
-        $retcode = cl_scanfile($file["tmp_name"], $virusname);
-        if ($retcode == CL_VIRUS) {
-          $message = $file["name"] . " : " . cl_pretcode($retcode) . ". Virus found name : " . $virusname;
-          throw new VirusException($message);
-        }
-      } else {
-        /*
-                 * Test avec clamscan
-                 */
-        $clamscan = "/usr/bin/clamscan";
-        $clamscan_options = "-i --no-summary";
-        if (file_exists($clamscan)) {
-          exec("$clamscan $clamscan_options $file", $output);
-          if (count($output) > 0) {
-            $message = $file["name"] . " : ";
-            foreach ($output as $value) {
-              $message .= $value . " ";
-            }
-            throw new VirusException($message);
-          }
-        } else {
-          throw new FileException("clamscan not found");
-        }
-      }
-    } else {
-      throw new FileException("$file not found");
-    }
-  }
 }
 
 /**
@@ -459,7 +384,7 @@ function is_cli()
   if (defined('STDIN')) {
     return true;
   }
-  if (empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0) {
+  if (empty($_SERVER['REMOTE_ADDR']) && !isset($_SERVER['HTTP_USER_AGENT']) && count($_SERVER['argv']) > 0) {
     return true;
   }
   return false;
@@ -492,4 +417,88 @@ function phpeol()
     return "<br>";
   }
   */
+}
+class ApiCurlException extends Exception
+{
+};
+/**
+ * call a api with curl
+ * code from
+ * @param string $method
+ * @param string $url
+ * @param array $data
+ * @return void
+ */
+function apiCall($method, $url, $certificate_path = "", $data = array(), $modeDebug = false)
+{
+  $curl = curl_init();
+  if (!$curl) {
+    throw new ApiCurlException(_("Impossible d'initialiser le composant curl"));
+  }
+  switch ($method) {
+    case "POST":
+      curl_setopt($curl, CURLOPT_POST, true);
+      if (!empty($data)) {
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+      }
+      break;
+    case "PUT":
+      curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+      if (!empty($data)) {
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+      }
+      break;
+    default:
+      if (!empty($data)) {
+        $url = sprintf("%s?%s", $url, http_build_query($data));
+      }
+  }
+  /**
+   * Set options
+   */
+  curl_setopt($curl, CURLOPT_URL, $url);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+  //curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+  if (!empty($certificate_path)) {
+    curl_setopt($curl, CURLOPT_SSLCERT, $certificate_path);
+  }
+  if ($modeDebug) {
+    curl_setopt($curl, CURLOPT_SSL_VERIFYSTATUS, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($curl, CURLOPT_VERBOSE, true);
+  }
+  /**
+   * Execute request
+   */
+  $res = curl_exec($curl);
+  if (!$res) {
+    throw new ApiCurlException(sprintf(_("Une erreur est survenue lors de l'exécution de la requête vers le serveur distant. Code d'erreur CURL : %s"), curl_error($curl)));
+  }
+  curl_close($curl);
+  return $res;
+}
+
+/**
+ * Fonction permettant de reorganiser les donnees des fichiers telecharges,
+ * pour une utilisation directe en tableau
+ * @return multitype:multitype:NULL  unknown
+ */
+function formatFiles($attributName = "documentName")
+{
+    global $_FILES;
+    $files = array();
+    $fdata = $_FILES[$attributName];
+    if (is_array($fdata['name'])) {
+        for ($i = 0; $i < count($fdata['name']); ++$i) {
+            $files[] = array(
+                'name'    => $fdata['name'][$i],
+                'type'  => $fdata['type'][$i],
+                'tmp_name' => $fdata['tmp_name'][$i],
+                'error' => $fdata['error'][$i],
+                'size'  => $fdata['size'][$i]
+            );
+        }
+    } else $files[] = $fdata;
+    return $files;
 }

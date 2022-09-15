@@ -46,8 +46,7 @@ $(document).ready(function() {
 			</div>
 			<div class="form-group">
 				<label for="body" class="control-label col-md-4"><span class="red">*</span> {t}Code SQL :{/t}</label>
-				<div class="col-md-1"><b>SELECT</b></div>
-				<div class="col-md-7">
+				<div class="col-md-8">
 					<textarea id="body" class="form-control modif" name="body" cols="70" rows="10" wrap="soft" required>{$data.body}</textarea>
 				</div>
 			</div>
@@ -89,7 +88,7 @@ $(document).ready(function() {
 		</form>
 	</div>
 </div>
-{if count($result) > 0}
+{if !empty($result)}
 	<div class="row">
 		<div class="col-lg-12">
 			<table id="crequestList" class="table table-bordered table-hover datatable-export-paging ">
@@ -112,4 +111,6 @@ $(document).ready(function() {
 			</table>
 		</div>
 	</div>
+	{else}
+	{t}Aucun résultat n'a été retourné par la requête{/t}
 {/if}
