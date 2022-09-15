@@ -1915,7 +1915,6 @@ class ObjetBDD
   /**
    * Instanciate a class
    *
-   * @param string $varname
    * @param string $className
    * @param string $classFile
    * @param bool $pathAbsolute: if false, the path of the class is $this->classpath/$classFile (default: false)

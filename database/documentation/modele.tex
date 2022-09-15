@@ -368,6 +368,42 @@ return $this->getListeParam($sql);
 
 Une fois le contenu de la requête récupéré, la classe pourra alors appliquer la transformation de date sur la colonne issue de la  seconde table.
 
+\subsection{Enregistrer un fichier binaire dans une table}
+\begin{lstlisting}
+function updateBinaire($id, $field, $ref)
+\end{lstlisting}
+
+Avec :
+\begin{itemize}
+	\item id : clé de l'enregistrement
+	\item field : nom de la colonne à mettre à jour
+	\item ref : référence du fichier ouvert préalablement (fopen)
+\end{itemize}
+
+\subsection{Générer un UUID}
+\begin{lstlisting}
+function getUUID()
+\end{lstlisting}
+
+Appelle la fonction gen\_random\_uuid() de la base de données, et restitue l'UUID calculé. Nécessite l'extension \textit{pgcrypto}.
+
+\subsection{Instancier dynamiquement une classe}
+
+Parfois utile, pour instancier une classe dans un script, en précisant simplement le chemin d'accès à la classe.
+
+\begin{lstlisting}
+ function classInstanciate($className, $classFile, bool $pathAbsolute = false)
+\end{lstlisting}
+
+avec : 
+\begin{itemize}
+	\item className : nom de la classe
+	\item classFile : nom du fichier qui contient la classe
+	\item pathAbsolute : si à \textit{true}, le chemin d'accès à la classe doit être décrit complètement depuis la racine de l'application (préférable)
+\end{itemize}
+
+La fonction retourne l'instance de classe correspondante.
+
 \section{Le tableau de paramètres ObjetBDDParam}\label{objetbddparam}
 
 ObjetBDDParam est une variable contenant les paramètres par défaut utilisés pour initialiser les instances issues d'ObjetBDD. C'est en particulier assez pratique pour gérer le choix de la langue d'affichage pour les dates. Il est également possible de modifier, de manière globale dans le logiciel, le fonctionnement d'ObjetBDD.

@@ -187,9 +187,10 @@ OBJETBDD\_debugmode & 0 : pas d'affichage de message d'erreur, 1, affichage des 
 \hline
 \endfoot
 \endlastfoot
-ident\_type & Type d'identification supporté. L'application peut gérer \textbf{BDD} (uniquement en base de données),\textbf{LDAP} (uniquement à partir d'un annuaire LDAP) \textbf{LDAP-BDD} (d'abord identification en annuaire LDAP, puis en base de données), \textbf{CAS} (serveur d'identification \textit{Common Access Service}), et enfin \textbf{HEADER} (identification derrière un proxy qui fournit le login dans une variable d'entête HTTP ou \textit{via} une identification Shibboleth)\\
+ident\_type & Type d'identification supporté. L'application peut gérer \textbf{BDD} (uniquement en base de données),\textbf{LDAP} (uniquement à partir d'un annuaire LDAP) \textbf{LDAP-BDD} (d'abord identification en annuaire LDAP, puis en base de données), \textbf{CAS} (serveur d'identification \textit{Common Access Service}), \textbf{CAS-BDD} (possibilité de sélectionner l'appel au serveur CAS depuis la page de connexion, possible en mode base de données), et enfin \textbf{HEADER} (identification derrière un proxy qui fournit le login dans une variable d'entête HTTP ou \textit{via} une identification Shibboleth)\\
 CAS\_plugin & Nom du plugin utilisé pour une connexion CAS \\
 CAS\_address & Adresse du serveur CAS\\
+CAS\_uri & url locale au serveur, en principe : /cas \\
 CAS\_port & Systématiquement 443 (connexion chiffrée)\\
 CAS\_debug & Activation du mode debug \\
 CAS\_CApath & Chemin d'accès au certificat du serveur CAS \\
